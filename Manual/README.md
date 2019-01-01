@@ -1,6 +1,11 @@
 ﻿# Bring Fluent Design and modern user interaction to your WPF or Windows Forms applications
 
 ## Introduction
+Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivial and may require a tremendous work ; Most of the time, it impose a full rewriting.
+
+Now, with XAML Islands, we can use UWP controls in non-UWP desktop applications so that wa can enhance the look, feel, and functionality of your our LOB desktop applications with the latest Windows 10 UI features that are only available via UWP controls. This means that you can use UWP features such as Windows Ink and controls that support the Fluent Design System in your existing WPF, Windows Forms, and C++ Win32 applications.
+
+With this lab, we will experiment XAML Islands and modernize an existing WPF application.
 
 ### Estimated time
 90 minutes
@@ -19,7 +24,11 @@
 - Basic knowledge of UWP 
 
 ### Overview of the lab
-TODO
+We're going to start from an existing LOB application and we're going to enhance it by supporting modern features with the help of XAML Islands. We'll learn how to integrate Fluent controls from the Universal Windows Platform in the existing codebase.
+The lab consists of three exercises:
+1.  XXXXXXXXXXXXX
+2.  YYYYYYYYYYYYYYYYY
+3.  ZZZZZZZZZZZZZZZZZZZZ
 
 ### Computers in this lab
 This lab uses a single Virtual Machine to provide you with the development environment.
@@ -31,10 +40,10 @@ The virtual machine is based on Windows 10 October Update (1809) and it includes
 If you already have these tools on your computer, feel free to directly use it for the lab instead of the virtual machine. Be aware that the following Visual Studio workloads have to be installed: ".NET desktop development" and "Universal Windows Platform development".
 
 ### Scenario
-TODO
+The ExpenseIt application is internal application for creating expenses for Contoso Corporation. Modernizing this application is necessary in order to enhance employee efficiency when creating expenses reports.
 
 ### The project
-TODO
+ExpenseIt is a WPF Desktop application.
 
 ### Key concepts that will be used during the lab
 
@@ -45,7 +54,19 @@ TODO
 TODO
 
 ___
-## Exercice 1 - TODO
+## Exercice 1 - Use a bluit-in XAML Islands control
+TODO ideas:
+- Add the NuGet package named Microsoft.Toolkit.Wpf.UI.Controls
+- Use the UWP map control
+
+### Task 1 - TODO
+TODO
+
+### Task 2 - TODO
+TODO
+
+___
+## Exercise 2 - Integrate a custom UWP XAML component
 TODO
 
 ### Task 1 - TODO
@@ -55,17 +76,7 @@ TODO
 TODO
 
 ___
-## Exercise 2 - TODO
-TODO
-
-### Task 1 - TODO
-TODO
-
-### Task 2 - TODO
-TODO
-
-___
-## Exercise 3 - TODO
+## Exercise 3 - Perform bindings between UWP XAML and WPF
 TODO
 
 ### Task 1 - TODO
