@@ -59,8 +59,24 @@ TODO ideas:
 - Add the NuGet package named Microsoft.Toolkit.Wpf.UI.Controls
 - Use the UWP map control
 
-### Task 1 - TODO
-TODO
+### Task 1 - Setup the ExpenseIt solution
+Let's first be sure we can run and debug the ExpenseIt solution locally.
+1.  In the Windows Explorer, create a new local folder like *"C:\XAMLIslandsLab"*. It will be our working folder for the Contoso Dashboard website.
+2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslaLab repository</a>. Click on the **Code** tab / **Clone or download** button / **Download ZIP** button.
+
+![Download code as zip](DownloadCodeAsZIP.png)
+
+3.  When ready, click on the downloaded file in your browser to open it.
+
+![Downloaded file in Chrome](SourceCodeDownloaded.png)
+
+4.  In the opened zip file, go to the **\Exercice1\Start** folder and copy (to the clipboard with CTRL+C) all contained files.
+5.  Paste these files in the local *"C:\XAMLIslandsLab"* you've just created. 
+6.	Open Visual Studio 2017, and double click on the *"C:\XAMLIslandsLab\ExpenseIt.sln"* file to open the solution.
+
+![ExpenseIt solution in Windows Explorer](ExpenseItSolutionInWindowsExplorer.png)
+
+7.  Verify that you can debug the ExpenseIt WPF project by pressing the **Start** button or CTRL+F5.
 
 ### Task 2 - TODO
 TODO
