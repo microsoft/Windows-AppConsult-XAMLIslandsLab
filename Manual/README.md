@@ -47,14 +47,14 @@ ExpenseIt is a WPF Desktop application.
 
 ### Key concepts that will be used during the lab
 
-#### Key concept 1
-TODO
+#### XAML Islands architecture
+The Windows 10 October 2018 Update with the SDK 17763, enables the scenario of XAML Islands for Desktop applications. That means that Windows 10 now supports hosting UWP controls inside the context of a Win32 Process. The 'magic' is powered by two new system APIs called <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.windowsxamlmanager" target="_blank">WindowsXamlManager</a> and <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.desktopwindowxamlsource" target="_blank">DesktopWindowXamlSource</a>.
 
 #### Key concept 2
 TODO
 
 ___
-## Exercice 1 - Use a bluit-in XAML Islands control
+## Exercise 1 - Use a bluit-in XAML Islands control
 TODO ideas:
 - Add the NuGet package named Microsoft.Toolkit.Wpf.UI.Controls
 - Use the UWP map control
@@ -68,7 +68,7 @@ Let's first be sure we can run and debug the ExpenseIt solution locally.
 
 ![Downloaded file in Chrome](SourceCodeDownloaded.png)
 
-4.  In the opened zip file, go to the **Lab\Exercice1\Start** folder and copy (to the clipboard with CTRL+C) all contained files.
+4.  In the opened zip file, go to the **Lab\Exercise1\Start** folder and copy (to the clipboard with CTRL+C) all contained files.
 5.  Paste these files in the local *"C:\XAMLIslandsLab"* you've just created. 
 6.	Open Visual Studio 2017, and double click on the *"C:\XAMLIslandsLab\ExpenseIt.sln"* file to open the solution.
 
