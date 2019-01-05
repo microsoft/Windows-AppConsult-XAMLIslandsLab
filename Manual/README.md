@@ -67,13 +67,13 @@ Let's first be sure we can run and debug the ExpenseIt solution locally.
 
 3.  When ready, click on the downloaded file in your browser to open it.
 
-![Downloaded file in Chrome](SourceCodeDownloaded.png)
+    ![Downloaded file in Chrome](SourceCodeDownloaded.png)
 
-4.  In the opened zip file, go to the **Lab\Exercise1\Start** folder and copy (to the clipboard with CTRL+C) all contained files.
-5.  Paste these files in the local *"C:\XAMLIslandsLab"* you've just created. 
-6.	Open Visual Studio 2017, and double click on the *"C:\XAMLIslandsLab\ExpenseIt.sln"* file to open the solution.
+4.  Open the zip file and extract all the content to your working folder "C:\XAMLIslandsLab" you've just created.
 
-![ExpenseIt solution in Windows Explorer](ExpenseItSolutionInWindowsExplorer.png)
+5.  Open Visual Studio 2017, and double click on the *"C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ExpenseIt.sln"* file to open the solution.
+
+    ![ExpenseIt solution in Windows Explorer](ExpenseItSolutionInWindowsExplorer.png)
 
 7.  Verify that you can debug the ExpenseIt WPF project by pressing the **Start** button or CTRL+F5.
 
@@ -85,37 +85,37 @@ Please note that the same package exists for Windows Forms. Its name is <a href=
 1.  If the ExpensIt solution is not opened in Visual Studio, double click on *"C:\XAMLIslandsLab\ExpenseIt.sln"*.
 2.  Right click on the **ExpenseIt** project in the Solution Explorer window on the left and choose **Manage NuGet Packages...**.
 
-![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
+    ![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
 
 3. Search for "Microsoft.Toolkit.Wpf.UI.Controls". The NuGet package from Microsoft.Toolkit will be displayed.
 
-![Microsoft.Toolkit.Wpf.UI.Controls NuGet package](Microsoft.Toolkit.Wpf.UI.Controls.png)
+    ![Microsoft.Toolkit.Wpf.UI.Controls NuGet package](Microsoft.Toolkit.Wpf.UI.Controls.png)
 
 4.  Click on the **Install** button on the right.
 
-![Install Controls NuGet package](InstallControlsNuGetPackage.png)
+    ![Install Controls NuGet package](InstallControlsNuGetPackage.png)
 
 5. You might get the following error.
 
-![](ErrorMinimumNETVersionForControls.png)
+    ![](ErrorMinimumNETVersionForControls.png)
 
 This error gives us the opportunity to mention the requirement for the .NET WPF or Windows Forms application: **The .NET Framework version has to be > 4.6.2**. Let's retarget the ExpenseIt project to this version.
 
 6.  Right click on the ExpenseIt project / **Properties**.
 
-![Project properties](ProjectProperties.png)
+    ![Project properties](ProjectProperties.png)
 
 7.  In the **Target framework** dropdown listbox, select the **.NET Framework 4.7.2** (as this version is installed on the box).
 
-![.NET Framework 4.7.2 version](NET472Version.png)
+    ![.NET Framework 4.7.2 version](NET472Version.png)
 
 8. Rebuild the project using the **CTRL+SHIFT+B** shortcut in order to check if the retargeting action haven't caused any regression or ask us to do some manual code modifications.
 
-```dos
-1>------ Build started: Project: ExpenseItDemo, Configuration: Debug Any CPU ------
-1>  ExpenseItDemo -> C:\XAMLIslandsLab\ExpenseItDemo\bin\Debug\ExpenseItDemo.exe
-========== Build: 1 succeeded, 0 failed, 1 up-to-date, 0 skipped ==========
-```
+    ```dos
+    1>------ Build started: Project: ExpenseItDemo, Configuration: Debug Any CPU ------
+    1>  ExpenseItDemo -> C:\XAMLIslandsLab\ExpenseItDemo\bin\Debug\ExpenseItDemo.exe
+    ========== Build: 1 succeeded, 0 failed, 1 up-to-date, 0 skipped ==========
+    ```
 
 9.  It is now safe to add the **Microsoft.Toolkit.Wpf.UI.Controls** NuGet package to the ExpenseIt project as explained above.
 
@@ -130,15 +130,15 @@ TODO
 ### Task 1 - Reference the XAML Islands host conctrol
 1.  With the ExpenseIt solution opened in Visual Studio, right click on the ExpenseIt project and then **Manage NuGet Packages...**
 
-![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
+    ![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
 
 2.  Search for the "Microsoft.Toolkit.Wpf.UI.XamlHost" package.
 
-![Microsoft.Toolkit.Wpf.UI.XamlHost NuGet Package](XamlHostNuGetPackages.png)
+    ![Microsoft.Toolkit.Wpf.UI.XamlHost NuGet Package](XamlHostNuGetPackages.png)
 
 3.  Click on the **Install** button.
 
-![](InstallNuGetPackage.png)
+    ![](InstallNuGetPackage.png)
 
 
 
