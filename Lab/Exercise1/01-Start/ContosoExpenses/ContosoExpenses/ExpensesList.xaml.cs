@@ -32,12 +32,15 @@ namespace ContosoExpenses
 
         private void OnSelectedExpense(object sender, SelectionChangedEventArgs e)
         {
-            var expense = e.AddedItems[0] as Expense;
-            if (expense != null)
+            if (e.AddedItems.Count > 0)
             {
-                ExpenseDetail detail = new ExpenseDetail();
-                detail.SelectedExpense = expense;
-                detail.ShowDialog();
+                var expense = e.AddedItems[0] as Expense;
+                if (expense != null && expense.ExpenseId != 0)
+                {
+                    ExpenseDetail detail = new ExpenseDetail();
+                    detail.SelectedExpense = expense;
+                    detail.ShowDialog();
+                }
             }
         }
 
