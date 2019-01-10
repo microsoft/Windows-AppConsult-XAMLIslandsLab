@@ -4,6 +4,20 @@
              xmlns:local="clr-namespace:ContosoExpenses"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="SemiTransparentBackground" 
+                         Color="Black"
+                         Opacity=".3" />
+
+        <ImageBrush x:Key="MainBackground" 
+                    ImageSource="ExpensesBackground.jpg" 
+                    Stretch="UniformToFill"/>
+
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
     </Application.Resources>
 </Application>

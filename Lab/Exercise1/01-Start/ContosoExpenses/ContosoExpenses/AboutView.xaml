@@ -26,7 +26,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock>About Contoso:</TextBlock>
-        <WebBrowser Grid.Row="1" Source="http://aboutknowzy.azurewebsites.net" />
+        <TextBlock>Contoso Expenses is an application of Contoso Corp.</TextBlock>
+        <WebBrowser Grid.Row="1" Source="https://contosocorpwebsite.azurewebsites.net/" />
     </Grid>
 </Window>

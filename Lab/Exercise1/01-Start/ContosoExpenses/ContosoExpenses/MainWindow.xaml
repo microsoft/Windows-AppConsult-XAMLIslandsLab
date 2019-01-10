@@ -6,19 +6,25 @@
         xmlns:local="clr-namespace:ContosoExpenses"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="Contoso Expenses" Height="450" Width="800">
-    
+        Title="Contoso Expenses" Height="450" Width="800"
+        Background="{StaticResource MainBackground}">
+
     <Grid Margin="12">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="25" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <Menu IsMainMenu="True" Grid.Row="0">
             <MenuItem Header="_About" Click="OnOpenAbout" />
         </Menu>
 
-        <DataGrid x:Name="CustomersGrid" SelectionChanged="OnSelectedEmployee" Grid.Row="1" AutoGenerateColumns="False">
+        <DataGrid x:Name="CustomersGrid" SelectionChanged="OnSelectedEmployee" Grid.Row="1" AutoGenerateColumns="False"
+                  Background="{StaticResource SemiTransparentBackground}" 
+                  RowBackground="{StaticResource SemiTransparentBackground}"
+                  ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                  Foreground="White"
+                  RowStyle="{StaticResource DataGridRowStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Employee Id" Binding="{Binding Path=EmployeeId}" />
                 <DataGridTextColumn Header="Name" Binding="{Binding Path=FirstName}" />
