@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <Menu IsMainMenu="True" Grid.Row="0">
-            <MenuItem Header="_About" Click="OnOpenAbout" />
+            <MenuItem Header="_About" FontSize="12" Click="OnOpenAbout" />
         </Menu>
 
         <DataGrid x:Name="CustomersGrid" SelectionChanged="OnSelectedEmployee" Grid.Row="1" AutoGenerateColumns="False"
@@ -26,6 +26,7 @@
                   RowBackground="{StaticResource SemiTransparentBackground}"
                   ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
                   Foreground="White"
+                  FontSize="14"
                   RowStyle="{StaticResource DataGridRowStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Employee Id" Binding="{Binding Path=EmployeeId}" />

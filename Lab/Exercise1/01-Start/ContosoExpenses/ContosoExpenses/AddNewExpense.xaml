@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ContosoExpenses"
         mc:Ignorable="d"
-        Title="Add new expense" Height="450" Width="800">
+        Title="Add new expense" Height="450" Width="800"
+        Background="{StaticResource AddNewExpenseBackground}">
 
     <Grid Margin="12">
         <Grid.RowDefinitions>
@@ -41,8 +42,8 @@
         <TextBox x:Name="txtCity" FontSize="16" Margin="5, 0, 0, 0" Width="400" Grid.Row="5" Grid.Column="1" />
 
         <TextBlock Text="Date:" FontSize="16" FontWeight="Bold" Grid.Row="6" Grid.Column="0" />
-        <DatePicker x:Name="txtDate" Grid.Row="6" Grid.Column="1" Width="400" />
+        <DatePicker x:Name="txtDate" Grid.Row="6" Grid.Column="1" Margin="5, 0, 0, 0" Width="400" />
 
-        <Button Content="Save" Grid.Row="7" Grid.Column="0" Click="OnSaveExpense" Margin="5, 12, 0, 0" HorizontalAlignment="Left" />
+        <Button Content="Save" Grid.Row="7" Grid.Column="0" Click="OnSaveExpense" Margin="5, 12, 0, 0" HorizontalAlignment="Left" Width="180" />
     </Grid>
 </Window>

@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Activated="Window_Activated"
-        Title="Expenses List" Height="450" Width="800">
+        Title="Expenses List" Height="450" Width="800"
+        Background="{StaticResource ExpensesListBackground}">
+    
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -41,7 +43,13 @@
                   IsReadOnly="True"
                   Grid.Row="4" 
                   Margin="0, 12, 0, 0" 
-                  SelectionMode="Single">
+                  SelectionMode="Single"
+                  Background="{StaticResource SemiTransparentBackground}" 
+                  RowBackground="{StaticResource SemiTransparentBackground}"
+                  ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                  Foreground="White"
+                  FontSize="14"
+                  RowStyle="{StaticResource DataGridRowStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}" />
                 <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}" />
@@ -51,6 +59,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Content="Add new expense" Click="OnAddNewExpense" Grid.Row="5" HorizontalAlignment="Left" Width="200" />
+
+        <Button Content="Add new expense" Click="OnAddNewExpense" Grid.Row="5" HorizontalAlignment="Left" Margin="0, 12, 0, 0" Width="180" />
     </Grid>
 </Window>

@@ -5,12 +5,12 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <SolidColorBrush x:Key="SemiTransparentBackground" 
-                         Color="Black"
-                         Opacity=".3" />
+                         Color="#0073CF"
+                         Opacity=".6" />
 
         <ImageBrush x:Key="MainBackground" 
-                    ImageSource="ExpensesBackground.jpg" 
-                    Stretch="UniformToFill"/>
+                    ImageSource="Images\ExpensesBackground.jpg" 
+                    Stretch="UniformToFill" />
 
         <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
             <Setter Property="Foreground" Value="Black" />
@@ -19,5 +19,16 @@
         <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
             <Setter Property="Cursor" Value="Hand" />
         </Style>
+
+        <ImageBrush x:Key="ExpensesListBackground" 
+                    ImageSource="Images\ExpensesListBackground.png" 
+                    Stretch="Fill" />
+
+
+        <ImageBrush x:Key="AddNewExpenseBackground" 
+                    ImageSource="Images\AddNewExpense.png" 
+                    Stretch="UniformToFill" />
+        
+
     </Application.Resources>
 </Application>
