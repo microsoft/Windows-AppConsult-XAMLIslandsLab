@@ -6,15 +6,45 @@
         xmlns:local="clr-namespace:ContosoExpenses"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
+        Activated="Window_Activated"
         Title="Expenses List" Height="450" Width="800">
-    <Grid>
-        <DataGrid x:Name="ExpensesGrid" SelectionChanged="OnSelectedExpense" AutoGenerateColumns="False">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="24" Text="Expenses List" Grid.Row="0" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <TextBlock Text="Employee Id:" FontSize="16" FontWeight="Bold" />
+            <TextBlock x:Name="txtEmployeeId" FontSize="16" Margin="5, 0, 0, 0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"  Grid.Row="2">
+            <TextBlock Text="Full name:" FontSize="16" FontWeight="Bold" />
+            <TextBlock x:Name="txtFullName" FontSize="16" Margin="5, 0, 0, 0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"  Grid.Row="3">
+            <TextBlock Text="E-mail:" FontSize="16" FontWeight="Bold" />
+            <TextBlock x:Name="txtEmail" FontSize="16" Margin="5, 0, 0, 0" />
+        </StackPanel>
+        
+        <DataGrid x:Name="ExpensesGrid" SelectionChanged="OnSelectedExpense" AutoGenerateColumns="False" Grid.Row="4" Margin="0, 12, 0, 0">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}" />
                 <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}" />
                 <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" />
                 <DataGridTextColumn Header="Cost" Binding="{Binding Path=Cost}" />
                 <DataGridTextColumn Header="City" Binding="{Binding Path=City}" />
             </DataGrid.Columns>
         </DataGrid>
+
+        <Button Content="Add new expense" Click="OnAddNewExpense" Grid.Row="5" HorizontalAlignment="Left" Width="200" />
     </Grid>
 </Window>

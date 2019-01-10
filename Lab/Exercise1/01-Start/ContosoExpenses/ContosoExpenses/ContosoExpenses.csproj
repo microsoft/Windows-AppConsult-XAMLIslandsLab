@@ -70,6 +70,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddNewExpense.xaml.cs">
+      <DependentUpon>AddNewExpense.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExpensesList.xaml.cs">
       <DependentUpon>ExpensesList.xaml</DependentUpon>
     </Compile>
@@ -77,6 +80,10 @@
     <Page Include="AboutView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AddNewExpense.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ExpenseDetail.xaml">
       <SubType>Designer</SubType>

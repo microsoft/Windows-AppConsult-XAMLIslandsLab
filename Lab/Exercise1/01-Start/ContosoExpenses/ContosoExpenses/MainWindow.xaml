@@ -8,10 +8,10 @@
         Loaded="Window_Loaded"
         Title="Contoso Expenses" Height="450" Width="800">
     
-    <Grid>
+    <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
         <Menu IsMainMenu="True" Grid.Row="0">
