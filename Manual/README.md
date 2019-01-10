@@ -208,11 +208,17 @@ TODO
 
 ___
 ## Exercise 3 - Migrate to .NET Core
-Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). 
+Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
+### Setup for using .NET Core today
 
-brings lots of advantages and 
-TODO
+At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
+- The .NET Core 3 runtime - https://github.com/dotnet/core-setup
+- The .NET Core 3 SDK - https://github.com/dotnet/core-sdk
+
+Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. If you are using you own computer, just navigate to the two links above and find the correct installer for your platform.
+
+![Download .NET Core](DownloadNETCore.png)
 
 
 
