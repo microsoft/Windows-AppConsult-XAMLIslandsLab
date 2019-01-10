@@ -32,12 +32,15 @@ namespace ContosoExpenses
 
         private void OnSelectedEmployee(object sender, SelectionChangedEventArgs e)
         {
-            var employee = e.AddedItems[0] as Employee;
-            if (employee != null)
+            if (e.AddedItems.Count > 0)
             {
-                ExpensesList detail = new ExpensesList();
-                detail.EmployeeId = employee.EmployeeId;
-                detail.Show();
+                var employee = e.AddedItems[0] as Employee;
+                if (employee != null && employee.EmployeeId != 0)
+                {
+                    ExpensesList detail = new ExpensesList();
+                    detail.EmployeeId = employee.EmployeeId;
+                    detail.Show();
+                }
             }
         }
 

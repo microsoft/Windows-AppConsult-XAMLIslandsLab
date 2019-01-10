@@ -20,6 +20,8 @@
         </Menu>
 
         <DataGrid x:Name="CustomersGrid" SelectionChanged="OnSelectedEmployee" Grid.Row="1" AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  IsReadOnly="True"
                   Background="{StaticResource SemiTransparentBackground}" 
                   RowBackground="{StaticResource SemiTransparentBackground}"
                   ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
