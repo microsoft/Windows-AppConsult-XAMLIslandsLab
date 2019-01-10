@@ -1,0 +1,54 @@
+﻿<Window x:Class="ContosoExpenses.ExpenseDetail"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:island="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing"
+        xmlns:local="clr-namespace:ContosoExpenses"
+        mc:Ignorable="d"
+        Title="Expense Detail" Height="450" Width="800">
+
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="24" Text="Expense" Grid.Row="0" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <TextBlock Text="Type:" FontSize="16" FontWeight="Bold" />
+            <TextBlock x:Name="txtType" FontSize="16" Margin="5, 0, 0, 0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"  Grid.Row="2">
+            <TextBlock Text="Description:" FontSize="16" FontWeight="Bold" />
+            <TextBlock x:Name="txtDescription" FontSize="16" Margin="5, 0, 0, 0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"  Grid.Row="3">
+            <TextBlock Text="Amount:" FontSize="16" FontWeight="Bold" />
+            <TextBlock x:Name="txtAmount" FontSize="16" Margin="5, 0, 0, 0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"  Grid.Row="4">
+            <TextBlock Text="Location:" FontSize="16" FontWeight="Bold" />
+            <TextBlock x:Name="txtLocation" FontSize="16" Margin="5, 0, 0, 0" />
+        </StackPanel>
+
+        <island:MapControl Style="Road" Grid.Row="5" x:Name="UserLocation" />
+
+        <TextBlock Text="Signature" FontSize="16" FontWeight="Bold" Grid.Row="6" />
+
+        <island:InkCanvas Grid.Row="7" x:Name="SignatureCanvas" />
+    </Grid>
+</Window>
