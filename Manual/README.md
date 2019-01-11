@@ -211,14 +211,28 @@ ___
 Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
 ### Setup for using .NET Core today
-
 At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
 - The .NET Core 3 runtime - https://github.com/dotnet/core-setup
 - The .NET Core 3 SDK - https://github.com/dotnet/core-sdk
 
-Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. If you are using you own computer, just navigate to the two links above and find the correct installer for your platform.
+Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. On the other hand, if you are using you own computer, just navigate to the two links above and take the correct installer for your platform.
 
 ![Download .NET Core](DownloadNETCore.png)
+
+### Perform the migration
+As mentionned, .NET Core is in the Preview state. We also need a prelimenary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: https://visualstudio.microsoft.com/fr/vs/preview/.
+
+Let's open the solution using Visual Studio 2019 Preview:
+1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
+    
+    The project ContosoExpenses is now open in Visual Studio but nothing changed: The appllication still uses the Full .NET 4.7.2. To verify this, just right click on the project in the Solution Explorer Windows and **Properties**.
+    
+    ![Project properties in the Solution Explorer](PropertiesContosoExpenses.png)
+
+    The *Target framework* of the project is
+    ![.NET Framework version 4.7.2 for the project](NETFramework472.png)
+
+
 
 
 
