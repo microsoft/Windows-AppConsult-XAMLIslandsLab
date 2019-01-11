@@ -18,7 +18,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:toolkit="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
         Loaded="Window_Loaded"
+        Closed="Window_Closed"
         xmlns:local="clr-namespace:ContosoExpenses"
         mc:Ignorable="d"
         Title="Expense Detail" Height="500" Width="800"
@@ -64,6 +66,14 @@
                 <TextBlock Text="Location:" FontSize="16" FontWeight="Bold" />
                 <TextBlock x:Name="txtLocation" FontSize="16" Margin="5, 0, 0, 0" />
             </StackPanel>
+
+            <toolkit:MapControl Grid.Row="5" x:Name="ExpenseMap" />
+
+            <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
+            
+            <toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />
+            
+            
         </Grid>
 
         <!-- Chart -->

@@ -178,12 +178,423 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 
 9.  It is now safe to add the **Microsoft.Toolkit.Wpf.UI.Controls** NuGet package to the ExpenseIt project as explained above.
 
-### Task 3 - Use the MapControl in the application
-TODO: Find an interesting way to use the MapControl
+### Task 4 - Use the InkCanvas control in the application
+One of the features that the development team is looking to integrate inside the application is support to digital signature. Managers wants to be able to easily sign the expenses reports, without having to print and digitalize them back.
+XAML Island is the perfect candidate for this scenario, since the Universal Windows Platform includes a control called **InkCanvas**, which offers advanced support to digital pens. Additionally, it includes many AI powered features, like the capability to recognize text, shapes, etc.
 
+Adding it to a WPF application is easy, since it's one of the 1st party controls included in the Windows Community Toolkit we have just installed. Let's add it!
+
+1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml** file in Solution Explorer.
+2. As first step, we need to add a new XAML namespace, since the control we need is part of a 3rd party library. Locate the **<Window>** tag at the top of the XAML file.
+3. Copy and paste the following definition as attribute of the **Window** element:
+
+    ```xml
+    xmlns:toolkit="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
+    ```
+    This is how the complete definition should look like:
+    
+    ```xml
+    <Window x:Class="ContosoExpenses.ExpenseDetail"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:toolkit="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
+            Loaded="Window_Loaded"
+            xmlns:local="clr-namespace:ContosoExpenses"
+            mc:Ignorable="d"
+            Title="Expense Detail" Height="500" Width="800"
+            Background="{StaticResource HorizontalBackground}">
+    ```
+4. Now we can add the **InkCanvas** control to the page. We're going to add two new rows to the **Grid** to fit it.
+5. Add two new **RowDefinition** tags at the end the **Grid.Row** collection: one with **Height** equal to **Auto**, the other one equal to *. This is how the final result should look like:
+
+    ```xml
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    ```
+    
+6. Now move to the bottom of the XAML file and, inside the **Grid** control, add the following code:
+
+    ```xml
+    <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="5" />
+                
+    <toolkit:InkCanvas x:Name="Signature" Grid.Row="6" />
+    ```
+
+    The first control is a simple **TextBlock**, used as a header. The second one is real **InkCanvas** control, which is prefixed by the **toolkit** keyword we have defined as namespace, being a 3rd party control.
+    
+7. That's it! Now we can test the application. Press F5 to launch the debugging experience.
+8. Choose an employee from the list, then one of the available expenses.
+9. Notice that, in the expense detail page, there's a new space for the **InkCanvas** control. If you have a device which supports a digital pen, like a Surface, go on and try to use it. You will see the digital ink appearing on the screen. However, if you don't have a pen capable device and you try to sign with your mouse, nothing will happen. This is happening because, by default, the **InkCanvas** control is enabled only for digital pens. However, can change this behavior.
+10. Stop the debugger and double click on the **ExpenseDetail.xaml.cs** file in Visual Studio.
+11. Add the following namespace declaration at the top of the class:
+
+    ```csharp
+    using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
+    ```
+    
+12. Now locate **ExpenseDetail()** method, which is the public constructor of the class.
+13. Add the following line of code right after the **InitializeComponent()** method:
+
+    ```csharp
+    Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
+    ```
+    
+    **InkPresenter** is an object exposed by the **InkCanvas** control which we can use to customize the default inking experience. Thanks to the **InputDeviceTypes** we can change which default inking methods are supported. Thanks to the values offered by the **CoreInputDeviceTypes** enumerator, we enable pen and mouse.
+    
+14. Now let's test the application again. Press F5 to start the debugging, then choose one of the employees followed by one of the expenses.
+15. Try now to draw something in the signature space with the mouse. This time, you'll see the ink appearing on the screen.
+
+    ![](Signature.png)
+    
+However, if you try to play a bit with the application you will notice that not everything is working as expected. Close the expense detail and try to open another one from the list. You will notice that the application will crash with the following exception:
+
+![](XamlIslandException.png)
+
+The reason is that every UWP control included in a WPF app through XAML Island must be properly disposed before being instantiated again. As such, we need to take care of this operation when the expense detail page is closed.
+
+1. Go back to Visual Studio and double click the **ExpenseDetail.xaml** file in Solution Explorer.
+2. Locate the **<Window>** tag and add the following attribute:
+    
+    ```xml
+    Closed="Window_Closed"
+    ```
+    We are handling the **Closed** event, which is triggered when the window is closed. This is how the full definition of the **Window** control should look like:
+    
+    ```xml
+    <Window x:Class="ContosoExpenses.ExpenseDetail"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:toolkit="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
+            Loaded="Window_Loaded"
+            Closed="Window_Closed"
+            xmlns:local="clr-namespace:ContosoExpenses"
+            mc:Ignorable="d"
+            Title="Expense Detail" Height="500" Width="800"
+            Background="{StaticResource HorizontalBackground}">
+    ```
+
+3. Now double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
+4. Copy and paste the following code at the end of the class:
+
+    ```csharp
+    private void Window_Closed(object sender, EventArgs e)
+    {
+        Signature.Dispose();
+    }
+    ```
+
+    We're invoking the **Dispose()** method exposed by the **InkCanvas** control when the windows is closed.
+    
+5. Now let's test the code. Press F5 to activate the debugger.
+6. Choose any employee from the list, then choose one of the available expenses. The expense detail page will be opened.
+7. Now close it and choose another expense of the list. This time the updated expense detail page will be opened without any issue.
+
+We have completed our task. Now we have a fully working signature pad in the expense detail page of our application.
+
+### Task 3 - Use the MapControl in the application
+One of the feedback that the developer team has received by managers who are using the Contoso Expenses application is to make easier to locate the place where the expense happened. The current detail page of an expense already shows the full address, but they would like something more visual and easier to understand.
+The Universal Windows Platform includes a beautiful and performant control to display maps, which can be leveraged also in a WPF applications thanks to XAML Island. Like the **InkCanvas** control we have previously added to handle the signature, the **MapControl** is another 1st party control included in the Windows Community Toolkit. As such, we can reuse the same library we have installed in the previous task to add this new control in the detail page of an expense.
+
+1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml** file in Solution Explorer
+2. We're going to add a new row, right after the full address, with the map control. Look, in the main **Grid** control, for the list of rows inside the **Grid.RowDefinitions** property.
+3. Add the following code after the 5th row:
+
+    ```xml
+    <RowDefinition Height="*"/>
+    ```
+    
+    This is how the full definition should look like:
+    
+    ```xml
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    ```
+    
+4. Now move down in the page and look for the last **StackPanel** control, the one which is used to display the location of the expense:
+
+    ```xml
+    <StackPanel Orientation="Horizontal"  Grid.Row="4">
+        <TextBlock Text="Location:" FontSize="16" FontWeight="Bold" />
+        <TextBlock x:Name="txtLocation" FontSize="16" Margin="5, 0, 0, 0" />
+    </StackPanel>
+    ```
+
+5. Add right below the following code:
+
+    ```xml
+    <toolkit:MapControl Grid.Row="5" x:Name="ExpenseMap" />
+    ```
+
+    We're adding the **MapControl** to the page and we're assigning a name to it. We're reusing the same prefix we have defined in the previous task, **toolkit**, which points to the namespace **Microsoft.Toolkit.Wpf.UI.Controls**.
+    
+6. Like we did with the **InkCanvas** control we have added in the previous task, we need to dispose the **MapControl** when the windows gets closed, to avoid multiple instantions that could lead to exceptions. As such, double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
+7. Locate the **Windows_Closed** event handler you have declared in the previous task.
+8. Add the following code before the end of the event handler:
+
+    ```csharp
+    ExpenseMap.Dispose();
+    ```
+9. Now launch the application.
+10. Choose one of the employees, then one of the expenses. This is how the updated expense detail page should look like:
+
+    ![](MapControlPreview.png)
+    
+As you can see, everything is working as expected. However, the current version of the page isn't really useful. We are indeed seeing a map, but it isn't displaying the exact location where the expense happened. We need to interact with the control in code to achieve this goal. If we explore [the documentation about the MapControl](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.maps.mapcontrol), we can see that it offers a method to center the map to a specifc point called **TrySetViewAsync()**. The method accepts multiple parameters, but the only required one are the coordinates of the location to display, provided with a [Geopoint](https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geopoint) object.
+
+The Windows Community Toolkit does a good job in working with the **MapControl** and, as such, it provides some wrappers also for the most important classes which are required to work with it, including the **Geopoint** one. We can find it inside the **Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT** namespace:
+
+![](Geopoint.png)
+
+> If you look at the properties exposed by the **Geopoint** class, can you understand which is the challenge we're about to face?
+
+The **Geopoint** class requires gographic coordinates, like latitude and longitude. However, in our database we have only the information about the full address where the expense happened. How can we translate the address into coordinates?
+[If we look at the documentation of the Universal Windows Platform](https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/geocoding), we can find that it offers a class called **MapLocationFinder** which supports geocoding (converting an address into coordinates) and reverse geocoding (converting coordinates into an address).
+
+Let's try to use it!
+
+1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer
+2. Locate the **Windows_Loaded** event handler, which contains the code that is esecuted when the window is loaded. It already contains some code to initialize the various information that are displayed in the page about the selected expense, like the type, the description, etc.
+3. Move at the end of the event handler and try to reference the **MapLocationFinder** class:
+
+![](MapLocationFinder.png)
+
+4. Notice how the class can't be found and even Visual Studio doesn't know where to find it. All the proposed quick actions, in fact, are about generating a new property / class / field since it doesn't exist.
+
+> Can you guess why we aren't able to find the **MapLocationFinder** class?
+
+The **MapLocationFinder** class is part of the Universal Windows Platform. Our application, instead, is a WPF application built on top of the .NET Framework. Thanks to the Windows Community Toolkit we have access to some wrappers to the modern controls, but still we don't have access to all the APIs and features exposed by the Universal Windows Platform.
+In the next exercise we're going to enhance our application so that we can use APIs from the Universal Windows Platform without rewriting it from scratch, thanks to a technology called Desktop Bridge.
 
 ___
-## Exercise 2 - Integrate a custom UWP XAML component
+## Exercise 2 - Integrate the Universal Windows Platform
+In this exercise we're going to make the **MapControl** we have added in the previous exercise more useful, by actually using it to display the location where the expense happened. However, as we have discovered at the end of the previous exercise, we first need to integrate the Universal Windows Platform in our application since the **MapLocationFinder** class, which can convert the address we have into a coordinate, is part of it.
+
+### Task 1 - Package the application with the Desktop Bridge
+
+Before doing this, we need to introduce the Desktop Bridge. Thanks to this technology, we can package our WPF application using the same format of the Universal Windows Platform, which is MSIX (formerly known as AppX, for versions of Windows 10 prior to 1809). Once the application is packaged, it gets an identity, which we'll allow us to integrate the Universal Windows Platform and use most of the available APIs without having to rewrite our WPF application from scratch.
+
+Visual Studio offers an easy way to achieve this goal thanks to a template called **Windows Application Packaging Project**. Let's add it!
+
+1. Open Visual Studio on the Contoso Expense project. If you didn't finish the previous exercise or you want to start from a clean solution, open in File Explore the folder *"Lab/Exercise2/01-Start/ContosoExpenses"* and double click on the **ContosoExpenses.sln** file.
+2. Once the solution has been loaded, right click on the **ContosoExpenses** solution in **Solution Explorer** and choose **Add -> New project**.
+
+    ![](AddNewProject.png)
+
+3. Select the **Windows Universal** category under **Visual C#** and look for a template called **Windows Application Packaging Project**:
+
+    ![](WAP.png)
+    
+4. Name it **ContosoExpenses.Package** and press Ok.
+5. You will be asked which target SDK and minimum SDK you want to use:
+
+    - **Target SDK** defines which APIs of the Universal Windows Platform you'll be able to use in your application. Choosing the most recent version will allow you to leverage all the latest and greates features offered by the platform.
+    - **Minimum SDK** defines which is the minimum Windows 10 version you support. Lower versions won't be able to install this package. In case of a packaged Win32 application, the minimum supported version is Windows 10 Anniversary Update, since it was the first release to support the Desktop Bridge.
+    
+    For the purpose of our lab make sure to choose the most recent version for both options, as in the following picture:
+    
+    ![](TargetSdk.png)
+    
+    Then press Ok.
+6. You will se a new project inside your Visual Studio solution, which looks and feel will resemble the one of a Universal Windows Platform project:
+
+    ![](WAPdetails.png)
+    
+    It has a manifest, which describes the application; it has some default assets, which are used for the icon in the Programs menu, the tile in the Start screen, the Store, etc. However, unlike a Universal Windows Platform project, it doesn't contain code. Its purpose is to package an existing Win32 application.
+7. The project includes a section called **Applications**, which you can use to choose which applications included in your Visual Studio solution you want to include inside the package. Right click on it and choose **Add reference**.
+8. You will see a list of all the other projects included in the solution which, currently, is only the **ContosoExpenses** application:
+
+    ![](ReferenceManager.png)
+    
+    Make sure to select it and press Ok.
+9. Now expand the **Applications** section. You will notice that the **ContosoExpense** project is referenced and highlighted in bold, which means that it will be used as a starting point for the package. In case of a project with multiple executable, you can set the starting point by clicking on the correct one in the **Applications** list and choosing **Set as entry point**.  However, this isn't our case, so we are ready to go on.
+10. That's it! We can now test the packaged version of the application.
+11. Right click on the **ContosoExpenses.Package** project in Solution Explore and choose **Set As Startup Project**.
+12. Press F5 to launch the debugging. 
+
+Out of the box, you won't notice any meaningful difference. We have simply packaged our WPF application, so it's behaving like the traditional one. However, we can notice some small changes that can help us to understand the application is running as packaged:
+
+- The icon in the taskbar or in the Start screen isn't anymore the icon of our application, but it's the default asset which is included in every UWP project.
+- If we right click on the **ContosoExpense.Package** application listed in the Start menu, we will notice that we many options which are typically reserved to applications downloaded from the Microsoft Store, like **App settings**, **Rate and review** or **Share**.
+    
+    ![](StartMenu.png)
+
+- If we want to remove the application from the system, we can just right click again on his icon in the Start menu and choose **Uninstall**. After pressing Ok, the application will be immediately removed, without leaving any leftover on the system.
+
+Now that our application has been packaged with the Desktop Bridge, we can start integrating the Universal Windows Platform.
+
+### Task 2 - Add a reference to the Universal Windows Platform
+In order to start using Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
+
+- **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
+- **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this patter.
+
+1. Go back to Visual Studio and right click on the **ContosoExpenses** package.
+2. Choose **Add reference**.
+3. Press the **Browse** button.
+4. Look for the following folder on the system: *"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\"*
+5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the **Windows.md** file will become visible.
+
+    ![](WindowsMd.png)
+    
+6. Select it and press **Add**.
+7. Now press again the **Browse** button.
+8. This time look for the following folder on the system: *"C:\Windows\Microsoft.NET\Framework\v4.0.30319"*
+9. Look for a file called **System.Runtime.WindowsRuntime.dll**, select it and press Ok.
+10. Now expand the **References** section of the **ContosoExpenses** project in Solution Explorer and look for the **Windows** reference.
+
+    ![](WindowsReference.png)
+    
+11. Select it, right it click on it and choose **Properties**.
+12. Change the value of the **Copy Local** property from **True** to **False**.
+
+    ![](CopyLocal.png)
+
+You're all set. Now you're ready to start using APIs from the Universal Windows Platform.
+
+### Task 3 - Display the expense location on the map
+Now that we have enabled the Universal Windows Platform in our WPF project, we can start using the **MapLocationFinder** class we have mentioned before, which can help us to convert the address of the expense location to a set of coordinates we can use with the **MapControl**.
+
+1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer
+2. Add a reference to the correct namespace, by including the following statement at the top of the class:
+
+    ```csharp
+    using Windows.Services.Maps;
+    ```
+3. Look for the **Window_Loaded** event handler.
+4. Copy and paste the following code at the end of the handler, after the initialization of the other controls in the page:
+
+    ```csharp
+    var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
+    var location = result.Locations.FirstOrDefault();
+    if (location != null)
+    {
+        await ExpenseMap.TrySetViewAsync(location.Point, 13);
+    }
+    ```
+    
+    The **MapLocatioNFinder** class exposes a method called **FindLocationAsync()** which is perfect for our scenario. As parameters, we need to pass the address we want to convert into coordinates and, optionally, a coordinate that can be used as a reference for the search. In our case, we pass the address of the current expense (stored in the **Address** property of the **SelectedExpense** object) and **null** as second parameter, since we don't have any coordinate to use as a reference. This method is asynchronous, so we need to invoke it with the **await** prefix.
+    The method returns a list of possible locations, represented by the **MapLocation** object. We take the first result and, if it's not null, we call the **TrySetViewAsync()** method exposed by the **MapControl**. As parameter, we specify the location's coordinate (stored in the **Point** property) and the zoom level. Also this method is asynchronous, so we prefix the **await** keyword.
+5. As it is, the code won't compile. We are using two asynchronous methods inside the event handler, but we haven't added the **async** prefix. Change the signature of the **Windows_Loaded** handler to include the **async** keyword. This is how the final event handler should look like:
+
+    ```csharp
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        txtType.Text = SelectedExpense.Type;
+        txtDescription.Text = SelectedExpense.Description;
+        txtLocation.Text = SelectedExpense.Address;
+        txtAmount.Text = SelectedExpense.Cost.ToString();
+        Chart.Height = (SelectedExpense.Cost * 400) / 1000;
+    
+        var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
+        var location = result.Locations.FirstOrDefault();
+        if (location != null)
+        {
+            await ExpenseMap.TrySetViewAsync(location.Point, 13);
+        }
+    }
+    ```
+
+Now it's time to test the code!
+
+1. Make sure that the **ContosoExpenses.Package** project in Solution Explorer is still set as startup project. Otherwise, right click on it and choose **Set As Startup Project**.
+2. Press F5 to launch the debugging experience.
+3. Choose any employee from the list, then one of the available expenses.
+4. The detail page will open up and... the map will stay still like at the end of Exercise 1.
+5. Close the window and try to open another expense. The map will continue to be stuck.
+
+> Can you understand what's happening? Hint: the debugger can help!
+
+Let's see what's happening.
+
+1. Go back in Visual Studio and double click on the **ExpenseDetail.xaml.cs** file.
+2. Set a breakpoint on the line immediately after the usage of the **MapLocationFinder.FindLocationsAsync()** method.
+3. Now press again F5 to launch the debugging experience.
+4. Choose any employee from the list, then one of the available expenses.
+5. The detail page will open up. Wait for the breakpoint to be hit and explore the properties exposed by the **result** object:
+
+    ![](InvalidCredentials.png)
+    
+As you can see, the **Status** property has the value **InvalidCredentials**. The **MapControl**, in fact, is subject to the Bing Maps licensing and, as such, many of these services can't be used without a valid license. You may have noticed another symptom of this requirement. When the application is running, below the **MapControl** you can see a red bold message stating **Warning: MapServiceToken not specified**.
+
+    ![](MapServiceToken.png)
+
+Let's move on and see how we can request a license and integrate it into our application.
+
+1. Open a browser on your machine. If you're using the VM setup for this lab, you can use Microsoft Edge.
+2. Go to the website [https://www.bingmapsportal.com/](https://www.bingmapsportal.com/).
+3. Press the sign-in button.
+4. Login with your personal Microsoft Account. It must be a personal account, like @outlook.com. You can't use an Office 365 account. In case you don't have one, feel free to skip the following steps. You will find a license to use later in the exercise.
+5. Once you're logged in the main dashboard, choose **My account -> My keys**.
+
+    ![](BingDevMyKeys.png)
+    
+6. Click on the **here** link in the section **Click here** to create a new key.
+
+    ![](BingDevCreateNewKey.png)
+
+7. Fill the following information:
+
+    - **Application name**: feel free to choose the name you prefer.
+    - **Application URL**: leave it empty.
+    - **Key type**: choose **Basic**.
+    - **Application type**: choose **Private Windows App (UWP, 8.x and earlier)**
+    
+    ![](BingDevCreateKey.png)
+    
+8. Press the **Create** button.
+9. You will see a new item in the **My keys** section with all the info you have just provided.
+
+    ![](BingDevKeyInfo.png)
+    
+10. Press the **Copy key** button. The key will be copied in the clipboard. If you want to reveal it, you can click on the **Show key** button.
+11. Now go back to Visual Studio and double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
+12. Look for the constructor of the class, which is the **ExpenseDetail()** method.
+13. Copy and paste the following code at the end of the method:
+
+    ```csharp
+    MapService.ServiceToken = "<add your key here>";
+    ```
+
+    Replace the string value with the key you have just copied from the Bing Dev portal. If you weren't able to retrieve a key, feel free to use the following one:
+    
+    ```csharp
+    MapService.ServiceToken = "SstdhSuxgHWMVoqmrpla~PRzuxyU3RgB7e-csBqBIfA~AizgpHwv-MER89vjeuJ7LVP01a7gacUbusArACn1x7BcalbDhY23o0pt6L7AhZe";
+    ```
+
+14. Let's test the code again! Make sure that the **ContosoExpenses.Package** project is still selected as startup and press F5.
+15. Choose one employee from the list, then one of the available expenses.
+16. If you did everhting correctly, you should notice:
+
+    - The map will animate and it will be center on the location of the expense
+    - The warning message under the **MapControl** will be gone
+    
+    
+    
+    ![](MapControlOk.png)
+
+Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
+
+___
+## Exercise 3 - Integrate a custom UWP XAML component
 TODO
 
 ### Task 1 - Reference the XAML Islands host conctrol
@@ -207,7 +618,7 @@ TODO
 
 
 ___
-## Exercise 3 - Migrate to .NET Core
+## Exercise 4 - Migrate to .NET Core
 Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
 ### Setup for using .NET Core today
