@@ -48,11 +48,15 @@ ExpenseIt is a WPF Desktop application.
 
 ### Key concepts that will be used during the lab
 
+**Please note**. The following information are provided in case you're planning to follow this lab on your own or from home. If you are following this lab as part of a live training class, feel free to skip it and jump directly to the beginning of the first exercise. These concepts, in fact, should have already be explained by the trainers of the lab before starting the practical exercises.
+
 #### Universal Windows Platform
-Starting from Windows 8, Microsoft has introduced a new kind of applications: Windows Store apps, based on a new framework called Windows Runtime. Unlike the .NET Framework, the Windows Runtime is a native layer of APIs which are exposed directly by the operating system to applications which wants to consume them. With the goal to make the platform viable for every developer, the Windows Runtime has introduced language projections, which are layers added on top of the runtime to allow developers to interact with it using well-known and familiar languages. Thanks to projections, developers can build applications on top of the Windows Runtime leveraging the same C# and XAML knowledge they have acquired in building apps with the .NET Framework. The Windows Runtime libraries (called Windows Runtime Components) are described using special metadata files, which make it possible for developers to access the APIs using the specific syntax of the language they’re using. This way, projections can also respect the language conventions and types, like uppercase if you use C# or camel case if you use JavaScript. Additionally, Windows Runtime components can be used across multiple languages: for example, a Windows Runtime component written in C++ can be used by an application developed in C# and XAML.
+Starting from Windows 8, Microsoft has introduced a new kind of applications: Windows Store apps, based on a new framework called Windows Runtime. Unlike the .NET Framework, the Windows Runtime is a native layer of APIs which are exposed directly by the operating system to applications which want to consume them. With the goal to make the platform viable for every developer, the Windows Runtime has introduced language projections, which are layers added on top of the runtime to allow developers to interact with it using well-known and familiar languages. Thanks to projections, developers can build applications on top of the Windows Runtime leveraging the same C# and XAML knowledge they have acquired in building apps with the .NET Framework. The Windows Runtime libraries (called Windows Runtime Components) are described using special metadata files, which make it possible for developers to access the APIs using the specific syntax of the language they’re using. This way, projections can also respect the language conventions and types, like uppercase if you use C# or camel case if you use JavaScript. Additionally, Windows Runtime components can be used across multiple languages: for example, a Windows Runtime component written in C++ can be used by an application developed in C# and XAML.
 With the release of Windows 10, Microsoft has introduced the Universal Windows Platform, which can be considered the successor of the Windows Runtime since it’s built on top of the same technology. The most important feature of the Universal Windows Platform is that it offers a common set of APIs across every platform: no matter if the app is running on a desktop, on a Xbox One or on a HoloLens, you’re able to use the same APIs to reach the same goals. This is a major step forward compared to the Windows Runtime, which didn’t provide this kind of cross-device support. You were able to share code and UI between a PC project and a mobile project, but, in the end, developers needed anyway to create, maintain and deploy two different solutions.
 
 The Universal Windows Platform has been built with security and privacy in mind. As such, Universal Windows Platform applications run inside a sandbox; they don’t have access to the registry; they can freely read and write data only in a specific local folder; etc. Any operation which is potentially dangerous requires the declaration of a capability and the consent of the user: some examples are accessing to the files in the Pictures library; using the microphone or the webcam; retrieving the location of the user; etc. Everything is controlled by a manifest file, which is an XML file that describes the identity of the application: its unique identifier, its capabilities, its visual aspect, its integration with the Windows 10 ecosystem, etc.
+
+Last but not the least, all the investments of the Windows team for developers are focused on the Universal Windows Platform. All the latest features added in Windows 10, like Timeline, Project Rome, Windows Hello, etc. are exposed by the Universal Windows Platform, so that developers can integrate them in their applications.
 
 #### Desktop Bridge
 With the introduction of Windows Store apps first and Universal Windows Platform apps later, Microsoft has also introduced a new packaging modell called MSIX (formerly known as AppX), which is very different from the existing deployment models (like MSI). It's completely controlled by the operating system; it can be used to deploy applications not only using traditional approaches, like the web, SSCM, Intune, but it opens up now opportunities like the Microsoft Store / Store for Business / Store for Education.
@@ -65,18 +69,19 @@ When a Win32 application runs packaged with the Desktop Bridge, it's executed in
 - A **virtualized registry**. All the writing operation to the HKEY_CURRENT_USER hive of the registry are stored in a binary file which is unique for each application. This way the application doesn't have the opportunity to interfere with the real registry. And when the user uninstalls the application, the binary file is simply deleted, making sure that no orphan registry keys are left in the system.
 - A **virtualized file system**. As a best practice in Windows development, all the data generated by an application which is tightly coupled to it (a database, log files, temporary files, etc.) should be saved in the AppData folder, which lives under the user's space. In a packaged application, all the reading and writing operations against the AppData folder are automatically redirected to the local folder, which is unique for an application. This approach helps to keep the system efficient and reliable since, when the user uninstalls the application, the local folder is simply deleted, making sure there are no orphan files left in the system.
 
-Desktop Bridge plays an important role with XAML Island because, by combining these two technologies, you'll be able to leverage the same time features and user controls of the Universal Windows Platform without rewriting it from scratch with another technology. Additionally, as soon as you need to interact with any UWP control, your application must be packaged with the Desktop Bridge, since all the controls, properties, event handlers, etc. are exposed by the Universal Windows Platform.
+Desktop Bridge plays an important role with XAML Island because, by combining these two technologies, you'll be able to leverage the same time features and user controls of the Universal Windows Platform without rewriting it from scratch with another technology. 
 
 #### XAML Islands architecture
 The Windows 10 October 2018 Update with the SDK 17763, enables the scenario of XAML Islands for Desktop applications. That means that Windows 10 now supports hosting UWP controls inside the context of a Win32 Process. The 'magic' is powered by two new system APIs called <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.windowsxamlmanager" target="_blank">WindowsXamlManager</a> and <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.desktopwindowxamlsource" target="_blank">DesktopWindowXamlSource</a>.
 
-- The WindowsXamlManager handles the UWP XAML Framework. As such, the only exposed method is called **InitializeForCurrentThread()**, which takes care of initializing the UWP XAML Framework inside the current thread of a non-Win32 Desktop app, so that you can start adding UWP controls to it.
-- The DesktopWindowXamlSource is the actual instance of your Island content. It has a Content property which you can instantiate and set with the control you want to render. 
+- The **WindowsXamlManager** handles the UWP XAML Framework. As such, the only exposed method is called **InitializeForCurrentThread()**, which takes care of initializing the UWP XAML Framework inside the current thread of a non-Win32 Desktop app, so that you can start adding UWP controls to it.
+- The **DesktopWindowXamlSource** is the actual instance of your Island content. It has a **Content** property which you can instantiate and set with the control you want to render. 
 
-With an instance of the DesktopWindowXamlSource class you can attach it’s HWND to any parent HWND you want from your native Win32 App. This enables any framework that exposes HWND to host a XAML Island, including 3rd party technologies like Java or Delphi.
+With an instance of the **DesktopWindowXamlSource** class you can attach it’s HWND to any parent HWND you want from your native Win32 App. This enables any framework that exposes HWND to host a XAML Island, including 3rd party technologies like Java or Delphi.
 However, when it comes to WPF and Windows Forms applications, you don’t have to manually do that thanks to the Windows Community Toolkit, since it already wraps these classes into ready-to-be-used controls.
 
-The Windows Community Toolkit is an open-source project, maintained by Microsoft and driven by the community, which includs many custom controls, helpers and service to speed up the development of Windows applications. Starting from version 5.0, the toolkit includes 4 packages to enable XAML Island: 
+[The Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/
+) is an open-source project, maintained by Microsoft and driven by the community, which includs many custom controls, helpers and service to speed up the development of Windows applications. Starting from version 5.0, the toolkit includes 4 packages to enable XAML Island: 
 
 - One called **XamlHost**. It's a generic control that can host any UWP control, either custom or native. It comes in two variants: [Microsoft.Toolkit.Wpf.UI.XamlHost](https://www.nuget.org/packages/Microsoft.Toolkit.Wpf.UI.XamlHost/) for WPF and [Microsoft.Toolkit.Forms.UI.XamlHost](https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.XamlHost/) for Windows Forms.
 - One called **Controls**, which includes wrappers for 1st party controls like Map or InkCanvas. Thanks to these controls, you'll be able to leverage them like if they're native WPF or Windows Forms control, including direct access to the exposed properties and binding support. Also in this case, it comes into two variants: [Microsoft.Toolkit.Wpf.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Wpf.UI.Controls/) for WPF and [Microsoft.Toolkit.Forms.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.Controls/) for Windows Forms.
@@ -178,7 +183,7 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 
 9.  It is now safe to add the **Microsoft.Toolkit.Wpf.UI.Controls** NuGet package to the ExpenseIt project as explained above.
 
-### Task 4 - Use the InkCanvas control in the application
+### Task 3 - Use the InkCanvas control in the application
 One of the features that the development team is looking to integrate inside the application is support to digital signature. Managers wants to be able to easily sign the expenses reports, without having to print and digitalize them back.
 XAML Island is the perfect candidate for this scenario, since the Universal Windows Platform includes a control called **InkCanvas**, which offers advanced support to digital pens. Additionally, it includes many AI powered features, like the capability to recognize text, shapes, etc.
 
@@ -233,7 +238,7 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
     
 7. That's it! Now we can test the application. Press F5 to launch the debugging experience.
 8. Choose an employee from the list, then one of the available expenses.
-9. Notice that, in the expense detail page, there's a new space for the **InkCanvas** control. If you have a device which supports a digital pen, like a Surface, go on and try to use it. You will see the digital ink appearing on the screen. However, if you don't have a pen capable device and you try to sign with your mouse, nothing will happen. This is happening because, by default, the **InkCanvas** control is enabled only for digital pens. However, can change this behavior.
+9. Notice that, in the expense detail page, there's a new space for the **InkCanvas** control. If you have a device which supports a digital pen, like a Surface, go on and try to use it. You will see the digital ink appearing on the screen. However, if you don't have a pen capable device and you try to sign with your mouse, nothing will happen. This is happening because, by default, the **InkCanvas** control is enabled only for digital pens. However, we can change this behavior.
 10. Stop the debugger and double click on the **ExpenseDetail.xaml.cs** file in Visual Studio.
 11. Add the following namespace declaration at the top of the class:
 
@@ -241,14 +246,14 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
     using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
     ```
     
-12. Now locate **ExpenseDetail()** method, which is the public constructor of the class.
+12. Now locate the **ExpenseDetail()** method, which is the public constructor of the class.
 13. Add the following line of code right after the **InitializeComponent()** method:
 
     ```csharp
     Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
     ```
     
-    **InkPresenter** is an object exposed by the **InkCanvas** control which we can use to customize the default inking experience. Thanks to the **InputDeviceTypes** we can change which default inking methods are supported. Thanks to the values offered by the **CoreInputDeviceTypes** enumerator, we enable pen and mouse.
+    **InkPresenter** is an object exposed by the **InkCanvas** control which we can use to customize the default inking experience. Thanks to the **InputDeviceTypes** we can change which inking devices are supported. Thanks to the values offered by the **CoreInputDeviceTypes** enumerator, we enable pen and mouse.
     
 14. Now let's test the application again. Press F5 to start the debugging, then choose one of the employees followed by one of the expenses.
 15. Try now to draw something in the signature space with the mouse. This time, you'll see the ink appearing on the screen.
@@ -262,7 +267,7 @@ However, if you try to play a bit with the application you will notice that not 
 The reason is that every UWP control included in a WPF app through XAML Island must be properly disposed before being instantiated again. As such, we need to take care of this operation when the expense detail page is closed.
 
 1. Go back to Visual Studio and double click the **ExpenseDetail.xaml** file in Solution Explorer.
-2. Locate the **<Window>** tag and add the following attribute:
+2. Locate the **Window** tag and add the following attribute:
     
     ```xml
     Closed="Window_Closed"
@@ -302,9 +307,13 @@ The reason is that every UWP control included in a WPF app through XAML Island m
 
 We have completed our task. Now we have a fully working signature pad in the expense detail page of our application.
 
-### Task 3 - Use the MapControl in the application
+___
+## Exercise 2 - Integrate the Universal Windows Platform
 One of the feedback that the developer team has received by managers who are using the Contoso Expenses application is to make easier to locate the place where the expense happened. The current detail page of an expense already shows the full address, but they would like something more visual and easier to understand.
-The Universal Windows Platform includes a beautiful and performant control to display maps, which can be leveraged also in a WPF applications thanks to XAML Island. Like the **InkCanvas** control we have previously added to handle the signature, the **MapControl** is another 1st party control included in the Windows Community Toolkit. As such, we can reuse the same library we have installed in the previous task to add this new control in the detail page of an expense.
+The Universal Windows Platform includes a beautiful and performant control to display maps, which can be leveraged also in a WPF applications thanks to XAML Island. In this exercise we're going to include it.
+
+### Task 1 - Use the MapControl in the application
+Like the **InkCanvas** control we have previously added to handle the signature, the **MapControl** is another 1st party control included in the Windows Community Toolkit. As such, we can reuse the same library we have installed in the previous task to add this new control in the detail page of an expense.
 
 1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml** file in Solution Explorer
 2. We're going to add a new row, right after the full address, with the map control. Look, in the main **Grid** control, for the list of rows inside the **Grid.RowDefinitions** property.
@@ -360,13 +369,13 @@ The Universal Windows Platform includes a beautiful and performant control to di
     
 As you can see, everything is working as expected. However, the current version of the page isn't really useful. We are indeed seeing a map, but it isn't displaying the exact location where the expense happened. We need to interact with the control in code to achieve this goal. If we explore [the documentation about the MapControl](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.maps.mapcontrol), we can see that it offers a method to center the map to a specifc point called **TrySetViewAsync()**. The method accepts multiple parameters, but the only required one are the coordinates of the location to display, provided with a [Geopoint](https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geopoint) object.
 
-The Windows Community Toolkit does a good job in working with the **MapControl** and, as such, it provides some wrappers also for the most important classes which are required to work with it, including the **Geopoint** one. We can find it inside the **Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT** namespace:
+The Windows Community Toolkit does a good job in supporting the **MapControl** and, as such, it provides some wrappers also for the most important classes which are required to work with it, including the **Geopoint** one. We can find it inside the **Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT** namespace:
 
 ![](Geopoint.png)
 
 > If you look at the properties exposed by the **Geopoint** class, can you understand which is the challenge we're about to face?
 
-The **Geopoint** class requires gographic coordinates, like latitude and longitude. However, in our database we have only the information about the full address where the expense happened. How can we translate the address into coordinates?
+The **Geopoint** class represents geographic coordinates, like latitude and longitude. However, in our database we have only the information about the full address where the expense happened. How can we translate the address into coordinates?
 [If we look at the documentation of the Universal Windows Platform](https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/geocoding), we can find that it offers a class called **MapLocationFinder** which supports geocoding (converting an address into coordinates) and reverse geocoding (converting coordinates into an address).
 
 Let's try to use it!
@@ -381,14 +390,12 @@ Let's try to use it!
 
 > Can you guess why we aren't able to find the **MapLocationFinder** class?
 
-The **MapLocationFinder** class is part of the Universal Windows Platform. Our application, instead, is a WPF application built on top of the .NET Framework. Thanks to the Windows Community Toolkit we have access to some wrappers to the modern controls, but still we don't have access to all the APIs and features exposed by the Universal Windows Platform.
+The **MapLocationFinder** class is part of the Universal Windows Platform. Our application, instead, is a WPF application built on top of the .NET Framework. Thanks to the Windows Community Toolkit we have access to wrappers for some modern controls, but still we don't have access to all the APIs and features exposed by the Universal Windows Platform.
 In the next exercise we're going to enhance our application so that we can use APIs from the Universal Windows Platform without rewriting it from scratch, thanks to a technology called Desktop Bridge.
 
-___
-## Exercise 2 - Integrate the Universal Windows Platform
-In this exercise we're going to make the **MapControl** we have added in the previous exercise more useful, by actually using it to display the location where the expense happened. However, as we have discovered at the end of the previous exercise, we first need to integrate the Universal Windows Platform in our application since the **MapLocationFinder** class, which can convert the address we have into a coordinate, is part of it.
+In the next tasks we're going to make the **MapControl** we have added more useful, by actually displaying the location where the expense happened. However, as we have discovered at the end of the previous task, we first need to integrate the Universal Windows Platform in our application since the **MapLocationFinder** class, which can convert the address we have into a coordinate, is part of it.
 
-### Task 1 - Package the application with the Desktop Bridge
+### Task 2 - Package the application with the Desktop Bridge
 
 Before doing this, we need to introduce the Desktop Bridge. Thanks to this technology, we can package our WPF application using the same format of the Universal Windows Platform, which is MSIX (formerly known as AppX, for versions of Windows 10 prior to 1809). Once the application is packaged, it gets an identity, which we'll allow us to integrate the Universal Windows Platform and use most of the available APIs without having to rewrite our WPF application from scratch.
 
@@ -403,7 +410,7 @@ Visual Studio offers an easy way to achieve this goal thanks to a template calle
 
     ![](WAP.png)
     
-4. Name it **ContosoExpenses.Package** and press Ok.
+4. Name it **ContosoExpenses.Package** and press OK.
 5. You will be asked which target SDK and minimum SDK you want to use:
 
     - **Target SDK** defines which APIs of the Universal Windows Platform you'll be able to use in your application. Choosing the most recent version will allow you to leverage all the latest and greates features offered by the platform.
@@ -413,8 +420,8 @@ Visual Studio offers an easy way to achieve this goal thanks to a template calle
     
     ![](TargetSdk.png)
     
-    Then press Ok.
-6. You will se a new project inside your Visual Studio solution, which looks and feel will resemble the one of a Universal Windows Platform project:
+    Then press OK.
+6. You will se a new project inside your Visual Studio solution, which structure will resemble the one of a Universal Windows Platform project:
 
     ![](WAPdetails.png)
     
@@ -441,11 +448,11 @@ Out of the box, you won't notice any meaningful difference. We have simply packa
 
 Now that our application has been packaged with the Desktop Bridge, we can start integrating the Universal Windows Platform.
 
-### Task 2 - Add a reference to the Universal Windows Platform
+### Task 3 - Add a reference to the Universal Windows Platform
 In order to start using Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
 
 - **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
-- **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this patter.
+- **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this pattern.
 
 1. Go back to Visual Studio and right click on the **ContosoExpenses** package.
 2. Choose **Add reference**.
@@ -470,7 +477,7 @@ In order to start using Universal Windows Platform APIs in a WPF application we 
 
 You're all set. Now you're ready to start using APIs from the Universal Windows Platform.
 
-### Task 3 - Display the expense location on the map
+### Task 4 - Display the expense location on the map
 Now that we have enabled the Universal Windows Platform in our WPF project, we can start using the **MapLocationFinder** class we have mentioned before, which can help us to convert the address of the expense location to a set of coordinates we can use with the **MapControl**.
 
 1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer
@@ -535,7 +542,7 @@ Let's see what's happening.
     
 As you can see, the **Status** property has the value **InvalidCredentials**. The **MapControl**, in fact, is subject to the Bing Maps licensing and, as such, many of these services can't be used without a valid license. You may have noticed another symptom of this requirement. When the application is running, below the **MapControl** you can see a red bold message stating **Warning: MapServiceToken not specified**.
 
-    ![](MapServiceToken.png)
+![](MapServiceToken.png)
 
 Let's move on and see how we can request a license and integrate it into our application.
 
@@ -582,11 +589,10 @@ Let's move on and see how we can request a license and integrate it into our app
 
 14. Let's test the code again! Make sure that the **ContosoExpenses.Package** project is still selected as startup and press F5.
 15. Choose one employee from the list, then one of the available expenses.
-16. If you did everhting correctly, you should notice:
+16. If you did everhting correctly, you should notice that:
 
-    - The map will animate and it will be center on the location of the expense
+    - After an animation, the map will be centered and zoomed on the location of the expense
     - The warning message under the **MapControl** will be gone
-    
     
     
     ![](MapControlOk.png)
