@@ -27,7 +27,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Margin="10">
-            Contoso Expenses is 'modern application of yesterday tomorow' from Contoso Corp.
+            Contoso Expenses is a 'modern application of yesterday tomorrow' from Contoso Corp.
         </TextBlock>
         <WebBrowser Grid.Row="1" 
                     Source="https://contosocorpwebsite.azurewebsites.net/" />

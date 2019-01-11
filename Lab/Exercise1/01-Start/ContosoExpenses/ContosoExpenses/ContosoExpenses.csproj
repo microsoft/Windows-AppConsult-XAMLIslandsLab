@@ -145,6 +145,9 @@
     <Resource Include="Images\contoso.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\HorizontalBackground.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\AddNewExpense.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
