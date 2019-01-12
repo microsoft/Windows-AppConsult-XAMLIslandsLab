@@ -599,11 +599,12 @@ Let's move on and see how we can request a license and integrate it into our app
 
 Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
+
 ___
 ## Exercise 3 - Migrate to .NET Core
 Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
-### Setup for using .NET Core today
+### Task 1 - Setup for using .NET Core
 At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
 - The .NET Core 3 runtime - https://github.com/dotnet/core-setup
 - The .NET Core 3 SDK - https://github.com/dotnet/core-sdk
@@ -612,7 +613,7 @@ Do not worry, using the VM provided, all is already setup for you: You do not ha
 
 ![Download .NET Core](DownloadNETCore.png)
 
-### Perform the migration
+### Task 2 - Perform the migration - The csproj
 As mentionned, .NET Core is in the Preview state. We also need a prelimenary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: https://visualstudio.microsoft.com/fr/vs/preview/.
 
 Let's open the solution using Visual Studio 2019 Preview:
@@ -622,7 +623,8 @@ Let's open the solution using Visual Studio 2019 Preview:
     
     ![Project properties in the Solution Explorer](PropertiesContosoExpenses.png)
 
-    The *Target framework* of the project is
+    The *Target framework* of the project is displayed in the **Application** tab.
+    
     ![.NET Framework version 4.7.2 for the project](NETFramework472.png)
 
 2.  Right click on the project in the solution explorer and choose **Unload Project**.
@@ -637,10 +639,74 @@ Let's open the solution using Visual Studio 2019 Preview:
 
     ![csproj file content](CSPROJFile.png)
 
+    Do not be afraid, it is not the time to understand the whole csproj structure. You will see that the migration will be done easely: Juste remove all the content of the file by doing **CTRL+A** and than  **SUPPR**!
+    
+    ![Empty csproj file](EmptyCSPROJ.png)
+    
+5.  Start writing the new csproj file content by typing `<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop"> </Project>` in the ContosoExpense.csproj. Microsoft.NET.Sdk.WindowsDesktop is the .NET Core 3 SDK for applications on Windows Desktop. It includes WPF and Windows Forms.
+
+    ![Windows Desktop in csproj](WindowsDesktopInCSPROJ.png)
+
+7.  Let's specify now a few details. To do this, insert a `<PropertyGroup></PropertyGroup>` element in inside the `<Project></Project>` element. 
+
+    ![PropertyGroup inside Project in csproj](PropertyGroup.png)
+
+8.  First, we indicate that the project output is a **executable** and not a dll. This is acheived by adding `<OutputType>WinExe</OutputType>` inside `<PropertyGroup></PropertyGroup>`.
+
+> Note that, if the project output was a dll, this line has to be omitted.
+
+9.  Secondly, we specify that the project is using .NET Core 3: Just below the <OutputType> line, add ` <TargetFramework>netcoreapp3.0</TargetFramework>`
+
+10. Lastly, we point out that this is a WPF application in adding a third line: `<UseWPF>true</UseWPF>`.
+
+> If the application is Windows Forms, we do not need this third line.
+
+#### Summary, verification and last step
+
+- The project using .NET Core 3 and the **Microsoft.NET.Sdk.WindowsDesktop** SDK
+- Output is an **application** so we need the `<OutputType>` element
+- `<UseWPF>` is self-describing
+
+Here is the full content of the new csproj. Please double check that you have everything:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+</Project>
+```
+
+It is now safe to save the csproj file. You can use **CTRL+S**.
+
+### Task 3 - Perform the migration - Actions in the project
+
+1.  The csproj is saved. Let's reopen the project: Go to the **Solution Explorer**, right click on the project and choose **Reload project**.
+
+    ![Reload project in the Solution Explorer](ReloadProject.png)
+    
+2.  Visual Studio just asks for a confirmation ; click **yes**.
+
+    ![Confirmation for closing the csproj](CloseCSPROJ.png)
+    
+3.  The project should load correctly. Let's try to build it in order to 'discover' the last steps to perform to complete the migration. Use the **Build** menu and **Build solution**.
+
+    ![Builld solution in Visual Studio](BuildSolutionInVisualStudio.png)
+    
+4.  As expected, we have some errors. Open the **Output window** which is located in the bottom left of the Visual Studio window.
+
+    ![Output windows of Visual Studio](OutputWindowVisualStudio.png)
+
+    
+
 
 
 ___
-## Exercise 4 - Integrate a custom UWP XAML component
+## Exercise - Integrate a custom UWP XAML component
 TODO
 
 ### Task 1 - Reference the XAML Islands host conctrol
@@ -657,7 +723,7 @@ TODO
     ![](InstallNuGetPackage.png)
 
 ___
-## Exercise 4 - Perform bindings between UWP XAML and WPF
+## Exercise - Perform bindings between UWP XAML and WPF
 TODO
 
 
