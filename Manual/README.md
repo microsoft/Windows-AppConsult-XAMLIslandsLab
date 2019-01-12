@@ -41,10 +41,13 @@ The virtual machine is based on Windows 10 October Update (1809) and it includes
 If you already have these tools on your computer, feel free to directly use it for the lab instead of the virtual machine. Be aware that the following Visual Studio workloads have to be installed: ".NET desktop development" and "Universal Windows Platform development".
 
 ### Scenario
-The ExpenseIt application is internal application for creating expenses for Contoso Corporation. Modernizing this application is necessary in order to enhance employee efficiency when creating expenses reports.
+The ExpenseIt application is internal application for creating expenses for Contoso Corporation. Modernizing this application is necessary in order to enhance employee efficiency when creating expenses reports. Many of the requested features could be easily implemente with the Universal Windows Platform. However, the application is complex and it's the outcome of many years of development. As such, rewriting it from scratch with a new technology isn't an option on the table. The team is looking for the best approach to add these features but, at the sime time, reusing the exisisting codebase.
 
 ### The project
-ExpenseIt is a WPF Desktop application.
+Contoso Expenses is a desktop application, built with WPF and the .NET Framework. Being an application built for demo purposes, it contains some simplifcations compared to a real WPF project, like:
+
+- It doesn't use any development pattern, like MVVM, but the standard code-behind approach. 
+- It uses a local database solution called [**LiteDb**](http://www.litedb.org/), which is an embedded NoSQL solution. In a real world scenario, such an application would connect to a centralized database, either on-premise or in the cloud, like SQL Server, MySQL, Cosmos DB, etc.
 
 ### Key concepts that will be used during the lab
 
