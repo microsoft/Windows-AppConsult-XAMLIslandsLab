@@ -600,31 +600,7 @@ Let's move on and see how we can request a license and integrate it into our app
 Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
 ___
-## Exercise 3 - Integrate a custom UWP XAML component
-TODO
-
-### Task 1 - Reference the XAML Islands host conctrol
-1.  With the ExpenseIt solution opened in Visual Studio, right click on the ExpenseIt project and then **Manage NuGet Packages...**
-
-    ![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
-
-2.  Search for the "Microsoft.Toolkit.Wpf.UI.XamlHost" package.
-
-    ![Microsoft.Toolkit.Wpf.UI.XamlHost NuGet Package](XamlHostNuGetPackages.png)
-
-3.  Click on the **Install** button.
-
-    ![](InstallNuGetPackage.png)
-
-
-
-
-
-
-
-
-___
-## Exercise 4 - Migrate to .NET Core
+## Exercise 3 - Migrate to .NET Core
 Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
 ### Setup for using .NET Core today
@@ -649,18 +625,39 @@ Let's open the solution using Visual Studio 2019 Preview:
     The *Target framework* of the project is
     ![.NET Framework version 4.7.2 for the project](NETFramework472.png)
 
+2.  Right click on the project in the solution explorer and choose **Unload Project**.
 
+    ![Unload project](UnloadProject.png)
+
+3.  Right click again on the project in the solution explorer ; click **Edit ContosoExpenses.csproj**.
+
+    ![Edit ContosoExpenses csproj](EditContosoExpensesCSPROJ.png)
+
+4.  The content of the .csproj file looks like
+
+    ![csproj file content](CSPROJFile.png)
 
 
 
 ___
+## Exercise 4 - Integrate a custom UWP XAML component
+TODO
+
+### Task 1 - Reference the XAML Islands host conctrol
+1.  With the ExpenseIt solution opened in Visual Studio, right click on the ExpenseIt project and then **Manage NuGet Packages...**
+
+    ![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
+
+2.  Search for the "Microsoft.Toolkit.Wpf.UI.XamlHost" package.
+
+    ![Microsoft.Toolkit.Wpf.UI.XamlHost NuGet Package](XamlHostNuGetPackages.png)
+
+3.  Click on the **Install** button.
+
+    ![](InstallNuGetPackage.png)
+
+___
 ## Exercise 4 - Perform bindings between UWP XAML and WPF
-TODO
-
-### Task 1 - TODO
-TODO
-
-### Task 2 - TODO
 TODO
 
 
