@@ -131,10 +131,12 @@ ___
 We start with the simpliest modernization path possible: We would like to use a rich UWP control that is 'available for use in WPF'. Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
 So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
 
+
 ### Task 1 - Setup the Contoso Expenses solution
 Let's first be sure we can run and debug the Contoso Expenses solution locally.
+
 1.  In the Windows Explorer, create a new local folder like *"C:\XAMLIslandsLab"*. It will be our working folder for the Contoso Dashboard website.
-2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslaLab repository</a>. Click on the **releases** tab and donwload the latest release.
+2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. Click on the **releases** tab and donwload the latest release.
 
 3.  When ready, click on the downloaded file in your browser to open it.
 
@@ -144,7 +146,7 @@ Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
 5.  Open Visual Studio 2019, and double click on the *"C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln"* file to open the solution.
 
-    ![ExpenseIt solution in Windows Explorer](ExpenseItSolutionInWindowsExplorer.png)
+    ![ContosoExpenses solution in Windows Explorer](ContosoExpensesSolution.png)
 
 7.  Verify that you can debug the ExpenseIt WPF project by pressing the **Start** button or CTRL+F5.
 
@@ -707,10 +709,110 @@ It is now safe to save the csproj file. You can use **CTRL+S**.
 4.  As expected, we have some errors. Open the **Output window** which is located in the bottom left of the Visual Studio window.
 
     ![Output windows of Visual Studio](OutputWindowVisualStudio.png)
-
     
+5.  Let's fix the first series of error:
+    
+    ```bash
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(14,12,14,54): error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(15,12,15,60): error CS0579: Duplicate 'System.Reflection.AssemblyConfigurationAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(16,12,16,58): error CS0579: Duplicate 'System.Reflection.AssemblyFileVersionAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(18,12,18,54): error CS0579: Duplicate 'System.Reflection.AssemblyProductAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(19,12,19,52): error CS0579: Duplicate 'System.Reflection.AssemblyTitleAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(20,12,20,54): error CS0579: Duplicate 'System.Reflection.AssemblyVersionAttribute' attribute
+    ```
+    
+    It is not interesting to give explanations here: It is only 'piping' we have to resolve by either removing the mentionned lines in the `AssemblyInfo.cs` file or just delete the file. We go for the simpliest. 
 
+6.  In the **Solution Explorer** window / Under the **ContosoExpenses** project, expand the **Properties** node and right click on the **AssemblyInfo.cs** file ; Click on **Delete**.
+    
+    ![AssemblyInfo cs file](AssemblyInfoFile.png)
 
+7.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last two previous error should remain liste.
+
+    ```bash
+    1>Services\DatabaseService.cs(5,7,5,12): error CS0246: The type or namespace name 'Bogus' could not be found (are you missing a using directive or an assembly reference?)
+    1>Services\DatabaseService.cs(6,7,6,13): error CS0246: The type or namespace name 'LiteDB' could not be found (are you missing a using directive or an assembly reference?)
+    ```
+    
+> What could be the problem here? Remember that we removed (the hard way) all the content of the initial csproj file.
+
+The NuGet packages used by the project were gone by removing all the content of the csproj! Remember that all these steps are perform for achieving the migration with the Preview version of .NET Core 3 and Visual Studio 2019. 
+
+8.  You have a confirmation by expending the **Dependencies/NuGet** node in which you have only the .NET Code 3 package.
+
+    ![NuGet packages](NuGetPackages.png)
+    
+    Also, if you click on the **Packages.config** in the **Solution Explorer**. You will find the 'old' references NuGet packages by the project when it was using the full .NET Framework.
+    
+    ![Dependencies and packages](Packages.png)
+    
+    Here is the content of the **Packages.config** file:
+    
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <packages>
+      <package id="Bogus" version="25.0.3" targetFramework="net472" />
+      <package id="LiteDB" version="4.1.4" targetFramework="net472" />
+    </packages>
+    ```
+    
+    You notice there the two missing references mentionned in the errors messages: *Bogus* and *LiteDB*.
+    
+9.  Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**. This file was used when the project was using the .NET Framework 4.7.2.
+
+10. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
+
+  ![Manage NuGet Packages...](ManageNugetNETCORE3.png)
+
+11. Click on **Browse** at the top left of the opened window and search for `Bogus`. The package by Brian Chavez should be listed. Install it.
+
+    ![Bogus NuGet package](Bogus.png)
+
+12. Do the same for `LiteDB`. This package is provided by Mauricio David.
+
+    ![LiteDB NuGet package](LiteDB.png)
+
+> Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
+
+In fact, if you give a closer look at the packages' details, you will see that they support .NET Standard 2.0 which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+
+![Dot Net standard](DotNetStandard.png)
+
+13. Rebuilgd the project (CTRL+SHIFT+B) and... you succeed!
+
+```bash
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+```
+
+### Task 4 - Perform the migration - Debug
+
+We are ok to finally, launch the app.
+
+1.  Use the **Debug** menu / **Start Debugging F7**
+
+> You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
+
+![Exception displayed in Visual Studio](ExceptionNETCore3.png)
+
+Strange because the images files are in the solution and the path seems correct.
+
+![Images in the Solution Explorer](ImagesInTheSolutionExplorer.png)
+
+> Why do we get this file not found exception?
+
+In fact, it is simple. Again, as we hardly deleted all the content of the csproj file at the beginning of the migration, we removed the information about the **Build action** for the images' files. Let fix it.
+
+2.  In the **Solution Explorer**, select all the images files except the contoso.ico ; In the properties windows choose **Build action** = `Content` and **Copy to Output Directory** = `Copy if Newer`
+
+    ![Build Action Content and Copy if newer](ContentCopyIfNewer.png)
+
+3.  To assign the Contoso.ico to the app, we have to right click on the project in the **Solution Explorer** / **Properties**. In the opened page, click on the dropdown listbox for Icon and select `Images\contoso.ico`
+
+    ![Contoso ico in the Project's Properties](ContosoIco.png)
+
+We are done! Test the app in debug with F7 and it should work like a charm... Using .NET Core 3!
+
+We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
 
 ___
 ## Exercise - Integrate a custom UWP XAML component
@@ -728,6 +830,8 @@ TODO
 3.  Click on the **Install** button.
 
     ![](InstallNuGetPackage.png)
+    
+    
 
 ___
 ## Exercise - Perform bindings between UWP XAML and WPF
