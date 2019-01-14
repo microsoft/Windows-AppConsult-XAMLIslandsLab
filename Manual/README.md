@@ -816,21 +816,219 @@ We are now ready to go further and use all the power of the full UWP ecosystem c
 
 ___
 ## Exercise - Integrate a custom UWP XAML component
-TODO
+The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
+Thanks to XAML Island, we can start replacing some WPF controls with the UWP counterpart, which are already optimized for multiple input experiences, like touch and pen.
 
-### Task 1 - Reference the XAML Islands host conctrol
-1.  With the ExpenseIt solution opened in Visual Studio, right click on the ExpenseIt project and then **Manage NuGet Packages...**
+The development team has decide to start modernizing the form to add a new expense, by making easier to choose the expense date with a touch device. The Universal Windows Platform offers a control called **CalendarView**, [which is perfect for our scenario](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/calendar-view). It's the same control that it's integrated in Windows 10 when you click on the date and time in the taskbar:
+
+![](CalendarViewControl.png)
+
+
+However, it isn't included as a 1st party control in the Windows Community Toolkit, so we'll have to use the generic Windows Xaml Host control.
+
+### Task 1 - Add the WindowsXamlHost control
+1. You can use the output of Exercise 2 as a starting point. In case you haven't completed it, you can open the folder *"Lab/Exercise3/01-Start/ContosoExpenses"* in the location where you have unzipped the lab (it should be *"C:\XAMLIslandLab"*) and double click on the **ContosoExpenses.sln** file.
+2. Regardless of your starting point, the required NuGet package should be already installed. We can verify this by right clicking on the **ContosoExpenses** project in Solution Explorer, choosing **Manage NuGet packages** and moving to the **Installed** tab.
 
     ![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
 
-2.  Search for the "Microsoft.Toolkit.Wpf.UI.XamlHost" package.
+3. We should see a packaged called **Microsoft.Toolkit.Wpf.UI.XamlHost**.
 
     ![Microsoft.Toolkit.Wpf.UI.XamlHost NuGet Package](XamlHostNuGetPackages.png)
 
-3.  Click on the **Install** button.
+4. The package is already installed because the one we have installed for exercises 1 and 2, **Microsoft.Toolkit.Wpf.UI.Control**, has a dependency on it. As such, when we have installed it in the previous exercises, NuGet automatically downloaded and installed also the **Microsoft.Toolkit.Wpf.UI.XamlHost** package.
+5. Now we can start editing the code to add our control. Locate, in Solution Explorer, the file called **AddNewExpense.xaml** and double click on it. This is the form used to add a new expense to the list. Here is how it looks like in the current version of the application:
 
-    ![](InstallNuGetPackage.png)
+    ![](AddNewExpense.png)
     
+    As you can notice, the date picker control included in WPF is meant for traditional computers with mouse and keyboard. Choosing a date with a touch screen isn't really feasible, due to the small size of the control and the limited space between each day in the calendar.
+    
+6. We can see the current date picker implemented using the standard WPF control towards the end of the XAML file:
+
+```xml
+<DatePicker x:Name="txtDate" Grid.Row="6" Grid.Column="1" Margin="5, 0, 0, 0" Width="400" />
+```
+
+7. We're going to replace this control with the XAML Host one, which allows hosting any UWP control inside our WPF application. However, first, we need to add a new namespace to the page. Scroll to the top of the page, identify the **Window** tag and add the following attribute:
+
+    ```xml
+    xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
+    ```
+
+    This is how the full definition should look like:
+    
+    ```xml
+    <Window x:Class="ContosoExpenses.AddNewExpense"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
+            xmlns:local="clr-namespace:ContosoExpenses"
+            mc:Ignorable="d"
+            Title="Add new expense" Height="450" Width="800"
+            Background="{StaticResource AddNewExpenseBackground}">
+    ```
+    
+8. Now replace the **DatePicker** control you have previously identified in the XAML page with the following one:
+
+    ```xml
+    <xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.CalendarView" Grid.Column="1" Grid.Row="6" Margin="5, 0, 0, 0" x:Name="CalendarUwp"  />
+    ```
+
+    We have added the **WindowsXamlHost** control, by using the **xamlhost** prefix we have just defined. The most important property to setup the control is **InitialTypeName**: you must specify the full name of the UWP control you want to host. In our case, we specify the full signature of the **CalendarView** control, which is **Windows.UI.Xaml.Controls.CalendarView**.
+    
+9. Let's test the work now. In order to compile our project, we need to make a small change. Locate the **AddNewExpense.xaml.cs** file in Solution Explorer and double click on it.
+10. You will notice that there's a compilation error in the file. The **OnSaveExpenses()** method, in fact, contains the following code snippet:
+
+    ```csharp
+    Expense expense = new Expense
+    {
+        Address = txtAmount.Text,
+        City = txtCity.Text,
+        Cost = Convert.ToDouble(txtAmount.Text),
+        Description = txtDescription.Text,
+        Type = txtType.Text,
+        Date = txtDate.SelectedDate.GetValueOrDefault(),
+        EmployeeId = EmployeeId
+    };
+    ```
+
+    However, we have removed the WPF DatePicker control with name **txtDate** from the XAML page and, as such, the following line will return an error:
+    
+    ```csharp
+    Date = txtDate.SelectedDate.GetValueOrDefault()
+    ```
+    
+    For the moment, let's just comment it:
+    
+    ```csharp
+    //Date = txtDate.SelectedDate.GetValueOrDefault(),
+    ```
+
+Now press F5 to build and run the application. Once it starts, choose any employee from the list, then press the **Add new expense** button at the bottom of the list. You will notice how the WPF DatePicker control has been replaced with a full calendar view, which is more touch friendly. However, the work isn't completed yet. We need a way to handle the selected date, so that we can display it on the screen and we can store it in the code-behind, so that we can populate the new **Expense** object that gets saved in the database.
+
+### Task 2 - Interact with the WindowsXamlHost control
+Let's take a look [at the documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.CalendarView) of the **CalendarView** control. There are two things which are relevant for our scenario:
+
+    - The **SelectedDates** property, which contains the date selected by the user.
+    - The **SelectedDatesChanged** event, which is raised when the user selects a date
+    
+Let's go back to the **AddNewExpense.xaml** page and handle them.
+
+> Can you guess which is the challenge here?
+
+The **WindowsXamlHost** control is a generic host control for any kind of UWP control. As such, it doesn't expose any property called **SelectedDates** or any event called **SelectedDatesChanged**, since they are specific of the **CalendarView** control.
+In order to implement our scenario, we need to move to the code behind and cast the **WindowsXamlHost** to the type we expect, in our case the **CalendarView** one. The best place to do is when the **ChildChanged** event is raised, which is triggered when the hosted control has been rendered.
+
+1. Double click on the **AddNewExpense.xaml** file in Solution Explorer in Visual Studio
+2. Identify the **WindowsXamlHost** control you have previously added and subscribe to the **ChildChanged** event:
+
+    ```xml
+    <xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.CalendarView" Grid.Column="1" Grid.Row="6" Margin="5, 0, 0, 0" x:Name="CalendarUwp"  ChildChanged="CalendarUwp_ChildChanged" />
+    ```
+    
+3. Before moving on to the code behind, we need to add a **TextBlock** control to display the value selected by the user. First add a new **RowDefinition** with **Height** equal to **Auto** at the end of the **Grid.RowDefinitions** collection of the main **Grid**. This is how the final setup should look like:
+
+    ```xml
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    ```
+
+4. Copy and paste the following code after the **WindowsXamlHost** control and before the **Button** one at the end of the XAML page:
+
+    ```xml
+    <TextBlock Text="Selected date:" FontSize="16" FontWeight="Bold" Grid.Row="7" Grid.Column="0" />
+    <TextBlock x:Name="txtDate" FontSize="16" Grid.Row="7" Grid.Column="1" />
+    ```
+
+5. Locate the **Button** control at the end of the XAML page and change the **Grid.Row** property from **7** to **8**:
+
+    ```xml
+    <Button Content="Save" Grid.Row="8" Grid.Column="0" Click="OnSaveExpense" Margin="5, 12, 0, 0" HorizontalAlignment="Left" Width="180" />
+    ```
+    
+    Since we have added a new row in the **Grid**, we need to shift the button of one row.
+    
+6. There's one last small change we need to make. If you remember when we have tested the application at the end of the previous task, the look and feel of the window wasn't really good. The reason is that the **CalendarView** control takes more space than the previous **DatePicker** and, as such, the current size of the window isn't enough to fit all the content. Let's incrase the height of the Window. 
+7. Locate the **Window** tag at the top of the XAML file.
+8. Locate the **Height** property and change the value from **400** to **800**.
+9. Also the **WindowsXamlHost** control must be properly disposed in order to be reused. As such, we need to subscribe to the **Closed** event also in this window, by adding the following attribute:
+
+    ```xml
+    Closed="Window_Closed"
+    ```
+    
+    This is how the final definition of the **Window** element should look like:
+    
+    ```xml
+    <Window x:Class="ContosoExpenses.AddNewExpense"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
+            xmlns:local="clr-namespace:ContosoExpenses"
+            mc:Ignorable="d"
+            Closed="Window_Closed"
+            Title="Add new expense" Height="800" Width="800"
+            Background="{StaticResource AddNewExpenseBackground}">
+    ```
+
+10. Now let's start to work on the code behind. Identify in Solution Explorer the **AddNewExpense.xaml.cs** file and double click on it.
+11. First we need a property to hold a refernce to the selected date. Copy and paste the following definition inside the class:
+
+    ```csharp
+    private DateTime SelectedDate;
+    ```
+
+11. Now copy and paste the following event handler inside the class definition:
+
+    ```csharp
+    private void CalendarUwp_ChildChanged(object sender, EventArgs e)
+    {
+        WindowsXamlHost windowsXamlHost = (WindowsXamlHost)sender;
+    
+        Windows.UI.Xaml.Controls.CalendarView calendarView =
+            (Windows.UI.Xaml.Controls.CalendarView)windowsXamlHost.Child;
+    
+        if (calendarView != null)
+        {
+            calendarView.SelectedDatesChanged += (obj, args) =>
+            {
+                if (args.AddedDates.Count > 0)
+                {
+                    SelectedDate = args.AddedDates.FirstOrDefault().DateTime;
+                    txtDate.Text = SelectedDate.ToShortDateString();
+                }
+            };
+    
+            calendarView.MinDate = DateTimeOffset.Now.AddYears(-1);
+            calendarView.MaxDate = DateTimeOffset.Now;
+        }
+    }
+    ```
+
+    We are handling the **ChildChanged** event we have previously subscribed to. As first step, we retrieve a reference to the **WindowsXamlHost** control which triggered it. The control exposes a property called **Child**, which hosts the UWP control we have assigned with the **InitialTypeName** property. We retrieve this property and we cast it to the type of control we're hosting, which is **Windows.UI.Xaml.Controls.CalendarView**. Now we have access to the full UWP control, so we can:
+    
+    - Subscribe to the **SelectedDatesChanged** event, which is triggered when the user selects a date from the calendar. Inside this handler, thanks to the event arguments, we have access to the **AddedDates** collection, which contains the selected dates. In our case we're using the **CalendarView** control in single selection mode, so the collection will contain only one element. We store it into the **SelectedDate** property we have previously created and we display it in the **txtDate** control.
+    - Customize the behavior of the control. Since, for compliance reasons, an employee can report only expenses occurred in the last year, it would be confusing to display dates older than 1 year or in the future. As such, we set the **MaxDate** property with the current date, while the **MinDate** one with the same date, but 1 year in the past. This means that if, for example, today is 14th February 2019, employees will be able to choose a date between 14th February 2018 and 14th February 2019.
+
+
+
+
+
+
+
     
 
 ___
