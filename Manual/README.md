@@ -623,7 +623,7 @@ Do not worry, using the VM provided, all is already setup for you: You do not ha
 ![Download .NET Core](DownloadNETCore.png)
 
 ### Task 2 - Perform the migration - The csproj
-As mentionned, .NET Core is in the Preview state. We also need a prelimenary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: https://visualstudio.microsoft.com/fr/vs/preview/.
+As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
 
 Let's open the solution using Visual Studio 2019 Preview:
 1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
