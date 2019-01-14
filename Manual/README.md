@@ -35,16 +35,24 @@ The lab consists of three exercises:
 This lab uses a single Virtual Machine to provide you with the development environment.
 
 The virtual machine is based on Windows 10 October Update (1809) and it includes:
-- Visual Studio 2017
+- Visual Studio 2019 Preview 1
 - Windows 10 SDK version 10.0.17763.0 or later
+
+We're going to use Visual Studio 2019 Preview since it provides preliminary support to .NET Core 3.0, which is one of the technologies we're going to use in one of the exercises. However, despite being a preview, it provides a good level of stability and reliabilityb  and, as such, we're going to leverage it for all the exercises in the lab.
+As a backup, just in case you face any issue, the machine comes also with Visual Studio 2017 Community preinstalled.
 
 If you already have these tools on your computer, feel free to directly use it for the lab instead of the virtual machine. Be aware that the following Visual Studio workloads have to be installed: ".NET desktop development" and "Universal Windows Platform development".
 
 ### Scenario
-The ExpenseIt application is internal application for creating expenses for Contoso Corporation. Modernizing this application is necessary in order to enhance employee efficiency when creating expenses reports.
+Contoso Expenses is an internal used by managers of Contoso Corporation to keep track of the expenses reported by their reports. Modernizing this application is necessary in order to enhance employee efficiency when creating expenses reports. Many of the requested features could be easily implemented with the Universal Windows Platform. However, the application is complex and it's the outcome of many years of development by different teams. As such, rewriting it from scratch with a new technology isn't an option on the table. The team is looking for the best approach to add these features but, at the same time, reusing the existing codebase.
 
 ### The project
-ExpenseIt is a WPF Desktop application.
+Contoso Expenses is a desktop application, built with WPF and the .NET Framework. Being an application built for demo purposes, it contains some simplifications compared to a real WPF project, like:
+
+- It doesn't use any development pattern, like MVVM, but the standard code-behind approach. 
+- It uses a local database solution called [**LiteDb**](http://www.litedb.org/), which is an embedded NoSQL solution. In a real world scenario, such an application would connect to a centralized database, either on-premise or in the cloud, like SQL Server, MySQL, Cosmos DB, etc.
+
+The goal of this project, in fact, is to help you focusing on understanding and implementing XAML Island inside an existing WPF application. It isn't made to teach you the best practices for WPF development.
 
 ### Key concepts that will be used during the lab
 
@@ -77,11 +85,10 @@ The Windows 10 October 2018 Update with the SDK 17763, enables the scenario of X
 - The **WindowsXamlManager** handles the UWP XAML Framework. As such, the only exposed method is called **InitializeForCurrentThread()**, which takes care of initializing the UWP XAML Framework inside the current thread of a non-Win32 Desktop app, so that you can start adding UWP controls to it.
 - The **DesktopWindowXamlSource** is the actual instance of your Island content. It has a **Content** property which you can instantiate and set with the control you want to render. 
 
-With an instance of the **DesktopWindowXamlSource** class you can attach it’s HWND to any parent HWND you want from your native Win32 App. This enables any framework that exposes HWND to host a XAML Island, including 3rd party technologies like Java or Delphi.
+With an instance of the **DesktopWindowXamlSource** class you can attach its HWND to any parent HWND you want from your native Win32 App. This enables any framework that exposes HWND to host a XAML Island, including 3rd party technologies like Java or Delphi.
 However, when it comes to WPF and Windows Forms applications, you don’t have to manually do that thanks to the Windows Community Toolkit, since it already wraps these classes into ready-to-be-used controls.
 
-[The Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/
-) is an open-source project, maintained by Microsoft and driven by the community, which includs many custom controls, helpers and service to speed up the development of Windows applications. Starting from version 5.0, the toolkit includes 4 packages to enable XAML Island: 
+[The Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/) is an open-source project, maintained by Microsoft and driven by the community, which includs many custom controls, helpers and service to speed up the development of Windows applications. Starting from version 5.0, the toolkit includes 4 packages to enable XAML Island: 
 
 - One called **XamlHost**. It's a generic control that can host any UWP control, either custom or native. It comes in two variants: [Microsoft.Toolkit.Wpf.UI.XamlHost](https://www.nuget.org/packages/Microsoft.Toolkit.Wpf.UI.XamlHost/) for WPF and [Microsoft.Toolkit.Forms.UI.XamlHost](https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.XamlHost/) for Windows Forms.
 - One called **Controls**, which includes wrappers for 1st party controls like Map or InkCanvas. Thanks to these controls, you'll be able to leverage them like if they're native WPF or Windows Forms control, including direct access to the exposed properties and binding support. Also in this case, it comes into two variants: [Microsoft.Toolkit.Wpf.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Wpf.UI.Controls/) for WPF and [Microsoft.Toolkit.Forms.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.Controls/) for Windows Forms.
@@ -122,10 +129,12 @@ You should wonder where .NET Core plays a role here. Of course for performance s
 ___
 ## Exercise 1 - Use a 1st party UWP control with XAML Islands
 We start with the simpliest modernization path possible: We would like to use a rich UWP control that is 'available for use in WPF'. Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
-So in our Expense application, we will bring a modern touch by using the MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
+So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
 
-### Task 1 - Setup the ExpenseIt solution
-Let's first be sure we can run and debug the ContosoExpenses solution locally.
+
+### Task 1 - Setup the Contoso Expenses solution
+Let's first be sure we can run and debug the Contoso Expenses solution locally.
+
 1.  In the Windows Explorer, create a new local folder like *"C:\XAMLIslandsLab"*. It will be our working folder for the Contoso Dashboard website.
 2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. Click on the **releases** tab and donwload the latest release.
 
@@ -135,7 +144,7 @@ Let's first be sure we can run and debug the ContosoExpenses solution locally.
 
 4.  Open the zip file and extract all the content to your working folder "C:\XAMLIslandsLab" you've just created.
 
-5.  Open Visual Studio 2017, and double click on the `C:\_Dev\GitHub\Microsoft\Windows-AppConsult-XAMLIslandsLab\Lab\Exercise1\01-Start` file to open the solution.
+5.  Open Visual Studio 2019, and double click on the *"C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln"* file to open the solution.
 
     ![ContosoExpenses solution in Windows Explorer](ContosoExpensesSolution.png)
 
@@ -146,7 +155,7 @@ We need this WPF package because it takes care for us about all the necessary pi
 
 Please note that the same package exists for Windows Forms. Its name is <a href="https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.Controls/" target="_blank">Microsoft.Toolkit.Forms.UI.Controls</a>.
 
-1.  If the ContosoExpenses solution is not opened in Visual Studio, double click on `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln`.
+1.  If the Contoso Expenses solution is not opened in Visual Studio, double click on *"Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln* in the folder where you have extracted the zipped file (it should be *"C:\XAMLIslandsLab"*).
 2.  Right click on the **ContosoExpenses** project in the Solution Explorer window on the left and choose **Manage NuGet Packages...**.
 
     ![Manage NuGet Packages menu in Visual Studio](ManageNuGetPackages.png)
@@ -163,9 +172,9 @@ Please note that the same package exists for Windows Forms. Its name is <a href=
 
     ![](ErrorMinimumNETVersionForControls.png)
 
-This error gives us the opportunity to mention the requirement for the .NET WPF or Windows Forms application: **The .NET Framework version has to be > 4.6.2**. Let's retarget the ExpenseIt project to this version.
+This error gives us the opportunity to mention the requirement for the .NET WPF or Windows Forms application: **The .NET Framework version has to be > 4.6.2**. Let's retarget the Contoso Expenses project to this version.
 
-6.  Right click on the ExpenseIt project / **Properties**.
+6.  Right click on the **ContosoExpenses** project and choose **Properties**.
 
     ![Project properties](ProjectProperties.png)
 
@@ -177,20 +186,20 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 
     ```dos
     1>------ Build started: Project: ExpenseItDemo, Configuration: Debug Any CPU ------
-    1>  ExpenseItDemo -> C:\XAMLIslandsLab\ExpenseItDemo\bin\Debug\ExpenseItDemo.exe
+    1>  ExpenseItDemo -> C:\XAMLIslandsLab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ExpenseItDemo.exe
     ========== Build: 1 succeeded, 0 failed, 1 up-to-date, 0 skipped ==========
     ```
 
-9.  It is now safe to add the **Microsoft.Toolkit.Wpf.UI.Controls** NuGet package to the ExpenseIt project as explained above.
+9.  It is now safe to add the **Microsoft.Toolkit.Wpf.UI.Controls** NuGet package to the ContosoExpenses project as explained above.
 
 ### Task 3 - Use the InkCanvas control in the application
 One of the features that the development team is looking to integrate inside the application is support to digital signature. Managers wants to be able to easily sign the expenses reports, without having to print and digitalize them back.
 XAML Island is the perfect candidate for this scenario, since the Universal Windows Platform includes a control called **InkCanvas**, which offers advanced support to digital pens. Additionally, it includes many AI powered features, like the capability to recognize text, shapes, etc.
 
-Adding it to a WPF application is easy, since it's one of the 1st party controls included in the Windows Community Toolkit we have just installed. Let's add it!
+Adding it to a WPF application is easy, since it's one of the 1st party controls included in the Windows Community Toolkit we have just installed. Let's do it!
 
 1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml** file in Solution Explorer.
-2. As first step, we need to add a new XAML namespace, since the control we need is part of a 3rd party library. Locate the **<Window>** tag at the top of the XAML file.
+2. As first step, we need to add a new XAML namespace, since the control we need is part of a 3rd party library. Locate the **Window** tag at the top of the XAML file.
 3. Copy and paste the following definition as attribute of the **Window** element:
 
     ```xml
@@ -260,7 +269,7 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
 
     ![](Signature.png)
     
-However, if you try to play a bit with the application you will notice that not everything is working as expected. Close the expense detail and try to open another one from the list. You will notice that the application will crash with the following exception:
+However, if you try to play a bit with the application you will notice that not everything is working as expected. Close the expense detail and try to open another expense from the list. You will notice that the application will crash with the following exception:
 
 ![](XamlIslandException.png)
 
