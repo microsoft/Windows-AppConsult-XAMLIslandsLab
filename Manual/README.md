@@ -125,9 +125,9 @@ We start with the simpliest modernization path possible: We would like to use a 
 So in our Expense application, we will bring a modern touch by using the MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
 
 ### Task 1 - Setup the ExpenseIt solution
-Let's first be sure we can run and debug the ExpenseIt solution locally.
+Let's first be sure we can run and debug the ContosoExpenses solution locally.
 1.  In the Windows Explorer, create a new local folder like *"C:\XAMLIslandsLab"*. It will be our working folder for the Contoso Dashboard website.
-2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslaLab repository</a>. Click on the **releases** tab and donwload the latest release.
+2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. Click on the **releases** tab and donwload the latest release.
 
 3.  When ready, click on the downloaded file in your browser to open it.
 
@@ -135,9 +135,9 @@ Let's first be sure we can run and debug the ExpenseIt solution locally.
 
 4.  Open the zip file and extract all the content to your working folder "C:\XAMLIslandsLab" you've just created.
 
-5.  Open Visual Studio 2017, and double click on the *"C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ExpenseIt.sln"* file to open the solution.
+5.  Open Visual Studio 2017, and double click on the `C:\_Dev\GitHub\Microsoft\Windows-AppConsult-XAMLIslandsLab\Lab\Exercise1\01-Start` file to open the solution.
 
-    ![ExpenseIt solution in Windows Explorer](ExpenseItSolutionInWindowsExplorer.png)
+    ![ContosoExpenses solution in Windows Explorer](ContosoExpensesSolution.png)
 
 7.  Verify that you can debug the ExpenseIt WPF project by pressing the **Start** button or CTRL+F5.
 
