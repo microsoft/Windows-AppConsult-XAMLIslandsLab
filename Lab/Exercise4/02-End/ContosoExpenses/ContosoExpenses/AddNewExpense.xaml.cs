@@ -68,7 +68,7 @@ namespace ContosoExpenses
             Windows.UI.Xaml.Controls.CalendarView calendarView =
                 (Windows.UI.Xaml.Controls.CalendarView)windowsXamlHost.Child;
 
-            if (calendarView!= null)
+            if (calendarView != null)
             {
                 calendarView.SelectedDatesChanged += (obj, args) =>
                 {

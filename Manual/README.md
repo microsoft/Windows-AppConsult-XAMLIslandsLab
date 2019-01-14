@@ -1018,22 +1018,61 @@ In order to implement our scenario, we need to move to the code behind and cast 
     }
     ```
 
-    We are handling the **ChildChanged** event we have previously subscribed to. As first step, we retrieve a reference to the **WindowsXamlHost** control which triggered it. The control exposes a property called **Child**, which hosts the UWP control we have assigned with the **InitialTypeName** property. We retrieve this property and we cast it to the type of control we're hosting, which is **Windows.UI.Xaml.Controls.CalendarView**. Now we have access to the full UWP control, so we can:
+    We are handling the **ChildChanged** event we have previously subscribed to. As first step, we retrieve a reference to the **WindowsXamlHost** control which triggered it. The control exposes a property called **Child**, which hosts the UWP control we have assigned with the **InitialTypeName** property. We retrieve this property and we cast it to the type of control we're hosting, which in our case is **Windows.UI.Xaml.Controls.CalendarView**. Now we have access to the full UWP control, so we can:
     
     - Subscribe to the **SelectedDatesChanged** event, which is triggered when the user selects a date from the calendar. Inside this handler, thanks to the event arguments, we have access to the **AddedDates** collection, which contains the selected dates. In our case we're using the **CalendarView** control in single selection mode, so the collection will contain only one element. We store it into the **SelectedDate** property we have previously created and we display it in the **txtDate** control.
     - Customize the behavior of the control. Since, for compliance reasons, an employee can report only expenses occurred in the last year, it would be confusing to display dates older than 1 year or in the future. As such, we set the **MaxDate** property with the current date, while the **MinDate** one with the same date, but 1 year in the past. This means that if, for example, today is 14th February 2019, employees will be able to choose a date between 14th February 2018 and 14th February 2019.
 
+12. As next step, we need to handle the **Closed** event of the window to dispose the **WindowsXamlHost** control. Copy and paste the following event handler before the end of the **AddNewExpense** class:
 
+    ```csharp
+    private void Window_Closed(object sender, EventArgs e)
+    {
+        CalendarUwp.Dispose();
+    }
+    ```
+13. As last step we need to update the **OnSaveExpense** event handler to retrieve the selected date from the new UWP control we have added. If you remember, in the previous task we have commented the following line of code in the creation of the **Expense** object:
 
+    ```csharp
+    Date = txtDate.SelectedDate.GetValueOrDefault(),
+    ```
 
-
-
-
+    Delete it and replace it with the following code:
     
+    ```csharp
+    Date = SelectedDate,
+    ```
+
+    We're setting the **Date** property of the **Expense** object we're going to store into the database with the value we have previously stored in the **ChildChanged** event. This is how the final definition of the **Expense** object should look like:
+    
+    ```csharp
+    Expense expense = new Expense
+    {
+        Address = txtAmount.Text,
+        City = txtCity.Text,
+        Cost = Convert.ToDouble(txtAmount.Text),
+        Description = txtDescription.Text,
+        Type = txtType.Text,
+        Date = SelectedDate,
+        EmployeeId = EmployeeId
+    };
+    ```
+
+We're done! Let's test agian the project:
+
+1. Press F5 and launch the application
+2. Choose one of the available employees, then click the **Add new expense** button.
+3. Fill all the information in the form and choose one date from the new **CalendarView** control.
+4. Press the **Save** button.
+5. The form will be closed and, in the list of expenses, you will find the new one you have just created at the end of the list. Take a look at the first column with the expense date: it should be exactly the one you have selected in the **CalendarView** control.
+
+We have replaced an existing WPF control with a newer mordern version, which fully supports mouse, keyboard, touch and digital pens. Despite the fact that it isn't included as 1st party control in the Windows Community Toolkit, we've been able anyway to include a **CalendarView** control in our application and to interact with it.
 
 ___
-## Exercise - Perform bindings between UWP XAML and WPF
-TODO
+## Exercise 5 - Create a XAML Island wrapper
+From a technical point of view, the outcome of the previous code works without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to an event handler exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **SelectedDates** property.
+
+We can solve this problem by creating our own wrapper to the UWP control we want to integrate, exactly like the **MapControl** or the **InkCanvas** controls. The purpose of this wrapper is to take the properties and events exposed by UWP control and forward them to the WPF control, so that they could be directly access like with a native .NET control. Let's start!
 
 
 
