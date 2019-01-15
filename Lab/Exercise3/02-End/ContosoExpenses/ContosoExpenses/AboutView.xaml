@@ -18,7 +18,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:toolkit="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls.WebView"
         mc:Ignorable="d" MinHeight="500" MinWidth="700" Height="500" Width="700">
 
     <Grid x:Name="LayoutRoot">
@@ -27,7 +26,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock>About Contoso:</TextBlock>
-        <toolkit:WebView Grid.Row="1" Source="http://aboutknowzy.azurewebsites.net" />
+        <TextBlock HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Margin="10">
+            Contoso Expenses is a 'modern application of yesterday tomorrow' from Contoso Corp.
+        </TextBlock>
+        <WebBrowser Grid.Row="1" 
+                    Source="https://contosocorpwebsite.azurewebsites.net/" />
     </Grid>
 </Window>

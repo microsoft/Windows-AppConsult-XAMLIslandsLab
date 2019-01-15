@@ -43,6 +43,15 @@ namespace ContosoExpenses.Services
             }
         }
 
+        public void SaveExpense(Expense expense)
+        {
+            using (var connection = new LiteDatabase(filePath))
+            {
+                var expenses = connection.GetCollection<Expense>();
+                expenses.Insert(expense);
+            }
+        }
+
         public void InitializeDatabase()
         {
             if (!File.Exists(filePath))
@@ -88,6 +97,7 @@ namespace ContosoExpenses.Services
                        .RuleFor(x => x.Cost, (f, u) => (double)f.Finance.Amount())
                        .RuleFor(x => x.Address, (f, u) => f.Address.FullAddress())
                        .RuleFor(x => x.City, (f, u) => f.Address.City())
+                       .RuleFor(x => x.Date, (f, u) => f.Date.Past())
                        .Generate();
 
                         expense.EmployeeId = employeeId;
