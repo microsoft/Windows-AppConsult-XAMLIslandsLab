@@ -871,11 +871,308 @@ From a technical point of view, the outcome of the previous code works without i
 
 We can solve this problem by creating our own wrapper to the UWP control we want to integrate, exactly like the **MapControl** or the **InkCanvas** controls. The purpose of this wrapper is to take the properties and events exposed by UWP control and forward them to the WPF control, so that they could be directly access like with a native .NET control. Let's start!
 
+### Task 1 - Create a basic wrapper
+
+1. If you have completed Exercise 3, you can start from the outcome of it. Otherwise, open the folder *"Lab/Exercise4/01-Start/ContosoExpenses"* from the location where you have unzipped the lab (it should be *"C:\XAMLIslandLab*") and double click on the **ContosoExpenses.sln** file.
+2. First we need to create the wrapper control. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Add -> Class**. 
+3. Name it **CalendarViewWrapper** and press OK.
+4. Add a reference to the following namespaces at the top of the class:
+
+    ```csharp
+    using Microsoft.Toolkit.Win32.UI.XamlHost;
+    using Microsoft.Toolkit.Wpf.UI.XamlHost;
+    ```
+5. The first step is to make the class public and to inherit from the **WindowsXamlHostBase**. This is how the definition should look like:
+
+    ```csharp
+    public class CalendarViewWrapper: WindowsXamlHostBase
+    {
+        public CalendarViewWrapper() : base()
+        {
+    
+        }
+    }
+    ```
+    
+    We have addid a public constructor, which does nothing more than implementing the same base costructor of the **WindowsXamlHostBase** class.
+6. The next step is to initialize the control with the UWP control we want to host, in our case the **CalendarView** one. Copy and paste the following code inside the class:
+
+    ```csharp
+    protected override void OnInitialized(EventArgs e)
+    {
+        base.OnInitialized(e);
+        this.ChildInternal = UWPTypeFactory.CreateXamlContentByType("Windows.UI.Xaml.Controls.CalendarView");
+    
+        SetContent();
+    }
+    ```
+    
+    We're overriding the **OnInitialized** event and, inside it, we're using a class provided by the Windows Community Toolkit called **UWPTypeFactory**. Thanks to the **CreateXamlContentByType()** method we can manually create a new instance of the UWP control we need. This code has the same effect of setting the **InitialTypeName** property on the **WindowsXamlHost** control, as we did in Exercise 3. Once we have a reference to the UWP control, we assing it to the **ChildInternal** property, which is the host. In the end, we call the **SetContent()** to finalize the operation.
+
+7. Now that we have a basic wrapper, we can use it to replace the **WindowsXamlHost** control we have previously added. Double click on the **AddNewExpense.xaml** file in Solution Explorer and locate the **WindowsXamlHost** control:
+
+    ```xml
+    <xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.CalendarView" Grid.Column="1" Grid.Row="6" Margin="5, 0, 0, 0" x:Name="CalendarUwp" ChildChanged="CalendarUwp_ChildChanged"/>
+    ```
+8. Delete it and replace it with the following snippet:
+
+    ```xml
+    <local:CalendarViewWrapper x:Name="CalendarUwp" Grid.Column="1" Grid.Row="6" Margin="5, 0, 0, 0" />
+    ```
+
+    We are simply referencing the **CalendarViewWrapper** control we have just created, using the **local** prefix which is already included in the **Windows** definition and which points to the default namespace of the project:
+    
+    ```xml
+    xmlns:local="clr-namespace:ContosoExpenses"
+    ```
+    
+We're ready to start performing a first test. Press F5 and launch the application, then select one of the available employees and press the **Add new expense** button. You should see the same visual output of the previous exercise:
+
+![](CalendarViewWrapper.png)
+
+However, the current iteration isn't really useful. If you click on any date, nothing will happen. And the calendar isn't constrained anymore to show only the dates from the past year. We need to customize our wrapper in order to expose the properties we need.
+
+### Task 2 - Add properties to the wrapper
+Let's start by adding some properties to our wrapped control. For our scenario, we need to expose 3 properties of the original UWP control:
+
+- **SelectedDates** to get the date selected by the user
+- **MinDate** and **MaxDate** to set the calendar's range
+
+1. Double click on the **AddNewExpense.xaml.cs** in the Solution Explorer 
+2. Copy and paste the following code snippet inside the class:
+
+    ```csharp
+    public IList<DateTimeOffset> SelectedDates
+    {
+        get
+        {
+            if (this.ChildInternal != null)
+            {
+                Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as Windows.UI.Xaml.Controls.CalendarView;
+                return calendarView.SelectedDates;
+            }
+    
+            return null;
+        }
+    }
+    ```
+
+    We are exposing a public property called **SelectedDates**, which type matches the same one of the property exposed by the **CalendarView** control, which is **IList<DateTimeOffset>**. This property is read-only, as such we can implement only the **get**. First we check that the **ChildInternal** property isn't null, to make sure that we are indeed hosting a control inside our wrapper. If that's the case, we can reuse the property to get a reference to the original **CalendarView** control. In the end, we simply return the value of the **SelectedDates** property exposed by the control.
+    
+3. Now we need to expose the **MinDate** and **MaxDate** properties, so that we can customize the behavior of the calendar. Let's start with the first one:
+
+    ```csharp
+    private DateTimeOffset minDate;
+    
+    public DateTimeOffset MinDate
+    {
+        get { return minDate; }
+        set
+        {
+            if (this.ChildInternal != null)
+            {
+                minDate = value;
+                Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as Windows.UI.Xaml.Controls.CalendarView;
+                calendarView.MinDate = value;
+            }
+        }
+    }
+    ```
+    
+    The approach is the same we have previously used. However, in this case, we need to expose also the **set**, since we need to change the value of the real property exposed by the **CalendarView** control. However, the implementation is basically the same. We check if the **ChildInternal** control isn't null and, if that's the case, we get a reference to the hosted **CalendarView** control. In this end, we set the **MinDate** property with the assigned value.
+    
+4. Now let's add the **MaxDate** property, which works in the same way:
+
+    ```csharp
+    private DateTimeOffset maxDate;
+    
+    public DateTimeOffset MaxDate
+    {
+        get { return maxDate; }
+        set
+        {
+            if (this.ChildInternal != null)
+            {
+                maxDate = value;
+                Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as global::Windows.UI.Xaml.Controls.CalendarView;
+                calendarView.MaxDate = value;
+            }
+        }
+    }
+    ```
+    
+5. Now that the wrapped control is exposing the properties we need, we can start to integrate them in code behind. Double click on the **AddNewExpense.xaml.cs** file.
+6. First locate the **CalendarUwp_ChildChanged** event handler and delete it. We don't need it anymore, since the we have replaced the **WindowsXamlHost** control with the wrapped one.
+7. Now we need to initialize the **MinDate** and **MaxDate** properties. We need to do it when the window is loaded, so we need to subscribe to the **Loaded** event exposed by the **Window**. Double click on the **AddNewExpense.xaml** file, locate the **Window** tag at the top of the page and add the following attribute:
+
+    ```xml
+    Loaded="Window_Loaded"
+    ```
+    
+    This is how the full definition of the **Window** control should look like:
+    
+    ```xml
+    <Window x:Class="ContosoExpenses.AddNewExpense"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
+            xmlns:local="clr-namespace:ContosoExpenses"
+            mc:Ignorable="d"
+            Closed="Window_Closed"
+            Loaded="Window_Loaded"
+            Title="Add new expense" Height="800" Width="800"
+            Background="{StaticResource AddNewExpenseBackground}">
+    ```
+8. Now open again the **AddNewExpense.xaml.cs** file and copy and paste the following event handler inside th class:
+
+    ```csharp
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        CalendarUwp.MinDate = DateTimeOffset.Now.AddYears(-1);
+        CalendarUwp.MaxDate = DateTimeOffset.Now;
+    }
+    ```
+
+    As we did in Exercise 3, we are setting the **MinDate** property with the current date, but one year back, and the **MaxDate** property with the current date. The difference is that, since this time we are providing wrapper properties, we can directly set them, instead of having to go through the **ChildChanged** event.
+    
+Let's test our work. Press F5 to launch the application, choose an employee from the list, then press the **Add new expense** button. This time you should see that the calendar will allow you to choose only a date between the current date and one year ago. Now we need to handle the **SelectedDates** property.
+
+> Are we able to implement the same behavior of Exercise 3 with the current wrapper?
+
+The answer is no. We have exposed the **SelectedDates** collection of the **CalendarView** control, but we don't have a way to know when the user has indeed selected a date. In Exercise 3 we have achieved this goal by subscribing to the **SelectedDateChanged** event. As such, we need to wrap also this event in our custom control. This will be the goal of our next task.
+
+### Task 3 - Add events to the wrapper
+
+An event is represented by the **EventHandler<T>** class, where **T** is the object which represents the event arguments. It's a special object which is returned to the event handler, where we can store relevant information about the event. [If we take a look at the documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.calendarview.selecteddateschanged) about the **SelectedDatesChanged** event of **CalendarView** control, [we can see](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.calendarviewselecteddateschangedeventargs) that it returns an object of type **CalendarViewSelectedDatesChangedEventArgs**, which contains two collections:**AddedDates** and **RemovedDates**. 
+We're going to recreate a similar class in our project for our custom event handler.
+
+1. Right click on the **ContosoExpenses** project in Visual Studio and choose **Add -> Class**.
+2. Name it **SelectedDatesChangedEventArgs** and press OK.
+3. Replace the existing class definition with the following one:
+
+    ```csharp
+    public class SelectedDatesChangedEventArgs: EventArgs
+    {
+        public IReadOnlyList<DateTimeOffset> SelectedDates { get; set; }
+    
+        public SelectedDatesChangedEventArgs(IReadOnlyList<DateTimeOffset> selectedDates)
+        {
+            this.SelectedDates = selectedDates;
+        }
+    }
+    ```
+
+    Every custom event arguments object must inherit from the base **EventArgs** class. Then we can add our custom properties. In our case, we just add a property of type **IReadOnlyList<DateTimeOffset>**, which is the same type of the **AddedDates** collection of the original **CalendarView** control.
+    
+4. Now we can implement our event handler. Double click on the **CalendarViewWrapper.cs** file in Solution Explorer and add the following code inside the class:
+
+    ```csharp
+    public event EventHandler<SelectedDatesChangedEventArgs> SelectedDatesChanged;
+    ```
+    
+    We're exposing a public event thanks to the **EventHandler** class. We specify, as returned parameter, the custom event arguments class we have just created, called **SelectedDatesChangedEventArgs**.
+    
+5. Now we need to expose a method to invoke whenever we want to trigger our event. Copy and paste the following code inside the class:
+
+    ```csharp
+    protected virtual void OnSelectedDatesChanged(SelectedDatesChangedEventArgs e)
+    {
+        SelectedDatesChanged?.Invoke(this, e);
+    }
+    ```
+    
+6. Now we need to forward the original event exposed by the **CalendarView** control to the custom one we have just created. This way, we'll be able to leverage this event directly from our wrapped control. As first step, we need to subscribe to the original event inside the **OnInitialize()** method we have previously implemented. Copy and paste the following line after the **SetContent()** method:
+
+    ```csharp
+    Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as Windows.UI.Xaml.Controls.CalendarView;
+    calendarView.SelectedDatesChanged += CalendarView_SelectedDatesChanged;
+    ```
+    
+    This is how the final method should look like:
+    
+    ```csharp
+    protected override void OnInitialized(EventArgs e)
+    {
+        base.OnInitialized(e);
+        this.ChildInternal = UWPTypeFactory.CreateXamlContentByType("Windows.UI.Xaml.Controls.CalendarView");
+    
+        SetContent();
+    
+        Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as Windows.UI.Xaml.Controls.CalendarView;
+        calendarView.SelectedDatesChanged += CalendarView_SelectedDatesChanged;
+    }
+    ```
+    
+    We have simply retrieved a reference to the hosted **CalendarView** control through the **ChildInternal** property and we have subscribed to the **SelectedDatesChanged** event.
+    
+7. As last step, let's implement the event handler:
+
+    ```csharp
+    private void CalendarView_SelectedDatesChanged(Windows.UI.Xaml.Controls.CalendarView sender, Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs args)
+    {
+        OnSelectedDatesChanged(new SelectedDatesChangedEventArgs(args.AddedDates));
+    }
+    ```
+    
+    We are simply invoking the method we have previously created, passing as parameter a new instance of our custom event args object. Inside this instance, we include the collection of selected dates retrieved from the **AddedDates** collection.
+    
+8. That's it. Now that our wrapped control exposes an event handler, we can use it to handle the selection of the date. Double click on the **AddNewExpense.xaml** page in Solution Explorer and locate the **CalendarViewWrapper** control we have previously added.
+9. Subscribe to the **SelectedDatesChanged** event. This is how the final definition of the control should look like:
+
+    ```csharp
+    <local:CalendarViewWrapper x:Name="CalendarUwp" Grid.Column="1" Grid.Row="6" Margin="5, 0, 0, 0" SelectedDatesChanged="CalendarUwp_SelectedDatesChanged"/>
+    ```
+    
+10. Now double click on the **AddNewExpense.xaml.cs** file in Solution Explorer and add the following event handler inside the class:
+
+    ```csharp
+    private void CalendarUwp_SelectedDatesChanged(object sender, SelectedDatesChangedEventArgs e)
+    {
+        SelectedDate = e.SelectedDates.FirstOrDefault().Date;
+        txtDate.Text = SelectedDate.ToShortDateString();
+    }
+    ```
+    
+    We're retrieved from the event args object the selected date, which is stored inside the **SelectedDates** collection. Since we're using the control in single selection mode, we just retrieve the first element. Then we store the date inside the **SelectedDate** property, which is the one defined at class level that we use to populate the **Expense** object that will be saved in the database. In the end, we display the selected date in a **TextBlock** control on the page.
+    
+Now we can test the code. Press F5 to launch the application, choose an employee from the list and press the **Add new expense** button. Now the control should behave like at the end of Exercise 4:
+
+- By clicking on a date, you will see the selected date displayed under the calendar.
+- If you press **Save** and you look at the **Date** column of newly added expense, you will see the same date selected in the calendar.
+
+![](CalendarViewWrapperFinal.png)
+
+That's it! Our wrapper is working and it makes easier to interact with the original UWP control directly from the WPF XAML. As optional task, you can try to change the properties we have created (**SelectedDates**, **MinDate** and **MaxDate**) to [dependencies properties](https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/dependency-properties-overview), so that they can properly support binding.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
 
 
 ___
 ## Exercise 5 - Migrate to .NET Core
-Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
+Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
 ### Task 1 - Setup for using .NET Core
 At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
