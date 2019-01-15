@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ContosoExpenses
 {
-    public class CalendarViewWrapper: WindowsXamlHostBase
+    public class CalendarViewWrapper : WindowsXamlHostBase
     {
-        public CalendarViewWrapper(): base()
+        public CalendarViewWrapper() : base()
         {
 
         }
@@ -24,7 +24,7 @@ namespace ContosoExpenses
 
             SetContent();
 
-            global::Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as global::Windows.UI.Xaml.Controls.CalendarView;
+            Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as Windows.UI.Xaml.Controls.CalendarView;
             calendarView.SelectedDatesChanged += CalendarView_SelectedDatesChanged;
         }
 
@@ -44,6 +44,38 @@ namespace ContosoExpenses
                 }
 
                 return null;
+            }
+        }
+
+        private DateTimeOffset minDate;
+
+        public DateTimeOffset MinDate
+        {
+            get { return minDate; }
+            set
+            {
+                if (this.ChildInternal != null)
+                {
+                    minDate = value;
+                    Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as global::Windows.UI.Xaml.Controls.CalendarView;
+                    calendarView.MinDate = value;
+                }
+            }
+        }
+
+        private DateTimeOffset maxDate;
+
+        public DateTimeOffset MaxDate
+        {
+            get { return maxDate; }
+            set
+            {
+                if (this.ChildInternal != null)
+                {
+                    maxDate = value;
+                    Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as global::Windows.UI.Xaml.Controls.CalendarView;
+                    calendarView.MaxDate = value;
+                }
             }
         }
 
