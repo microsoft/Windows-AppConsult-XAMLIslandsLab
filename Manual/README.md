@@ -1,4 +1,4 @@
-﻿# Bring Fluent Design and modern user interaction to your WPF or Windows Forms applications
+﻿# Bring Fluent Design and modern user interaction to your WPF application
 
 ## Introduction
 Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivial and may require a tremendous work; most of the times, it imposes a full rewriting.
