@@ -609,213 +609,10 @@ Let's move on and see how we can request a license and integrate it into our app
 Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
 
-___
-## Exercise 3 - Migrate to .NET Core
-Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
-### Task 1 - Setup for using .NET Core
-At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
-- The .NET Core 3 runtime - https://github.com/dotnet/core-setup
-- The .NET Core 3 SDK - https://github.com/dotnet/core-sdk
-
-Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. On the other hand, if you are using you own computer, just navigate to the two links above and take the correct installer for your platform.
-
-![Download .NET Core](DownloadNETCore.png)
-
-### Task 2 - Perform the migration - The csproj
-As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
-
-Let's open the solution using Visual Studio 2019 Preview:
-1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
-    
-    The project ContosoExpenses is now open in Visual Studio but nothing changed: The appllication still uses the Full .NET 4.7.2. To verify this, just right click on the project in the Solution Explorer Windows and **Properties**.
-    
-    ![Project properties in the Solution Explorer](PropertiesContosoExpenses.png)
-
-    The *Target framework* of the project is displayed in the **Application** tab.
-    
-    ![.NET Framework version 4.7.2 for the project](NETFramework472.png)
-
-2.  Right click on the project in the solution explorer and choose **Unload Project**.
-
-    ![Unload project](UnloadProject.png)
-
-3.  Right click again on the project in the solution explorer ; click **Edit ContosoExpenses.csproj**.
-
-    ![Edit ContosoExpenses csproj](EditContosoExpensesCSPROJ.png)
-
-4.  The content of the .csproj file looks like
-
-    ![csproj file content](CSPROJFile.png)
-
-    Do not be afraid, it is not the time to understand the whole csproj structure. You will see that the migration will be done easely: Juste remove all the content of the file by doing **CTRL+A** and than  **SUPPR**!
-    
-    ![Empty csproj file](EmptyCSPROJ.png)
-    
-5.  Start writing the new csproj file content by typing `<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop"> </Project>` in the ContosoExpense.csproj. Microsoft.NET.Sdk.WindowsDesktop is the .NET Core 3 SDK for applications on Windows Desktop. It includes WPF and Windows Forms.
-
-    ![Windows Desktop in csproj](WindowsDesktopInCSPROJ.png)
-
-7.  Let's specify now a few details. To do this, insert a `<PropertyGroup></PropertyGroup>` element in inside the `<Project></Project>` element. 
-
-    ![PropertyGroup inside Project in csproj](PropertyGroup.png)
-
-8.  First, we indicate that the project output is a **executable** and not a dll. This is acheived by adding `<OutputType>WinExe</OutputType>` inside `<PropertyGroup></PropertyGroup>`.
-
-> Note that, if the project output was a dll, this line has to be omitted.
-
-9.  Secondly, we specify that the project is using .NET Core 3: Just below the <OutputType> line, add ` <TargetFramework>netcoreapp3.0</TargetFramework>`
-
-10. Lastly, we point out that this is a WPF application in adding a third line: `<UseWPF>true</UseWPF>`.
-
-> If the application is Windows Forms, we do not need this third line.
-
-#### Summary, verification and last step
-
-- The project using .NET Core 3 and the **Microsoft.NET.Sdk.WindowsDesktop** SDK
-- Output is an **application** so we need the `<OutputType>` element
-- `<UseWPF>` is self-describing
-
-Here is the full content of the new csproj. Please double check that you have everything:
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
-
-</Project>
-```
-
-It is now safe to save the csproj file. You can use **CTRL+S**.
-
-### Task 3 - Perform the migration - Actions in the project
-
-1.  The csproj is saved. Let's reopen the project: Go to the **Solution Explorer**, right click on the project and choose **Reload project**.
-
-    ![Reload project in the Solution Explorer](ReloadProject.png)
-    
-2.  Visual Studio just asks for a confirmation ; click **yes**.
-
-    ![Confirmation for closing the csproj](CloseCSPROJ.png)
-    
-3.  The project should load correctly. Let's try to build it in order to 'discover' the last steps to perform to complete the migration. Use the **Build** menu and **Build solution**.
-
-    ![Builld solution in Visual Studio](BuildSolutionInVisualStudio.png)
-    
-4.  As expected, we have some errors. Open the **Output window** which is located in the bottom left of the Visual Studio window.
-
-    ![Output windows of Visual Studio](OutputWindowVisualStudio.png)
-    
-5.  Let's fix the first series of error:
-    
-    ```bash
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(14,12,14,54): error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(15,12,15,60): error CS0579: Duplicate 'System.Reflection.AssemblyConfigurationAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(16,12,16,58): error CS0579: Duplicate 'System.Reflection.AssemblyFileVersionAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(18,12,18,54): error CS0579: Duplicate 'System.Reflection.AssemblyProductAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(19,12,19,52): error CS0579: Duplicate 'System.Reflection.AssemblyTitleAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(20,12,20,54): error CS0579: Duplicate 'System.Reflection.AssemblyVersionAttribute' attribute
-    ```
-    
-    It is not interesting to give explanations here: It is only 'piping' we have to resolve by either removing the mentionned lines in the `AssemblyInfo.cs` file or just delete the file. We go for the simpliest. 
-
-6.  In the **Solution Explorer** window / Under the **ContosoExpenses** project, expand the **Properties** node and right click on the **AssemblyInfo.cs** file ; Click on **Delete**.
-    
-    ![AssemblyInfo cs file](AssemblyInfoFile.png)
-
-7.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last two previous error should remain liste.
-
-    ```bash
-    1>Services\DatabaseService.cs(5,7,5,12): error CS0246: The type or namespace name 'Bogus' could not be found (are you missing a using directive or an assembly reference?)
-    1>Services\DatabaseService.cs(6,7,6,13): error CS0246: The type or namespace name 'LiteDB' could not be found (are you missing a using directive or an assembly reference?)
-    ```
-    
-> What could be the problem here? Remember that we removed (the hard way) all the content of the initial csproj file.
-
-The NuGet packages used by the project were gone by removing all the content of the csproj! Remember that all these steps are perform for achieving the migration with the Preview version of .NET Core 3 and Visual Studio 2019. 
-
-8.  You have a confirmation by expending the **Dependencies/NuGet** node in which you have only the .NET Code 3 package.
-
-    ![NuGet packages](NuGetPackages.png)
-    
-    Also, if you click on the **Packages.config** in the **Solution Explorer**. You will find the 'old' references NuGet packages by the project when it was using the full .NET Framework.
-    
-    ![Dependencies and packages](Packages.png)
-    
-    Here is the content of the **Packages.config** file:
-    
-    ```xml
-    <?xml version="1.0" encoding="utf-8"?>
-    <packages>
-      <package id="Bogus" version="25.0.3" targetFramework="net472" />
-      <package id="LiteDB" version="4.1.4" targetFramework="net472" />
-    </packages>
-    ```
-    
-    You notice there the two missing references mentionned in the errors messages: *Bogus* and *LiteDB*.
-    
-9.  Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**. This file was used when the project was using the .NET Framework 4.7.2.
-
-10. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
-
-  ![Manage NuGet Packages...](ManageNugetNETCORE3.png)
-
-11. Click on **Browse** at the top left of the opened window and search for `Bogus`. The package by Brian Chavez should be listed. Install it.
-
-    ![Bogus NuGet package](Bogus.png)
-
-12. Do the same for `LiteDB`. This package is provided by Mauricio David.
-
-    ![LiteDB NuGet package](LiteDB.png)
-
-> Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
-
-In fact, if you give a closer look at the packages' details, you will see that they support .NET Standard 2.0 which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
-
-![Dot Net standard](DotNetStandard.png)
-
-13. Rebuilgd the project (CTRL+SHIFT+B) and... you succeed!
-
-```bash
-========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
-```
-
-### Task 4 - Perform the migration - Debug
-
-We are ok to finally, launch the app.
-
-1.  Use the **Debug** menu / **Start Debugging F7**
-
-> You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
-
-![Exception displayed in Visual Studio](ExceptionNETCore3.png)
-
-Strange because the images files are in the solution and the path seems correct.
-
-![Images in the Solution Explorer](ImagesInTheSolutionExplorer.png)
-
-> Why do we get this file not found exception?
-
-In fact, it is simple. Again, as we hardly deleted all the content of the csproj file at the beginning of the migration, we removed the information about the **Build action** for the images' files. Let fix it.
-
-2.  In the **Solution Explorer**, select all the images files except the contoso.ico ; In the properties windows choose **Build action** = `Content` and **Copy to Output Directory** = `Copy if Newer`
-
-    ![Build Action Content and Copy if newer](ContentCopyIfNewer.png)
-
-3.  To assign the Contoso.ico to the app, we have to right click on the project in the **Solution Explorer** / **Properties**. In the opened page, click on the dropdown listbox for Icon and select `Images\contoso.ico`
-
-    ![Contoso ico in the Project's Properties](ContosoIco.png)
-
-We are done! Test the app in debug with F7 and it should work like a charm... Using .NET Core 3!
-
-We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
 
 ___
-## Exercise - Integrate a custom UWP XAML component
+## Exercise 3 - Integrate a custom UWP XAML component
 The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
 Thanks to XAML Island, we can start replacing some WPF controls with the UWP counterpart, which are already optimized for multiple input experiences, like touch and pen.
 
@@ -1069,10 +866,215 @@ We're done! Let's test agian the project:
 We have replaced an existing WPF control with a newer mordern version, which fully supports mouse, keyboard, touch and digital pens. Despite the fact that it isn't included as 1st party control in the Windows Community Toolkit, we've been able anyway to include a **CalendarView** control in our application and to interact with it.
 
 ___
-## Exercise 5 - Create a XAML Island wrapper
-From a technical point of view, the outcome of the previous code works without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to an event handler exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **SelectedDates** property.
+## Exercise 4 - Create a XAML Island wrapper
+From a technical point of view, the outcome of the previous code works without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to the **ChildChanged** event exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **SelectedDates** property.
 
 We can solve this problem by creating our own wrapper to the UWP control we want to integrate, exactly like the **MapControl** or the **InkCanvas** controls. The purpose of this wrapper is to take the properties and events exposed by UWP control and forward them to the WPF control, so that they could be directly access like with a native .NET control. Let's start!
 
 
+
+___
+## Exercise 5 - Migrate to .NET Core
+Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernazing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
+
+### Task 1 - Setup for using .NET Core
+At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
+- The .NET Core 3 runtime - https://github.com/dotnet/core-setup
+- The .NET Core 3 SDK - https://github.com/dotnet/core-sdk
+
+Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. On the other hand, if you are using you own computer, just navigate to the two links above and take the correct installer for your platform.
+
+![Download .NET Core](DownloadNETCore.png)
+
+### Task 2 - Perform the migration - The csproj
+As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
+
+Let's open the solution using Visual Studio 2019 Preview:
+1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
+    
+    The project ContosoExpenses is now open in Visual Studio but nothing changed: The appllication still uses the Full .NET 4.7.2. To verify this, just right click on the project in the Solution Explorer Windows and **Properties**.
+    
+    ![Project properties in the Solution Explorer](PropertiesContosoExpenses.png)
+
+    The *Target framework* of the project is displayed in the **Application** tab.
+    
+    ![.NET Framework version 4.7.2 for the project](NETFramework472.png)
+
+2.  Right click on the project in the solution explorer and choose **Unload Project**.
+
+    ![Unload project](UnloadProject.png)
+
+3.  Right click again on the project in the solution explorer ; click **Edit ContosoExpenses.csproj**.
+
+    ![Edit ContosoExpenses csproj](EditContosoExpensesCSPROJ.png)
+
+4.  The content of the .csproj file looks like
+
+    ![csproj file content](CSPROJFile.png)
+
+    Do not be afraid, it is not the time to understand the whole csproj structure. You will see that the migration will be done easely: Juste remove all the content of the file by doing **CTRL+A** and than  **SUPPR**!
+    
+    ![Empty csproj file](EmptyCSPROJ.png)
+    
+5.  Start writing the new csproj file content by typing `<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop"> </Project>` in the ContosoExpense.csproj. Microsoft.NET.Sdk.WindowsDesktop is the .NET Core 3 SDK for applications on Windows Desktop. It includes WPF and Windows Forms.
+
+    ![Windows Desktop in csproj](WindowsDesktopInCSPROJ.png)
+
+7.  Let's specify now a few details. To do this, insert a `<PropertyGroup></PropertyGroup>` element in inside the `<Project></Project>` element. 
+
+    ![PropertyGroup inside Project in csproj](PropertyGroup.png)
+
+8.  First, we indicate that the project output is a **executable** and not a dll. This is acheived by adding `<OutputType>WinExe</OutputType>` inside `<PropertyGroup></PropertyGroup>`.
+
+> Note that, if the project output was a dll, this line has to be omitted.
+
+9.  Secondly, we specify that the project is using .NET Core 3: Just below the <OutputType> line, add ` <TargetFramework>netcoreapp3.0</TargetFramework>`
+
+10. Lastly, we point out that this is a WPF application in adding a third line: `<UseWPF>true</UseWPF>`.
+
+> If the application is Windows Forms, we do not need this third line.
+
+#### Summary, verification and last step
+
+- The project using .NET Core 3 and the **Microsoft.NET.Sdk.WindowsDesktop** SDK
+- Output is an **application** so we need the `<OutputType>` element
+- `<UseWPF>` is self-describing
+
+Here is the full content of the new csproj. Please double check that you have everything:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+</Project>
+```
+
+It is now safe to save the csproj file. You can use **CTRL+S**.
+
+### Task 3 - Perform the migration - Actions in the project
+
+1.  The csproj is saved. Let's reopen the project: Go to the **Solution Explorer**, right click on the project and choose **Reload project**.
+
+    ![Reload project in the Solution Explorer](ReloadProject.png)
+    
+2.  Visual Studio just asks for a confirmation ; click **yes**.
+
+    ![Confirmation for closing the csproj](CloseCSPROJ.png)
+    
+3.  The project should load correctly. Let's try to build it in order to 'discover' the last steps to perform to complete the migration. Use the **Build** menu and **Build solution**.
+
+    ![Builld solution in Visual Studio](BuildSolutionInVisualStudio.png)
+    
+4.  As expected, we have some errors. Open the **Output window** which is located in the bottom left of the Visual Studio window.
+
+    ![Output windows of Visual Studio](OutputWindowVisualStudio.png)
+    
+5.  Let's fix the first series of error:
+    
+    ```bash
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(14,12,14,54): error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(15,12,15,60): error CS0579: Duplicate 'System.Reflection.AssemblyConfigurationAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(16,12,16,58): error CS0579: Duplicate 'System.Reflection.AssemblyFileVersionAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(18,12,18,54): error CS0579: Duplicate 'System.Reflection.AssemblyProductAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(19,12,19,52): error CS0579: Duplicate 'System.Reflection.AssemblyTitleAttribute' attribute
+    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(20,12,20,54): error CS0579: Duplicate 'System.Reflection.AssemblyVersionAttribute' attribute
+    ```
+    
+    It is not interesting to give explanations here: It is only 'piping' we have to resolve by either removing the mentionned lines in the `AssemblyInfo.cs` file or just delete the file. We go for the simpliest. 
+
+6.  In the **Solution Explorer** window / Under the **ContosoExpenses** project, expand the **Properties** node and right click on the **AssemblyInfo.cs** file ; Click on **Delete**.
+    
+    ![AssemblyInfo cs file](AssemblyInfoFile.png)
+
+7.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last two previous error should remain liste.
+
+    ```bash
+    1>Services\DatabaseService.cs(5,7,5,12): error CS0246: The type or namespace name 'Bogus' could not be found (are you missing a using directive or an assembly reference?)
+    1>Services\DatabaseService.cs(6,7,6,13): error CS0246: The type or namespace name 'LiteDB' could not be found (are you missing a using directive or an assembly reference?)
+    ```
+    
+> What could be the problem here? Remember that we removed (the hard way) all the content of the initial csproj file.
+
+The NuGet packages used by the project were gone by removing all the content of the csproj! Remember that all these steps are perform for achieving the migration with the Preview version of .NET Core 3 and Visual Studio 2019. 
+
+8.  You have a confirmation by expending the **Dependencies/NuGet** node in which you have only the .NET Code 3 package.
+
+    ![NuGet packages](NuGetPackages.png)
+    
+    Also, if you click on the **Packages.config** in the **Solution Explorer**. You will find the 'old' references NuGet packages by the project when it was using the full .NET Framework.
+    
+    ![Dependencies and packages](Packages.png)
+    
+    Here is the content of the **Packages.config** file:
+    
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <packages>
+      <package id="Bogus" version="25.0.3" targetFramework="net472" />
+      <package id="LiteDB" version="4.1.4" targetFramework="net472" />
+    </packages>
+    ```
+    
+    You notice there the two missing references mentionned in the errors messages: *Bogus* and *LiteDB*.
+    
+9.  Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**. This file was used when the project was using the .NET Framework 4.7.2.
+
+10. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
+
+  ![Manage NuGet Packages...](ManageNugetNETCORE3.png)
+
+11. Click on **Browse** at the top left of the opened window and search for `Bogus`. The package by Brian Chavez should be listed. Install it.
+
+    ![Bogus NuGet package](Bogus.png)
+
+12. Do the same for `LiteDB`. This package is provided by Mauricio David.
+
+    ![LiteDB NuGet package](LiteDB.png)
+
+> Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
+
+In fact, if you give a closer look at the packages' details, you will see that they support .NET Standard 2.0 which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+
+![Dot Net standard](DotNetStandard.png)
+
+13. Rebuilgd the project (CTRL+SHIFT+B) and... you succeed!
+
+```bash
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+```
+
+### Task 4 - Perform the migration - Debug
+
+We are ok to finally, launch the app.
+
+1.  Use the **Debug** menu / **Start Debugging F7**
+
+> You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
+
+![Exception displayed in Visual Studio](ExceptionNETCore3.png)
+
+Strange because the images files are in the solution and the path seems correct.
+
+![Images in the Solution Explorer](ImagesInTheSolutionExplorer.png)
+
+> Why do we get this file not found exception?
+
+In fact, it is simple. Again, as we hardly deleted all the content of the csproj file at the beginning of the migration, we removed the information about the **Build action** for the images' files. Let fix it.
+
+2.  In the **Solution Explorer**, select all the images files except the contoso.ico ; In the properties windows choose **Build action** = `Content` and **Copy to Output Directory** = `Copy if Newer`
+
+    ![Build Action Content and Copy if newer](ContentCopyIfNewer.png)
+
+3.  To assign the Contoso.ico to the app, we have to right click on the project in the **Solution Explorer** / **Properties**. In the opened page, click on the dropdown listbox for Icon and select `Images\contoso.ico`
+
+    ![Contoso ico in the Project's Properties](ContosoIco.png)
+
+We are done! Test the app in debug with F7 and it should work like a charm... Using .NET Core 3!
+
+We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
 
