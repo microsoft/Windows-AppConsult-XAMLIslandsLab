@@ -1,4 +1,6 @@
-﻿namespace ContosoExpenses.Models
+﻿using System;
+
+namespace ContosoExpenses.Models
 {
     public class Expense
     {
@@ -8,6 +10,7 @@
         public double Cost { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
+        public DateTime Date { get; set; }
         public int EmployeeId { get; set; }
     }
 }

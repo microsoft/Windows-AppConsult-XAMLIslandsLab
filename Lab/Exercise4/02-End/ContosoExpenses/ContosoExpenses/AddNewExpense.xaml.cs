@@ -29,8 +29,6 @@ namespace ContosoExpenses
     {
         public int EmployeeId { get; set; }
 
-        private DateTime SelectedDate;
-
         public AddNewExpense()
         {
             InitializeComponent();
@@ -47,7 +45,7 @@ namespace ContosoExpenses
                     Cost = Convert.ToDouble(txtAmount.Text),
                     Description = txtDescription.Text,
                     Type = txtType.Text,
-                    Date = SelectedDate,
+                    Date = CalendarUwp.SelectedDates.FirstOrDefault().DateTime,
                     EmployeeId = EmployeeId
                 };
 
@@ -61,32 +59,14 @@ namespace ContosoExpenses
             }
         }
 
-        private void CalendarUwp_ChildChanged(object sender, EventArgs e)
-        {
-            WindowsXamlHost windowsXamlHost = (WindowsXamlHost)sender;
-
-            Windows.UI.Xaml.Controls.CalendarView calendarView =
-                (Windows.UI.Xaml.Controls.CalendarView)windowsXamlHost.Child;
-
-            if (calendarView!= null)
-            {
-                calendarView.SelectedDatesChanged += (obj, args) =>
-                {
-                    if (calendarView.SelectedDates.Count > 0)
-                    {
-                        SelectedDate = calendarView.SelectedDates.FirstOrDefault().DateTime;
-                        txtDate.Text = SelectedDate.ToShortDateString();
-                    }
-                };
-
-                calendarView.MinDate = DateTimeOffset.Now.AddYears(-1);
-                calendarView.MaxDate = DateTimeOffset.Now;
-            }
-        }
-
         private void Window_Closed(object sender, EventArgs e)
         {
             CalendarUwp.Dispose();
+        }
+
+        private void CalendarUwp_SelectedDatesChanged(object sender, SelectedDatesChangedEventArgs e)
+        {
+            txtDate.Text = e.SelectedDates.FirstOrDefault().DateTime.ToShortDateString();
         }
     }
 }

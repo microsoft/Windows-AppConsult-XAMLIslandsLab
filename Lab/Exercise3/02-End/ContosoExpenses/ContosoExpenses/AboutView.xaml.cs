@@ -12,7 +12,6 @@
 
 // ******************************************************************
 
-using Microsoft.Toolkit.Wpf.UI.Controls;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -23,18 +22,6 @@ namespace ContosoExpenses
         public AboutView()
         {
             InitializeComponent();
-            Loaded += AboutView_Loaded;
-        }
-
-        private void AboutView_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // Workaround for scaling issue
-            var webView = LayoutRoot.Children.OfType<WebView>().FirstOrDefault();
-
-            if(webView != null)
-            {
-                webView.NavigationCompleted += (s,a) => { webView.Height = this.Height; webView.Width = this.Width; };
-            }
         }
     }
 }
