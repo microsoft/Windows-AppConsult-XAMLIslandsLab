@@ -1355,7 +1355,15 @@ NuGet packages supports multi-targeting. You can include, in the same package, d
 
 > Since we don't have anymore a packages.config file, can you guess where the list of NuGet packages gets stored?
 
-With the new project format, the referenced NuGet packages are stored directly in the .csproj file. You can check by right clicking on the **ContosoExpenses** project in Solution Explorer and choosing **Edit ContosoExpenses.csproj**. You will find 
+With the new project format, the referenced NuGet packages are stored directly in the .csproj file. You can check by right clicking on the **ContosoExpenses** project in Solution Explorer and choosing **Edit ContosoExpenses.csproj**. You will find some new lines compared to when we have manually edited the file:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Bogus" Version="25.0.3" />
+  <PackageReference Include="LiteDB" Version="4.1.4" />
+</ItemGroup>
+```
+
 
 ### Task 4 - Perform the migration - Debug
 
