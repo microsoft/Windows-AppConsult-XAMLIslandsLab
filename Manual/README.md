@@ -1258,7 +1258,7 @@ Here is the full content of the new csproj. Please double check that you have ev
 </Project>
 ```
 
-By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have any more to specify each single file included in the project, like it was with the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
+By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have any more to specify each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
 It is now safe to save file by pressing **CTRL+S**.
 
 ### Task 3 - Perform the migration - Actions in the project
@@ -1343,7 +1343,7 @@ The NuGet packages used by the project were gone by removing all the content of 
 
 > Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
 
-NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supproting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supporting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
 
 ![Dot Net standard](DotNetStandard.png)
 
