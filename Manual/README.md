@@ -48,7 +48,7 @@ If you already have these tools on your computer, feel free to directly use it f
 - Universal Windows Platform development
 
 ### Scenario
-Contoso Expenses is an internal used by managers of Contoso Corporation to keep track of the expenses reported by their reports. Modernizing this application is necessary in order to enhance employee efficiency when creating expenses reports. Many of the requested features could be easily implemented with the Universal Windows Platform. However, the application is complex and it's the outcome of many years of development by different teams. As such, rewriting it from scratch with a new technology isn't an option on the table. The team is looking for the best approach to add these features but, at the same time, reusing the existing codebase.
+Contoso Expenses is an internal application used by managers of Contoso Corporation to keep track of the expenses submitted by their reports. Modernizing this application is necessary in order to enhance employee efficiency when creating expenses reports. Many of the requested features could be easily implemented with the Universal Windows Platform. However, the application is complex and it's the outcome of many years of development by different teams. As such, rewriting it from scratch with a new technology isn't an option on the table. The team is looking for the best approach to add these features but, at the same time, reusing the existing codebase.
 
 ### The project
 Contoso Expenses is a desktop application, built with WPF and the .NET Framework. Being an application built for demo purposes, it contains some simplifications compared to a real WPF project, like:
@@ -1258,7 +1258,8 @@ Here is the full content of the new csproj. Please double check that you have ev
 </Project>
 ```
 
-It is now safe to save the csproj file. You can use **CTRL+S**.
+By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have any more to specify each single file included in the project, like it was with the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
+It is now safe to save file by pressing **CTRL+S**.
 
 ### Task 3 - Perform the migration - Actions in the project
 
@@ -1342,15 +1343,19 @@ The NuGet packages used by the project were gone by removing all the content of 
 
 > Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
 
-In fact, if you give a closer look at the packages' details, you will see that they support .NET Standard 2.0 which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supproting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
 
 ![Dot Net standard](DotNetStandard.png)
 
-13. Rebuilgd the project (CTRL+SHIFT+B) and... you succeed!
+13. Rebuild the project (CTRL+SHIFT+B) and... you succeed!
 
 ```bash
 ========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
 ```
+
+> Since we don't have anymore a packages.config file, can you guess where the list of NuGet packages gets stored?
+
+With the new project format, the referenced NuGet packages are stored directly in the .csproj file. 
 
 ### Task 4 - Perform the migration - Debug
 
