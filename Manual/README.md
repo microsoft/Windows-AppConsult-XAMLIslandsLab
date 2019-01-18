@@ -1367,6 +1367,26 @@ In fact, it is simple. Again, as we hardly deleted all the content of the csproj
 
     ![Contoso ico in the Project's Properties](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/blob/master/Manual/Images/ContosoIco.png)
 
+There is another issue which is due the fact that the NuGet Package `Microsoft.Toolkit.Wpf.UI.Controls` is in preview. It supports the .NET Full Framework and not yet the .NET Core Framework. That is why we need an extra modification: Use the Preview of the version supporting .NET Core. Let's use such a version:
+
+1.  In the **Solution Explorer**, right click on the solution and choose **Add** / **New item...**.
+
+2.  Create a new file named `nuget.config` and use the following content.
+
+```json
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <!--To inherit the global NuGet package sources remove the <clear/> line below -->
+    <clear />
+    <add key="nuget" value="https://api.nuget.org/v3/index.json" />
+    <add key="Custom" value="https://www.myget.org/CUSTOM/api/v3/index.json" />
+  </packageSources>
+</configuration>
+```
+
+The NuGet package `Microsoft.Toolkit.Wpf.UI.Controls` supporting .NET Core will come from this added Packages source.
+
 We are done! Test the app in debug with F7 and it should work like a charm... Using .NET Core 3!
 
 We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
