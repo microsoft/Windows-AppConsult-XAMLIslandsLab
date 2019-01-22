@@ -894,14 +894,9 @@ We can solve this problem by creating our own wrapper to the UWP control we want
     ```csharp
     public class CalendarViewWrapper: WindowsXamlHostBase
     {
-        public CalendarViewWrapper() : base()
-        {
-    
-        }
     }
     ```
-    
-    We have added a public constructor, which does nothing more than implementing the same base costructor of the **WindowsXamlHostBase** class.
+
 6. The next step is to initialize the control with the UWP control we want to host, in our case the **CalendarView** one. Copy and paste the following code inside the class:
 
     ```csharp
