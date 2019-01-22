@@ -371,7 +371,7 @@ Like the **InkCanvas** control we have previously added to handle the signature,
 
     We're adding the **MapControl** to the page and we're assigning a name to it. We're reusing the same prefix we have defined in the previous exercise, **toolkit**, which points to the namespace **Microsoft.Toolkit.Wpf.UI.Controls**.
     
-6. Increment the number of **Grid.Row** attached property of **InkCanvas** and **TextBlock** under the **MapControl** to move down one line.
+6. Increment the number associated to the **Grid.Row** property for the **InkCanvas** and **TextBlock** under the **MapControl**. Here are the new values.
 
     ```xml
     <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
@@ -379,7 +379,7 @@ Like the **InkCanvas** control we have previously added to handle the signature,
     <toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />
     ```
 
-7. Like we did with the **InkCanvas** control we have added in the previous task, we need to dispose the **MapControl** when the windows gets closed, to avoid multiple instantions that could lead to exceptions. As such, double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
+7. Like we did with the **InkCanvas** control we have added in the previous task, we need to dispose the **MapControl** when the windows gets closed, to avoid multiple instantiations that could lead to exceptions. As such, double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
 8. Locate the **Windows_Closed** event handler you have declared in the previous task.
 9. Add the following code before the end of the event handler:
 
