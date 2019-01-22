@@ -1173,7 +1173,7 @@ Do not worry, using the VM provided, all is already setup for you: You do not ha
 As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
 
 Let's open the solution using Visual Studio 2019 Preview:
-1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
+1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise5\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
     
     The project ContosoExpenses is now open in Visual Studio but nothing changed: The appllication still uses the Full .NET 4.7.2. To verify this, just right click on the project in the Solution Explorer Windows and **Properties**.
     
@@ -1383,14 +1383,59 @@ There is another issue which is due the fact that the NuGet Package `Microsoft.T
     <!--To inherit the global NuGet package sources remove the <clear/> line below -->
     <clear />
     <add key="nuget" value="https://api.nuget.org/v3/index.json" />
-    <add key="Custom" value="https://www.myget.org/CUSTOM/api/v3/index.json" />
+    <add key="Custom" value="https://www.myget.org/F/miguelrb/api/v3/index.json" />
   </packageSources>
 </configuration>
 ```
 
 The NuGet package `Microsoft.Toolkit.Wpf.UI.Controls` supporting .NET Core will come from this added Packages source.
 
-We are done! Test the app in debug with F7 and it should work like a charm... Using .NET Core 3!
+> Note that this steps has to be done only because we are in a Preview version. When released, the NuGet package will come from the NuGet public source without having to add this custom package source.
+
+3.  A final step is necessary. The preview version of the `Microsoft.Toolkit.Wpf.UI.Controls` does not include yet the 1st party controls. We have to temporarily remove then from the ExpenseDetail page. Please comment the lines below in the `ExpenseDetail.xaml` file.
+
+```xml
+<!--<toolkit:MapControl Grid.Row="5" x:Name="ExpenseMap" />
+
+<TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
+
+<toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />-->
+```
+
+4.  Comment also the following lines in `ExpenseDetail.xaml.cs`.
+
+```csharp
+public ExpenseDetail()
+{
+    InitializeComponent();
+    //Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
+
+    //MapService.ServiceToken = "IFFAI5SFOtHV9VBKF8Ea~3FS1XamCV2NM0IqlfoQo6A~AguqcUboJvnqWU1H9E-6MVThouJoCrM4wpv_1R_KX_oQLV_e59vyoK42470JvLsU";
+}
+
+private async void Window_Loaded(object sender, RoutedEventArgs e)
+{
+    txtType.Text = SelectedExpense.Type;
+    txtDescription.Text = SelectedExpense.Description;
+    txtLocation.Text = SelectedExpense.Address;
+    txtAmount.Text = SelectedExpense.Cost.ToString();
+    Chart.Height = (SelectedExpense.Cost * 400) / 1000;
+
+    //var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
+    //var location = result.Locations.FirstOrDefault();
+    //if (location != null)
+    //{
+    //    await ExpenseMap.TrySetViewAsync(location.Point, 13);
+    //}
+}
+
+private void Window_Closed(object sender, EventArgs e)
+{
+    //Signature.Dispose();
+    //ExpenseMap.Dispose();
+}
+```
+
+We are done! Test the app in debug with F7 and it should work... Using .NET Core 3!
 
 We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
-
