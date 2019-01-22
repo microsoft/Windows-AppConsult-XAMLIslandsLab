@@ -10,11 +10,6 @@ namespace ContosoExpenses
 {
     public class CalendarViewWrapper : WindowsXamlHostBase
     {
-        public CalendarViewWrapper() : base()
-        {
-
-        }
-
         public event EventHandler<SelectedDatesChangedEventArgs> SelectedDatesChanged;
 
         protected override void OnInitialized(EventArgs e)
