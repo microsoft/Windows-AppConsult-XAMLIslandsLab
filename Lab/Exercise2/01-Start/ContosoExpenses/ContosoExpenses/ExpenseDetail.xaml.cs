@@ -45,7 +45,6 @@ namespace ContosoExpenses
         private void Window_Closed(object sender, EventArgs e)
         {
             Signature.Dispose();
-            ExpenseMap.Dispose();
         }
     }
 }
