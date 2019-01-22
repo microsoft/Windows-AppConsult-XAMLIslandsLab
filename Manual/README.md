@@ -371,7 +371,7 @@ Like the **InkCanvas** control we have previously added to handle the signature,
 
     We're adding the **MapControl** to the page and we're assigning a name to it. We're reusing the same prefix we have defined in the previous exercise, **toolkit**, which points to the namespace **Microsoft.Toolkit.Wpf.UI.Controls**.
     
-6. Increment the number of **Grid.Row** attached property of **InkCanvas** and **TextBlock** for the label to move down one line.
+6. Increment the number of **Grid.Row** attached property of **InkCanvas** and **TextBlock** under the **MapControl** to move down one line.
 
     ```xml
     <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
