@@ -371,15 +371,23 @@ Like the **InkCanvas** control we have previously added to handle the signature,
 
     We're adding the **MapControl** to the page and we're assigning a name to it. We're reusing the same prefix we have defined in the previous exercise, **toolkit**, which points to the namespace **Microsoft.Toolkit.Wpf.UI.Controls**.
     
-6. Like we did with the **InkCanvas** control we have added in the previous task, we need to dispose the **MapControl** when the windows gets closed, to avoid multiple instantions that could lead to exceptions. As such, double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
-7. Locate the **Windows_Closed** event handler you have declared in the previous task.
-8. Add the following code before the end of the event handler:
+6. Increment the number of **Grid.Row** attached property of **InkCanvas** and **TextBlock** under the **MapControl** to move down one line.
+
+    ```xml
+    <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
+
+    <toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />
+    ```
+
+7. Like we did with the **InkCanvas** control we have added in the previous task, we need to dispose the **MapControl** when the windows gets closed, to avoid multiple instantions that could lead to exceptions. As such, double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
+8. Locate the **Windows_Closed** event handler you have declared in the previous task.
+9. Add the following code before the end of the event handler:
 
     ```csharp
     ExpenseMap.Dispose();
     ```
-9. Now launch the application.
-10. Choose one of the employees, then one of the expenses. This is how the updated expense detail page should look like:
+10. Now launch the application.
+11. Choose one of the employees, then one of the expenses. This is how the updated expense detail page should look like:
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/MapControlPreview.png)
     
