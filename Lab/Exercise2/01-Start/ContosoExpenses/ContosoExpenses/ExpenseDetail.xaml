@@ -40,7 +40,6 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -67,13 +66,9 @@
                 <TextBlock x:Name="txtLocation" FontSize="16" Margin="5, 0, 0, 0" />
             </StackPanel>
 
-            <toolkit:MapControl Grid.Row="5" x:Name="ExpenseMap" />
-
-            <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
+            <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="5" />
             
-            <toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />
-            
-            
+            <toolkit:InkCanvas x:Name="Signature" Grid.Row="6" />
         </Grid>
 
         <!-- Chart -->
