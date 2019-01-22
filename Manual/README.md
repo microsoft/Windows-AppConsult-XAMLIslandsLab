@@ -765,7 +765,7 @@ In order to implement our scenario, we need to move to the code behind and cast 
     
 6. There's one last small change we need to make. If you remember when we have tested the application at the end of the previous task, the look and feel of the window wasn't really good. The reason is that the **CalendarView** control takes more space than the previous **DatePicker** and, as such, the current size of the window isn't enough to fit all the content. Let's incrase the height of the window. 
 7. Locate the **Window** tag at the top of the XAML file.
-8. Locate the **Height** property and change the value from **400** to **800**.
+8. Locate the **Height** property and change the value from **450** to **800**.
 9. Also the **WindowsXamlHost** control must be properly disposed in order to be reused. As such, we need to subscribe to the **Closed** event also in this window, by adding the following attribute:
 
     ```xml
