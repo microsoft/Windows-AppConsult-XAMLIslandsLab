@@ -138,8 +138,8 @@ So in our Contoso Expenses application we will bring a modern touch by using Ink
 ### Task 1 - Setup the Contoso Expenses solution
 Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
-1.  In the Windows Explorer, create a new local folder like *"C:\XAMLIslandsLab"*. It will be our working folder for the Contoso Dashboard website.
-2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. Click on the **releases** tab and donwload the latest release.
+1.  In the Windows Explorer, create a new local folder on the C: drive like `XAMLIslandsLab`. It will be our working folder for the Contoso Dashboard website.
+2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. Click on the **releases** tab and download the latest release.
 
 3.  When ready, click on the downloaded file in your browser to open it.
 
@@ -147,7 +147,7 @@ Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
 4.  Open the zip file and extract all the content to your working folder "C:\XAMLIslandsLab" you've just created.
 
-5.  Open Visual Studio 2019, and double click on the *"C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln"* file to open the solution.
+5.  Open Visual Studio 2019, and double click on the `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` file to open the solution.
 
     ![ContosoExpenses solution in Windows Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoExpensesSolution.png)
 
@@ -158,7 +158,7 @@ We need this WPF package because it takes care for us about all the necessary pi
 
 Please note that the same package exists for Windows Forms. Its name is <a href="https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.Controls/" target="_blank">Microsoft.Toolkit.Forms.UI.Controls</a>.
 
-1.  If the Contoso Expenses solution is not opened in Visual Studio, double click on *"Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln* in the folder where you have extracted the zipped file (it should be *"C:\XAMLIslandsLab"*).
+1.  If the Contoso Expenses solution is not opened in Visual Studio, double click on `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` (the folder where you have extracted the zipped file).
 2.  Right click on the **ContosoExpenses** project in the Solution Explorer window on the left and choose **Manage NuGet Packages...**.
 
     ![Manage NuGet Packages menu in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ManageNuGetPackages.png)
@@ -331,7 +331,7 @@ The Universal Windows Platform includes a beautiful and performant control to di
 ### Task 1 - Use the MapControl in the application
 Like the **InkCanvas** control we have previously added to handle the signature, the **MapControl** is another 1st party control included in the Windows Community Toolkit. As such, we can reuse the same library we have installed in the previous task to add this new control in the detail page of an expense.
 
-1. If you have completed Exercise 1, you can continue working on the same project. Otherwise, open the folder *"Lab/Exercise2/01-Start/ContosoExpenses"* in the location where you have unzipped the lab (it should be *"C:\XAMLIslandLab"* and double click on the **ContosoExpenses.sln** file.
+1. If you have completed Exercise 1, you can continue working on the same project. Otherwise, open the folder `C:\XAMLIslandsLab\Lab\Exercise2\01-Start\ContosoExpenses` ; Double click on the **ContosoExpenses.sln** file.
 2. We're going to add a new row, right after the full address, with the map control. Look, in the main **Grid** control, for the list of rows inside the **Grid.RowDefinitions** property.
 3. Add the following code after the 5th row:
 
@@ -481,15 +481,15 @@ In order to start using Universal Windows Platform APIs in a WPF application we 
 1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
 2. Choose **Add reference**.
 3. Press the **Browse** button.
-4. Look for the following folder on the system: *"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\"*
-5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the **Windows.md** file will become visible.
+4. Look for the following folder on the system: `C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\`
+5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the `Windows.md` file will become visible.
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsMd.png)
     
 6. Select it and press **Add**.
 7. Now press again the **Browse** button.
-8. This time look for the following folder on the system: *"C:\Windows\Microsoft.NET\Framework\v4.0.30319"*
-9. Look for a file called **System.Runtime.WindowsRuntime.dll**, select it and press Ok.
+8. This time look for the following folder on the system: `C:\Windows\Microsoft.NET\Framework\v4.0.30319`
+9. Look for a file called `System.Runtime.WindowsRuntime.dll`, select it and press Ok.
 10. Now expand the **References** section of the **ContosoExpenses** project in Solution Explorer and look for the **Windows** reference.
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsReference.png)
@@ -510,7 +510,7 @@ Now that we have enabled the Universal Windows Platform in our WPF project, we c
     ```csharp
     using Windows.Services.Maps;
     ```
-3. Look for the **Window_Loaded** event handler.
+3. Look for the `Window_Loaded` event handler.
 4. Copy and paste the following code at the end of the handler, after the initialization of the other controls in the page:
 
     ```csharp
@@ -686,7 +686,7 @@ However, it isn't included as a 1st party control in the Windows Community Toolk
 
     We have added the **WindowsXamlHost** control, by using the **xamlhost** prefix we have just defined. The most important property to setup the control is **InitialTypeName**: you must specify the full name of the UWP control you want to host. In our case, we specify the full signature of the **CalendarView** control, which is **Windows.UI.Xaml.Controls.CalendarView**.
     
-8. Let's test the work now. In order to compile our project, we need to make a small change. Locate the **AddNewExpense.xaml.cs** file in Solution Explorer and double click on it.
+8. Let's test the work now. In order to compile our project, we need to make a small change. Locate the `AddNewExpense.xaml.cs` file in Solution Explorer and double click on it.
 9. You will notice that there's a compilation error in the file. The **OnSaveExpenses()** method, in fact, contains the following code snippet:
 
     ```csharp
@@ -888,9 +888,9 @@ We can solve this problem by creating our own wrapper to the UWP control we want
 
 ### Task 1 - Create a basic wrapper
 
-1. If you have completed Exercise 3, you can start from the outcome of it. Otherwise, open the folder *"Lab/Exercise4/01-Start/ContosoExpenses"* from the location where you have unzipped the lab (it should be *"C:\XAMLIslandLab*") and double click on the **ContosoExpenses.sln** file.
+1. If you have completed Exercise 3, you can start from the outcome of it. Otherwise, open the folder `C:\XAMLIslandsLab\Lab\Exercise4\01-Start\ContosoExpenses` and double click on the **ContosoExpenses.sln** file.
 2. First we need to create the wrapper control. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Add -> Class**. 
-3. Name it **CalendarViewWrapper** and press OK.
+3. Name it `CalendarViewWrapper` and press OK.
 4. Add a reference to the following namespaces at the top of the class:
 
     ```csharp
@@ -1157,10 +1157,10 @@ Now we can test the code. Press F5 to launch the application, choose an employee
 That's it! Our wrapper is working and it makes easier to interact with the original UWP control directly from the WPF XAML. As optional task, you can try to change the properties we have created (**SelectedDates**, **MinDate** and **MaxDate**) to [dependencies properties](https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/dependency-properties-overview), so that they can properly support binding.
 
 ___
-## Exercise 5 - Migrate to .NET Core
-Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentionned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
+## Exercise 5 - Migrate to .NET Core 3
+Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentioned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
-### Task 1 - Setup for using .NET Core
+### Task 1 - Setup for using .NET Core 3
 At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
 - The .NET Core 3 runtime - https://github.com/dotnet/core-setup
 - The .NET Core 3 SDK - https://github.com/dotnet/core-sdk
@@ -1353,7 +1353,7 @@ The Preview version of .NET Core 3 and Visual Studio 2019 causes the last 6 erro
 
 2.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last three previous errors should remain listed (if nothing is displayed in the **Error List** window, look at the **Output** window).
 
-    ```bash
+    ```dos
     1>------ Build started: Project: ContosoExpenses, Configuration: Debug Any CPU ------
     ...
     1>ExpenseDetail.xaml.cs(20,15,20,23): error CS0234: The type or namespace name 'Services' does not exist in the namespace 'Windows' (are you missing an assembly reference?)
@@ -1379,15 +1379,15 @@ In order to be able to use the Universal Windows Platform APIs in a WPF applicat
 1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
 2. Choose **Add reference**.
 3. Press the **Browse** button.
-4. Look for the following folder on the system: *"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\"*
-5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the **Windows.md** file will become visible.
+4. Look for the following folder on the system: `C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\`
+5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the `Windows.md` file will become visible.
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsMd.png)
     
 6. Select it and press **Add**.
 7. Now press again the **Browse** button.
-8. This time look for the following folder on the system: *"C:\Windows\Microsoft.NET\Framework\v4.0.30319"*
-9. Look for a file called **System.Runtime.WindowsRuntime.dll**, select it and press Ok.
+8. This time look for the following folder on the system: `C:\Windows\Microsoft.NET\Framework\v4.0.30319`
+9. Look for a file called `System.Runtime.WindowsRuntime.dll`, select it and press Ok.
 10. Now expand the **References** section of the **ContosoExpenses** project in Solution Explorer and look for the **Windows** reference.
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CopyLocalNETCore3.png)
