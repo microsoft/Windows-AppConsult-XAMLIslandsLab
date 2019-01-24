@@ -1240,7 +1240,7 @@ Here is the full content of the new csproj. Please double check that you have ev
 By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have any more to specify each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
 It is now safe to save file by pressing **CTRL+S**.
 
-### Task 3 - Perform the migration - Actions in the project
+### Task 3 - Perform the migration - NuGet packages of the project
 
 1.  The csproj is saved. Let's reopen the project: Go to the **Solution Explorer**, right click on the project and choose **Reload project**.
 
@@ -1250,73 +1250,39 @@ It is now safe to save file by pressing **CTRL+S**.
 
     ![Confirmation for closing the csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CloseCSPROJ.png)
     
-3.  The project should load correctly. Let's try to build it in order to 'discover' the last steps to perform to complete the migration. Use the **Build** menu and **Build solution**.
+3.  The project should load correctly. But remember: The NuGet packages used by the project were gone by removing all the content of the csproj! 
 
-    ![Builld solution in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/BuildSolutionInVisualStudio.png)
-    
-4.  As expected, we have some errors. Open the **Output window** which is located in the bottom left of the Visual Studio window.
-
-    ![Output windows of Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/OutputWindowVisualStudio.png)
-    
-5.  Let's fix the first series of error:
-    
-    ```bash
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(14,12,14,54): error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(15,12,15,60): error CS0579: Duplicate 'System.Reflection.AssemblyConfigurationAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(16,12,16,58): error CS0579: Duplicate 'System.Reflection.AssemblyFileVersionAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(18,12,18,54): error CS0579: Duplicate 'System.Reflection.AssemblyProductAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(19,12,19,52): error CS0579: Duplicate 'System.Reflection.AssemblyTitleAttribute' attribute
-    1>obj\Debug\netcoreapp3.0\ContosoExpenses_eywqybwm_wpftmp.AssemblyInfo.cs(20,12,20,54): error CS0579: Duplicate 'System.Reflection.AssemblyVersionAttribute' attribute
-    ```
-    
-    It is not interesting to give explanations here: It is only 'piping' we have to resolve by either removing the mentioned lines in the `AssemblyInfo.cs` file or just delete the file. We go for the simpliest. 
-
-6.  In the **Solution Explorer** window / Under the **ContosoExpenses** project, expand the **Properties** node and right click on the **AssemblyInfo.cs** file ; Click on **Delete**.
-    
-    ![AssemblyInfo cs file](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AssemblyInfoFile.png)
-
-7.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last two previous error should remain liste.
-
-    ```bash
-    1>Services\DatabaseService.cs(5,7,5,12): error CS0246: The type or namespace name 'Bogus' could not be found (are you missing a using directive or an assembly reference?)
-    1>Services\DatabaseService.cs(6,7,6,13): error CS0246: The type or namespace name 'LiteDB' could not be found (are you missing a using directive or an assembly reference?)
-    ```
-    
-> What could be the problem here? Remember that we removed (the hard way) all the content of the initial csproj file.
-
-The NuGet packages used by the project were gone by removing all the content of the csproj! Remember that all these steps are perform for achieving the migration with the Preview version of .NET Core 3 and Visual Studio 2019. 
-
-8.  You have a confirmation by expending the **Dependencies/NuGet** node in which you have only the .NET Code 3 package.
+4.  You have a confirmation by expending the **Dependencies/NuGet** node in which you have only the .NET Code 3 package.
 
     ![NuGet packages](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NuGetPackages.png)
     
-    Also, if you click on the **Packages.config** in the **Solution Explorer**. You will find the 'old' references NuGet packages by the project when it was using the full .NET Framework.
+    Also, if you click on the **Packages.config** in the **Solution Explorer**. You will find the 'old' references of the NuGet packages used the project when it was using the full .NET Framework.
     
     ![Dependencies and packages](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Packages.png)
     
-    Here is the content of the **Packages.config** file:
+    Here is the content of the **Packages.config** file. You notice that all NuGet Packages target the Full .NET Framework 4.7.2:
     
     ```xml
     <?xml version="1.0" encoding="utf-8"?>
     <packages>
       <package id="Bogus" version="25.0.3" targetFramework="net472" />
       <package id="LiteDB" version="4.1.4" targetFramework="net472" />
+      <package id="Microsoft.Toolkit.Wpf.UI.Controls" version="5.0.1" targetFramework="net472" />
+      <package id="Microsoft.Toolkit.Wpf.UI.XamlHost" version="5.0.1" targetFramework="net472" />
     </packages>
     ```
-    
-    You notice there the two missing references mentionned in the errors messages: *Bogus* and *LiteDB*.
-    
-9.  Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**. This file was used when the project was using the .NET Framework 4.7.2.
 
-10. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
+5.  Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**.
+
+6. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
 
   ![Manage NuGet Packages...](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ManageNugetNETCORE3.png)
 
-11. Click on **Browse** at the top left of the opened window and search for `Bogus`. The package by Brian Chavez should be listed. Install it.
+7. Click on **Browse** at the top left of the opened window and search for `Bogus`. The package by Brian Chavez should be listed. Install it.
 
     ![Bogus NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Bogus.png)
 
-12. Do the same for `LiteDB`. This package is provided by Mauricio David.
+8. Do the same for `LiteDB`. This package is provided by Mauricio David.
 
     ![LiteDB NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/LiteDB.png)
 
@@ -1326,116 +1292,52 @@ NuGet packages supports multi-targeting. You can include, in the same package, d
 
 ![Dot Net standard](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DotNetStandard.png)
 
-13. Rebuild the project (CTRL+SHIFT+B) and... you succeed!
-
-```bash
-========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
-```
-
 > Since we don't have anymore a packages.config file, can you guess where the list of NuGet packages gets stored?
 
 With the new project format, the referenced NuGet packages are stored directly in the .csproj file. You can check by right clicking on the **ContosoExpenses** project in Solution Explorer and choosing **Edit ContosoExpenses.csproj**. You will find some new lines compared to when we have manually edited the file:
 
 ```xml
-<ItemGroup>
-  <PackageReference Include="Bogus" Version="25.0.3" />
-  <PackageReference Include="LiteDB" Version="4.1.4" />
-</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="25.0.4" />
+    <PackageReference Include="LiteDB" Version="4.1.4" />
+  </ItemGroup>
 ```
 
+### Task 4 - Perform the migration - A Preview NuGet package
 
-### Task 4 - Perform the migration - Debug
+1. Let's try to build it in order to 'discover' what we have to do to complete the migration. Use the **Build** menu and **Build solution**.
 
-We are ok to finally, launch the app.
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/BuildErrorsNETCore3.png)
 
-1.  Use the **Debug** menu / **Start Debugging F7**
+> All these errors have a same cause. What is it?
 
-> You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
+2. Again remember that we deleted all the content of the initial csproj file. We just had the `Bogus` and `LiteDB` NuGet Packages but not the `Microsoft.Toolkit.Wpf.UI.Controls`. There is a reason: got back to the **NuGet: ContosoExpenses** tab and search for `Microsoft.Toolkit.Wpf.UI.Controls`. You will see that this package supports the .NET Framework starting at the version 4.6.2. It does not support yet the .NET Core 3 version.
 
-![Exception displayed in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ExceptionNETCore3.png)
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WPFUICONTROLSNuGetPackage.png)
 
-Strange because the images files are in the solution and the path seems correct.
+3. Because we are working with Preview versions in this lab, let's continue and add a custom source for NuGet Packages. In the **NuGet: ContosoExpenses** tab, click on the  **Settings** icon for NuGet.
 
-![Images in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ImagesInTheSolutionExplorer.png)
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/SettingsForNuGet.png)
 
-> Why do we get this file not found exception?
+4. Click on the green "PLUS" sign to add a new NuGet Package source.
 
-In fact, it is simple. Again, as we hardly deleted all the content of the csproj file at the beginning of the migration, we removed the information about the **Build action** for the images' files. Let fix it.
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddNewNuGetSource.png)
 
-2.  In the **Solution Explorer**, select all the images files except the contoso.ico ; In the properties windows choose **Build action** = `Content` and **Copy to Output Directory** = `Copy if Newer`
+5.  Name it `Custom` and give the url `https://www.myget.org/F/miguelrb/api/v3/index.json` ; Click **Ok**.
 
-    ![Build Action Content and Copy if newer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContentCopyIfNewer.png)
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CustomNuGetSource.png)
 
-3.  To assign the Contoso.ico to the app, we have to right click on the project in the **Solution Explorer** / **Properties**. In the opened page, click on the dropdown listbox for Icon and select `Images\contoso.ico`
+6. Still in the **NuGet: ContosoExpenses** tab, you can now change the Packages source with the dropdown listbox; Select **Custom**.
 
-    ![Contoso ico in the Project's Properties](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoIco.png)
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ChangeSource.png)
 
-There is another issue which is due the fact that the NuGet Package `Microsoft.Toolkit.Wpf.UI.Controls` is in preview. It supports the .NET Full Framework and not yet the .NET Core Framework. That is why we need an extra modification: Use the Preview of the version supporting .NET Core. Let's use such a version:
+7. Check also the **Include prerelease** checkbox and some NuGet packages will magically be displayed.
 
-1.  In the **Solution Explorer**, right click on the solution and choose **Add** / **New item...**.
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PrereleaseNuGetPackages.png)
 
-2.  Create a new file named `nuget.config` and use the following content.
+8. Select **Microsoft.Toolkit.Wpf.UI.Controls**. You can see that the version is newer (v6.0.0...) and it supports .NET Core 3.0! Click **Install**.
 
-```json
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <!--To inherit the global NuGet package sources remove the <clear/> line below -->
-    <clear />
-    <add key="nuget" value="https://api.nuget.org/v3/index.json" />
-    <add key="Custom" value="https://www.myget.org/F/miguelrb/api/v3/index.json" />
-  </packageSources>
-</configuration>
-```
+9.  Build the project (CTRL+SHIFT+B). We get still some errors.
 
-The NuGet package `Microsoft.Toolkit.Wpf.UI.Controls` supporting .NET Core will come from this added Packages source.
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETCore3BuilldErrors.png)
 
-> Note that this steps has to be done only because we are in a Preview version. When released, the NuGet package will come from the NuGet public source without having to add this custom package source.
-
-3.  A final step is necessary. The preview version of the `Microsoft.Toolkit.Wpf.UI.Controls` does not include yet the 1st party controls. We have to temporarily remove then from the ExpenseDetail page. Please comment the lines below in the `ExpenseDetail.xaml` file.
-
-```xml
-<!--<toolkit:MapControl Grid.Row="5" x:Name="ExpenseMap" />
-
-<TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
-
-<toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />-->
-```
-
-4.  Comment also the following lines in `ExpenseDetail.xaml.cs`.
-
-```csharp
-public ExpenseDetail()
-{
-    InitializeComponent();
-    //Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
-
-    //MapService.ServiceToken = "IFFAI5SFOtHV9VBKF8Ea~3FS1XamCV2NM0IqlfoQo6A~AguqcUboJvnqWU1H9E-6MVThouJoCrM4wpv_1R_KX_oQLV_e59vyoK42470JvLsU";
-}
-
-private async void Window_Loaded(object sender, RoutedEventArgs e)
-{
-    txtType.Text = SelectedExpense.Type;
-    txtDescription.Text = SelectedExpense.Description;
-    txtLocation.Text = SelectedExpense.Address;
-    txtAmount.Text = SelectedExpense.Cost.ToString();
-    Chart.Height = (SelectedExpense.Cost * 400) / 1000;
-
-    //var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
-    //var location = result.Locations.FirstOrDefault();
-    //if (location != null)
-    //{
-    //    await ExpenseMap.TrySetViewAsync(location.Point, 13);
-    //}
-}
-
-private void Window_Closed(object sender, EventArgs e)
-{
-    //Signature.Dispose();
-    //ExpenseMap.Dispose();
-}
-```
-
-We are done! Test the app in debug with F7 and it should work... Using .NET Core 3!
-
-We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
