@@ -478,7 +478,7 @@ In order to start using Universal Windows Platform APIs in a WPF application we 
 - **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
 - **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this pattern.
 
-1. Go back to Visual Studio and right click on the **ContosoExpenses** package.
+1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
 2. Choose **Add reference**.
 3. Press the **Browse** button.
 4. Look for the following folder on the system: *"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\"*
@@ -1303,7 +1303,7 @@ With the new project format, the referenced NuGet packages are stored directly i
   </ItemGroup>
 ```
 
-### Task 4 - Perform the migration - A Preview NuGet package
+### Task 4 - Perform the migration - A Preview NuGet package for Microsoft.Toolkit.Wpf.UI.Controls
 
 1. Let's try to build it in order to 'discover' what we have to do to complete the migration. Use the **Build** menu and **Build solution**.
 
@@ -1311,33 +1311,122 @@ With the new project format, the referenced NuGet packages are stored directly i
 
 > All these errors have a same cause. What is it?
 
-2. Again remember that we deleted all the content of the initial csproj file. We just had the `Bogus` and `LiteDB` NuGet Packages but not the `Microsoft.Toolkit.Wpf.UI.Controls`. There is a reason: got back to the **NuGet: ContosoExpenses** tab and search for `Microsoft.Toolkit.Wpf.UI.Controls`. You will see that this package supports the .NET Framework starting at the version 4.6.2. It does not support yet the .NET Core 3 version.
+Again remember that we deleted all the content of the initial csproj file. We just had the `Bogus` and `LiteDB` NuGet Packages but not the `Microsoft.Toolkit.Wpf.UI.Controls`. There is a reason: got back to the **NuGet: ContosoExpenses** tab and search for `Microsoft.Toolkit.Wpf.UI.Controls`. You will see that this package supports the .NET Framework starting at the version 4.6.2. It does not support yet the .NET Core 3 version.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WPFUICONTROLSNuGetPackage.png)
 
-3. Because we are working with Preview versions in this lab, let's continue and add a custom source for NuGet Packages. In the **NuGet: ContosoExpenses** tab, click on the  **Settings** icon for NuGet.
+Because we are working with Preview versions in this lab, let's continue and add a custom source for NuGet Packages. 
+
+2.  In the **NuGet: ContosoExpenses** tab, click on the  **Settings** icon for NuGet.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/SettingsForNuGet.png)
 
-4. Click on the green "PLUS" sign to add a new NuGet Package source.
+3. Click on the green "PLUS" sign to add a new NuGet Package source.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddNewNuGetSource.png)
 
-5.  Name it `Custom` and give the url `https://www.myget.org/F/miguelrb/api/v3/index.json` ; Click **Ok**.
+4.  Name it `Custom` and give the url `https://www.myget.org/F/miguelrb/api/v3/index.json` ; Click **Ok**.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CustomNuGetSource.png)
 
-6. Still in the **NuGet: ContosoExpenses** tab, you can now change the Packages source with the dropdown listbox; Select **Custom**.
+5. Still in the **NuGet: ContosoExpenses** tab, you can now change the Packages source with the dropdown listbox; Select **Custom**.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ChangeSource.png)
 
-7. Check also the **Include prerelease** checkbox and some NuGet packages will magically be displayed.
+6. Check also the **Include prerelease** checkbox and some NuGet packages will magically be displayed.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PrereleaseNuGetPackages.png)
 
-8. Select **Microsoft.Toolkit.Wpf.UI.Controls**. You can see that the version is newer (v6.0.0...) and it supports .NET Core 3.0! Click **Install**.
+7. Select **Microsoft.Toolkit.Wpf.UI.Controls**. You can see that the version is newer (v6.0.0...) and it supports .NET Core 3.0! Click **Install**.
 
-9.  Build the project (CTRL+SHIFT+B). We get still some errors.
+8.  Build the project (CTRL+SHIFT+B). We get still some errors that we will fix in the next tasks.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETCore3BuilldErrors.png)
 
+### Task 5 - Perform the migration - Fixing AssemblyInfo.cs
+
+The Preview version of .NET Core 3 and Visual Studio 2019 causes the last 6 errors. It is not interesting to give explanations here: It is only 'piping' we have to resolve by either removing the mentioned lines in the `AssemblyInfo.cs` file or just delete the file. We go for the simpliest. 
+
+1.  In the **Solution Explorer** window / Under the **ContosoExpenses** project, expand the **Properties** node and right click on the **AssemblyInfo.cs** file ; Click on **Delete**.
+    
+    ![AssemblyInfo cs file](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AssemblyInfoFile.png)
+
+2.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last three previous errors should remain listed (if nothing is displayed in the **Error List** window, look at the **Output** window).
+
+    ```bash
+    1>------ Build started: Project: ContosoExpenses, Configuration: Debug Any CPU ------
+    ...
+    1>ExpenseDetail.xaml.cs(20,15,20,23): error CS0234: The type or namespace name 'Services' does not exist in the namespace 'Windows' (are you missing an assembly reference?)
+    1>CalendarViewWrapper.cs(26,81,26,93): error CS0234: The type or namespace name 'CalendarView' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
+    1>CalendarViewWrapper.cs(26,127,26,168): error CS0234: The type or namespace name 'CalendarViewSelectedDatesChangedEventArgs' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
+    1>Done building project "ContosoExpenses_y1viyncj_wpftmp.csproj" -- FAILED.
+    ========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+    ``` 
+    
+### Task 5 - Perform the migration - Adding a reference to the Universal Windows Platform
+
+This error is our fault because we removed everything in the csproj at the beginning of the exercise. 
+
+> This method for migrating the project to .NET Core 3 is manual because Visual Studio 2019 Preview does not handle yet the migration work for us. When we will release Visual Studio 2019, we can expect to have to do nothing more than clicking on a button to perform the migration. 
+
+So to fix this error, we have to reference again the Universal Windows Platform again. This was done in the Exercise 2 Task 3. Here are the same steps:
+
+In order to be able to use the Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
+
+- **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
+- **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this pattern.
+
+1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
+2. Choose **Add reference**.
+3. Press the **Browse** button.
+4. Look for the following folder on the system: *"C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\"*
+5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the **Windows.md** file will become visible.
+
+    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsMd.png)
+    
+6. Select it and press **Add**.
+7. Now press again the **Browse** button.
+8. This time look for the following folder on the system: *"C:\Windows\Microsoft.NET\Framework\v4.0.30319"*
+9. Look for a file called **System.Runtime.WindowsRuntime.dll**, select it and press Ok.
+10. Now expand the **References** section of the **ContosoExpenses** project in Solution Explorer and look for the **Windows** reference.
+
+    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CopyLocalNETCore3.png)
+   
+11. Select it, right it click on it and choose **Properties**.
+12. Change the value of the **Copy Local** property to **No**.
+13. Rebuild the project (CTRL+SHIFT+B) and... you succeed!
+
+```bash
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+```
+
+### Task 6 - Perform the migration - Debug
+
+We are ok to finally, launch the app.
+
+1.  Use the **Debug** menu / **Start Debugging F7**
+
+> You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
+
+![Exception displayed in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ExceptionNETCore3.png)
+
+Strange because the images files are in the solution and the path seems correct.
+
+![Images in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ImagesInTheSolutionExplorer.png)
+
+> Why do we get this file not found exception?
+
+In fact, it is simple. Again, as we hardly deleted all the content of the csproj file at the beginning of the migration, we removed the information about the **Build action** for the images' files. Let fix it.
+
+2.  In the **Solution Explorer**, select all the images files except the contoso.ico ; In the properties windows choose **Build action** = `Content` and **Copy to Output Directory** = `Copy if Newer`
+
+    ![Build Action Content and Copy if newer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContentCopyIfNewer.png)
+
+3.  To assign the Contoso.ico to the app, we have to right click on the project in the **Solution Explorer** / **Properties**. In the opened page, click on the dropdown listbox for Icon and select `Images\contoso.ico`
+
+    ![Contoso ico in the Project's Properties](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoIco.png)
+
+
+We are done! Test the app in debug with F7 and it should work... Everything running using .NET Core 3!
+
+We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
