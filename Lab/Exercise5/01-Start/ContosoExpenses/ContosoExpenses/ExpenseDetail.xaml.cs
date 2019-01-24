@@ -31,9 +31,9 @@ namespace ContosoExpenses
         public ExpenseDetail()
         {
             InitializeComponent();
-            //Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
+            Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
 
-            //MapService.ServiceToken = "IFFAI5SFOtHV9VBKF8Ea~3FS1XamCV2NM0IqlfoQo6A~AguqcUboJvnqWU1H9E-6MVThouJoCrM4wpv_1R_KX_oQLV_e59vyoK42470JvLsU";
+            MapService.ServiceToken = "IFFAI5SFOtHV9VBKF8Ea~3FS1XamCV2NM0IqlfoQo6A~AguqcUboJvnqWU1H9E-6MVThouJoCrM4wpv_1R_KX_oQLV_e59vyoK42470JvLsU";
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -44,18 +44,18 @@ namespace ContosoExpenses
             txtAmount.Text = SelectedExpense.Cost.ToString();
             Chart.Height = (SelectedExpense.Cost * 400) / 1000;
 
-            //var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
-            //var location = result.Locations.FirstOrDefault();
-            //if (location != null)
-            //{
-            //    await ExpenseMap.TrySetViewAsync(location.Point, 13);
-            //}
+            var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
+            var location = result.Locations.FirstOrDefault();
+            if (location != null)
+            {
+                await ExpenseMap.TrySetViewAsync(location.Point, 13);
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            //Signature.Dispose();
-            //ExpenseMap.Dispose();
+            Signature.Dispose();
+            ExpenseMap.Dispose();
         }
     }
 }

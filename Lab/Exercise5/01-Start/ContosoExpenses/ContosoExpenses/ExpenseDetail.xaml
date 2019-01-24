@@ -67,11 +67,11 @@
                 <TextBlock x:Name="txtLocation" FontSize="16" Margin="5, 0, 0, 0" />
             </StackPanel>
 
-            <!--<toolkit:MapControl Grid.Row="5" x:Name="ExpenseMap" />
+            <toolkit:MapControl Grid.Row="5" x:Name="ExpenseMap" />
 
             <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="6" />
 
-            <toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />-->
+            <toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />
 
 
         </Grid>

@@ -17,6 +17,7 @@ using ContosoExpenses.Services;
 using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 
 namespace ContosoExpenses
@@ -60,33 +61,21 @@ namespace ContosoExpenses
             }
         }
 
-        private void CalendarUwp_ChildChanged(object sender, EventArgs e)
-        {
-            WindowsXamlHost windowsXamlHost = (WindowsXamlHost)sender;
-
-            Windows.UI.Xaml.Controls.CalendarView calendarView =
-                (Windows.UI.Xaml.Controls.CalendarView)windowsXamlHost.Child;
-
-            if (calendarView != null)
-            {
-                calendarView.SelectedDatesChanged += (obj, args) =>
-                {
-                    if (args.AddedDates.Count > 0)
-                    {
-                        SelectedDate = args.AddedDates.FirstOrDefault().DateTime;
-                        txtDate.Text = SelectedDate.ToShortDateString();
-                    }
-                };
-
-                calendarView.MinDate = DateTimeOffset.Now.AddYears(-1);
-                calendarView.MaxDate = DateTimeOffset.Now;
-            }
-        }
-
         private void Window_Closed(object sender, EventArgs e)
         {
             CalendarUwp.Dispose();
         }
 
+        private void CalendarUwp_SelectedDatesChanged(object sender, SelectedDatesChangedEventArgs e)
+        {
+            SelectedDate = e.SelectedDates.FirstOrDefault().Date;
+            txtDate.Text = SelectedDate.ToShortDateString();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            CalendarUwp.MinDate = DateTimeOffset.Now.AddYears(-1);
+            CalendarUwp.MaxDate = DateTimeOffset.Now;
+        }
     }
 }
