@@ -13,8 +13,8 @@ namespace ContosoExpenses.Services
         readonly int numberOfEmployees = 10;
         readonly int numberOfExpenses = 5;
 
-        string filePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\ExpenseIt\\data.db";
-        string directoryPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\ExpenseIt\\";
+        string filePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\ContosoExpenses\\data.db";
+        string directoryPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\ContosoExpenses\\";
 
         public Employee GetEmployee(int employeeId)
         {
