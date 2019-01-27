@@ -1,9 +1,9 @@
 ﻿# Bring Fluent Design and modern user interaction to your WPF application
 
 ## Introduction
-Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivial and may require a tremendous work; most of the times, it imposes a full rewriting.
+Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivials and may require a tremendous work; most of the times, it imposes a full rewriting.
 
-Now, with XAML Islands, we can use UWP controls in non-UWP desktop applications so that we can enhance the look, feel, and functionality of your our LOB desktop applications with the latest Windows 10 UI features that are only available via UWP controls. This means that you can use UWP features such as Windows Ink and controls that support the Fluent Design System in your existing WPF, Windows Forms, and C++ Win32 applications.
+Now, with XAML Islands, we can use UWP controls in non-UWP desktop applications so that we can enhance the look, feel, and functionalities of your our LOB desktop applications with the latest Windows 10 UI features that are only available via UWP controls. This means that you can use UWP features such as Windows Ink and controls that support the Fluent Design System in your existing WPF, Windows Forms, and C++ Win32 applications.
 
 With this lab, we will experiment XAML Islands and modernize an existing WPF application.
 
@@ -12,11 +12,10 @@ With this lab, we will experiment XAML Islands and modernize an existing WPF app
 
 ### Objectives
 - Learn how to modernize the user experience and the features of a desktop WPF application
-- Learn how to leverage the Universal Windows Platforms without having to rewrite the app from scratch
+- Learn how to leverage the Universal Windows Platform without having to rewrite the app from scratch
 - Use a bluit-in XAML Islands control in an existing WPF application
 - Be able to 'integrate' any custom UWP XAML component in the WPF application
-- Go further and perform bindings between the UWP XAML and the WPF application
-- Understand how XAML Islands can help to start a progressive modernization journey to the Universal Windows Platform
+- Understand how XAML Islands can help to start a progressive modernization journey to the Universal Windows Platform and .NET Core 3.
 
 ### Prerequisites
 
@@ -39,6 +38,8 @@ This lab uses a single Virtual Machine to provide you with the development envir
 The virtual machine is based on Windows 10 October Update (1809) and it includes:
 - Visual Studio 2019 Preview 1
 - Windows 10 SDK version 10.0.17763.0 or later
+- .NET Core 3 Preview runtime
+- .NET Core 3 Preview SDK
 
 We're going to use Visual Studio 2019 Preview since it provides preliminary support to .NET Core 3.0, which is one of the technologies we're going to use in one of the exercises. However, despite being a preview, it provides a good level of stability and reliability and, as such, we're going to leverage it for all the exercises in the lab.
 As a backup, just in case you face any issue, the machine comes also with Visual Studio 2017 Community preinstalled.
@@ -60,7 +61,7 @@ The goal of this project, in fact, is to help you focusing on understanding and 
 
 ### Key concepts that will be used during the lab
 
-**Please note**. The following information are provided in case you're planning to follow this lab on your own or from home. If you are following this lab as part of a live training class, feel free to skip it and jump directly to the beginning of the first exercise. These concepts, in fact, should have already be explained by the trainers of the lab before starting the practical exercises.
+**Please note**. The following information is provided in case you're planning to follow this lab on your own or from home. If you are following this lab as part of a live training class, feel free to skip it and jump directly to the beginning of the first exercise. These concepts, in fact, should have already be explained by the trainers of the lab before starting the practical exercises.
 
 #### Universal Windows Platform
 Starting from Windows 8, Microsoft has introduced a new kind of applications: Windows Store apps, based on a new framework called Windows Runtime. Unlike the .NET Framework, the Windows Runtime is a native layer of APIs which are exposed directly by the operating system to applications which want to consume them. With the goal to make the platform viable for every developer and to not force them to learn C++, the Windows Runtime has introduced language projections, which are layers added on top of the runtime to allow developers to interact with it using well-known and familiar languages. Thanks to projections, developers can build applications on top of the Windows Runtime leveraging the same C# and XAML knowledge they have acquired in building apps with the .NET Framework. The Windows Runtime libraries (called Windows Runtime Components) are described using special metadata files, which make it possible for developers to access the APIs using the specific syntax of the language they’re using. This way, projections can also respect the language conventions and types, like uppercase if you use C# or camel case if you use JavaScript. Additionally, Windows Runtime components can be used across multiple languages: for example, a Windows Runtime component written in C++ can be used by an application developed in C# and XAML.
