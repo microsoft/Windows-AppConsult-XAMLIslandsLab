@@ -139,20 +139,19 @@ So in our Contoso Expenses application we will bring a modern touch by using Ink
 ### Task 1 - Setup the Contoso Expenses solution
 Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
-1.  In the Windows Explorer, create a new local folder on the C: drive like `XAMLIslandsLab`. It will be our working folder for the Contoso Dashboard website.
-2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. Click on the **releases** tab and download the latest release.
+1.  The source code of the Contoso Expenses solution is in the **Releases** tab of <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. A direct link for the download is `https://aka.ms/XAMLIslandsLab-Content`. Please use this url to donwload the zip file containing the lab content. 
 
-3.  When ready, click on the downloaded file in your browser to open it.
+2.  When ready, click on the downloaded file in your browser to open it.
 
     ![Downloaded file in Chrome](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/SourceCodeDownloaded.png)
 
-4.  Open the zip file and extract all the content to your working folder "C:\XAMLIslandsLab" you've just created.
+3.  The content of the Zip, the XAMLIslandsLab folder, will be displayed in the Windows Explorer. Just drap & drop it to your C:\ drive. You will then have your working folder ready to be used: `C:\XAMLIslandsLab`.
 
-5.  Open Visual Studio 2019, and double click on the `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` file to open the solution.
+4.  Open Visual Studio 2019, and double click on the `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` file to open the solution.
 
     ![ContosoExpenses solution in Windows Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoExpensesSolution.png)
 
-7.  Verify that you can debug the Contoso Expenses WPF project by pressing the **Start** button or CTRL+F5.
+5.  Verify that you can debug the Contoso Expenses WPF project by pressing the **Start** button or CTRL+F5.
 
 ### Task 2 - Reference the "Microsoft.Toolkit.Wpf.UI.Controls" NuGet package
 We need this WPF package because it takes care for us about all the necessary piping for XAML Islands. It provides wrapper classes for 1st party controls, such as the InkCanvas, InkToolbar, MapControl, and MediaPlayerElement, all for WPF.
@@ -189,8 +188,8 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 8. Rebuild the project using the **CTRL+SHIFT+B** shortcut in order to check if the retargeting action haven't caused any regression or ask us to do some manual code modifications.
 
     ```dos
-    1>------ Build started: Project: ExpenseItDemo, Configuration: Debug Any CPU ------
-    1>  ContosoExpenses -> C:\XAMLIslandsLab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ExpenseItDemo.exe
+    1>------ Build started: Project: Contoso Expenses, Configuration: Debug Any CPU ------
+    1>  ContosoExpenses -> C:\XAMLIslandsLab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ContosoExpenses.exe
     ========== Build: 1 succeeded, 0 failed, 1 up-to-date, 0 skipped ==========
     ```
 
