@@ -1237,7 +1237,7 @@ Here is the full content of the new csproj. Please double check that you have ev
 </Project>
 ```
 
-By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have any more to specify each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
+By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have to specify anymore each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
 It is now safe to save file by pressing **CTRL+S**.
 
 ### Task 3 - Perform the migration - NuGet packages of the project
@@ -1272,7 +1272,7 @@ It is now safe to save file by pressing **CTRL+S**.
     </packages>
     ```
 
-5.  Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**.
+5. Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**.
 
 6. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
 
