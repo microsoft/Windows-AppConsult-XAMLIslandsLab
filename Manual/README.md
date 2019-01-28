@@ -1,9 +1,9 @@
 ﻿# Bring Fluent Design and modern user interaction to your WPF application
 
 ## Introduction
-Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivial and may require a tremendous work; most of the times, it imposes a full rewriting.
+Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivials and may require a tremendous work; most of the times, it imposes a full rewriting.
 
-Now, with XAML Islands, we can use UWP controls in non-UWP desktop applications so that we can enhance the look, feel, and functionality of your our LOB desktop applications with the latest Windows 10 UI features that are only available via UWP controls. This means that you can use UWP features such as Windows Ink and controls that support the Fluent Design System in your existing WPF, Windows Forms, and C++ Win32 applications.
+Now, with XAML Islands, we can use UWP controls in non-UWP desktop applications so that we can enhance the look, feel, and functionalities of your our LOB desktop applications with the latest Windows 10 UI features that are only available via UWP controls. This means that you can use UWP features such as Windows Ink and controls that support the Fluent Design System in your existing WPF, Windows Forms, and C++ Win32 applications.
 
 With this lab, we will experiment XAML Islands and modernize an existing WPF application.
 
@@ -12,11 +12,10 @@ With this lab, we will experiment XAML Islands and modernize an existing WPF app
 
 ### Objectives
 - Learn how to modernize the user experience and the features of a desktop WPF application
-- Learn how to leverage the Universal Windows Platforms without having to rewrite the app from scratch
+- Learn how to leverage the Universal Windows Platform without having to rewrite the app from scratch
 - Use a bluit-in XAML Islands control in an existing WPF application
 - Be able to 'integrate' any custom UWP XAML component in the WPF application
-- Go further and perform bindings between the UWP XAML and the WPF application
-- Understand how XAML Islands can help to start a progressive modernization journey to the Universal Windows Platform
+- Understand how XAML Islands can help to start a progressive modernization journey to the Universal Windows Platform and .NET Core 3.
 
 ### Prerequisites
 
@@ -39,6 +38,8 @@ This lab uses a single Virtual Machine to provide you with the development envir
 The virtual machine is based on Windows 10 October Update (1809) and it includes:
 - Visual Studio 2019 Preview 1
 - Windows 10 SDK version 10.0.17763.0 or later
+- .NET Core 3 Preview runtime
+- .NET Core 3 Preview SDK
 
 We're going to use Visual Studio 2019 Preview since it provides preliminary support to .NET Core 3.0, which is one of the technologies we're going to use in one of the exercises. However, despite being a preview, it provides a good level of stability and reliability and, as such, we're going to leverage it for all the exercises in the lab.
 As a backup, just in case you face any issue, the machine comes also with Visual Studio 2017 Community preinstalled.
@@ -56,11 +57,11 @@ Contoso Expenses is a desktop application, built with WPF and the .NET Framework
 - It doesn't use any development pattern, like MVVM, but the standard code-behind approach. 
 - It uses a local database solution called [**LiteDb**](http://www.litedb.org/), which is an embedded NoSQL solution. In a real world scenario, such an application would connect to a centralized database, either on-premise or in the cloud, like SQL Server, MySQL, Cosmos DB, etc.
 
-The goal of this project, in fact, is to help you focusing on understanding and implementing XAML Island inside an existing WPF application. It isn't made to teach you the best practices for WPF development.
+The goal of this project, in fact, is to help you focusing on understanding and implementing XAML Islands inside an existing WPF application. It isn't made to teach you the best practices for WPF development.
 
 ### Key concepts that will be used during the lab
 
-**Please note**. The following information are provided in case you're planning to follow this lab on your own or from home. If you are following this lab as part of a live training class, feel free to skip it and jump directly to the beginning of the first exercise. These concepts, in fact, should have already be explained by the trainers of the lab before starting the practical exercises.
+**Please note**. The following information is provided in case you're planning to follow this lab on your own or from home. If you are following this lab as part of a live training class, feel free to skip it and jump directly to the beginning of the first exercise. These concepts, in fact, should have already be explained by the trainers of the lab before starting the practical exercises.
 
 #### Universal Windows Platform
 Starting from Windows 8, Microsoft has introduced a new kind of applications: Windows Store apps, based on a new framework called Windows Runtime. Unlike the .NET Framework, the Windows Runtime is a native layer of APIs which are exposed directly by the operating system to applications which want to consume them. With the goal to make the platform viable for every developer and to not force them to learn C++, the Windows Runtime has introduced language projections, which are layers added on top of the runtime to allow developers to interact with it using well-known and familiar languages. Thanks to projections, developers can build applications on top of the Windows Runtime leveraging the same C# and XAML knowledge they have acquired in building apps with the .NET Framework. The Windows Runtime libraries (called Windows Runtime Components) are described using special metadata files, which make it possible for developers to access the APIs using the specific syntax of the language they’re using. This way, projections can also respect the language conventions and types, like uppercase if you use C# or camel case if you use JavaScript. Additionally, Windows Runtime components can be used across multiple languages: for example, a Windows Runtime component written in C++ can be used by an application developed in C# and XAML.
@@ -87,7 +88,7 @@ Desktop Bridge plays an important role with XAML Island because, by combining th
 The Windows 10 October 2018 Update with the SDK 17763,enables the scenario of XAML Islands for Desktop applications. That means that Windows 10 now supports hosting UWP controls inside the context of a Win32 Process. The 'magic' is powered by two new system APIs called <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.windowsxamlmanager" target="_blank">WindowsXamlManager</a> and <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.desktopwindowxamlsource" target="_blank">DesktopWindowXamlSource</a>.
 
 - The **WindowsXamlManager** handles the UWP XAML Framework. As such, the only exposed method is called **InitializeForCurrentThread()**, which takes care of initializing the UWP XAML Framework inside the current thread of a non-Win32 Desktop app, so that you can start adding UWP controls to it.
-- The **DesktopWindowXamlSource** is the actual instance of your Island content. It has a **Content** property which you can instantiate and set with the control you want to render. 
+- The **DesktopWindowXamlSource** is the actual instance of your Islands content. It has a **Content** property which you can instantiate and set with the control you want to render. 
 
 With an instance of the **DesktopWindowXamlSource** class you can attach its HWND to any parent HWND you want from your native Win32 App. This enables any framework that exposes HWND to host a XAML Island, including 3rd party technologies like Java or Delphi.
 However, when it comes to WPF and Windows Forms applications, you don’t have to manually do that thanks to the Windows Community Toolkit, since it already wraps these classes into ready-to-be-used controls.
@@ -138,20 +139,19 @@ So in our Contoso Expenses application we will bring a modern touch by using Ink
 ### Task 1 - Setup the Contoso Expenses solution
 Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
-1.  In the Windows Explorer, create a new local folder on the C: drive like `XAMLIslandsLab`. It will be our working folder for the Contoso Dashboard website.
-2.  In order to get the source code of the ExpenseIt solution, go to <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. Click on the **releases** tab and download the latest release.
+1.  The source code of the Contoso Expenses solution is in the **Releases** tab of <a href="https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/tree/master/" target="_blank">Windows AppConsult XAMLIslandsLab repository</a>. A direct link for the download is `https://aka.ms/XAMLIslandsLab-Content`. Please use this url to donwload the zip file containing the lab content. 
 
-3.  When ready, click on the downloaded file in your browser to open it.
+2.  When ready, click on the downloaded file in your browser to open it.
 
     ![Downloaded file in Chrome](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/SourceCodeDownloaded.png)
 
-4.  Open the zip file and extract all the content to your working folder "C:\XAMLIslandsLab" you've just created.
+3.  The content of the Zip, the XAMLIslandsLab folder, will be displayed in the Windows Explorer. Just drap & drop it to your C:\ drive. You will then have your working folder ready to be used: `C:\XAMLIslandsLab`.
 
-5.  Open Visual Studio 2019, and double click on the `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` file to open the solution.
+4.  Open Visual Studio 2019, and double click on the `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` file to open the solution.
 
     ![ContosoExpenses solution in Windows Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoExpensesSolution.png)
 
-7.  Verify that you can debug the Contoso Expenses WPF project by pressing the **Start** button or CTRL+F5.
+5.  Verify that you can debug the Contoso Expenses WPF project by pressing the **Start** button or CTRL+F5.
 
 ### Task 2 - Reference the "Microsoft.Toolkit.Wpf.UI.Controls" NuGet package
 We need this WPF package because it takes care for us about all the necessary piping for XAML Islands. It provides wrapper classes for 1st party controls, such as the InkCanvas, InkToolbar, MapControl, and MediaPlayerElement, all for WPF.
@@ -188,8 +188,8 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 8. Rebuild the project using the **CTRL+SHIFT+B** shortcut in order to check if the retargeting action haven't caused any regression or ask us to do some manual code modifications.
 
     ```dos
-    1>------ Build started: Project: ExpenseItDemo, Configuration: Debug Any CPU ------
-    1>  ContosoExpenses -> C:\XAMLIslandsLab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ExpenseItDemo.exe
+    1>------ Build started: Project: Contoso Expenses, Configuration: Debug Any CPU ------
+    1>  ContosoExpenses -> C:\XAMLIslandsLab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ContosoExpenses.exe
     ========== Build: 1 succeeded, 0 failed, 1 up-to-date, 0 skipped ==========
     ```
 
@@ -197,7 +197,7 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 
 ### Task 3 - Use the InkCanvas control in the application
 One of the features that the development team is looking to integrate inside the application is support to digital signature. Managers wants to be able to easily sign the expenses reports, without having to print them and digitalize them back.
-XAML Island is the perfect candidate for this scenario, since the Universal Windows Platform includes a control called **InkCanvas**, which offers advanced support to digital pens. Additionally, it includes many AI powered features, like the capability to recognize text, shapes, etc.
+'XAML Islands' is the perfect candidate for this scenario, since the Universal Windows Platform includes a control called **InkCanvas**, which offers advanced support to digital pens. Additionally, it includes many AI powered features, like the capability to recognize text, shapes, etc.
 
 Adding it to a WPF application is easy, since it's one of the 1st party controls included in the Windows Community Toolkit we have just installed. Let's do it!
 
@@ -280,7 +280,7 @@ However, if you try to play a bit with the application you will notice that not 
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/XamlIslandException.png)
 
-The reason is that every UWP control included in a WPF app through XAML Island must be properly disposed before being instantiated again. As such, we need to take care of this operation when the expense detail page is closed.
+The reason is that every UWP control included in a WPF app through XAML Islands must be properly disposed before being instantiated again. As such, we need to take care of this operation when the expense detail page is closed.
 
 1. Go back to Visual Studio and double click the **ExpenseDetail.xaml** file in Solution Explorer.
 2. Locate the **Window** tag and add the following attribute:
@@ -881,7 +881,7 @@ We're done! Let's test again the project:
 We have replaced an existing WPF control with a newer mordern version, which fully supports mouse, keyboard, touch and digital pens. Despite the fact that it isn't included as 1st party control in the Windows Community Toolkit, we've been able anyway to include a **CalendarView** control in our application and to interact with it.
 
 ___
-## Exercise 4 - Create a XAML Island wrapper
+## Exercise 4 - Create a XAML Islands wrapper
 From a technical point of view, the outcome of the previous code works without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to the **ChildChanged** event exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **SelectedDates** property.
 
 We can solve this problem by creating our own wrapper to the UWP control we want to integrate, exactly like the **MapControl** or the **InkCanvas** controls. The purpose of this wrapper is to take the properties and events exposed by UWP control and forward them to the WPF control, so that they could be directly access like with a native .NET control. Let's start!
