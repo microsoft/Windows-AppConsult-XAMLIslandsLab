@@ -623,6 +623,95 @@ Let's move on and see how we can request a license and integrate it into our app
 
 Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
+### Task 5 - Handle backward compatibility (optional task)
+It's great to be able to leverage UWP features in our WPF application without rewriting it from scratch, but by introducing these APIs we have created a potential issue. Our WPF application now doesn't run anymore on Windows 7 or when it's deployed without being packaged. It will simply crash when we try to open the expense detail page, since all the APIs we have used from the Universal Windows Platform (like the **MapLocationFinder** class) don't exist on Windows 7.
+
+We could create two different versions of our application, based on the target OS, but this would make the project more complex to mantain. Every change we do, in fact, must be replicated to two different branches.
+
+Luckily, there's an easy way to achieve this goal, thanks to an open source library called **DesktopBridge.Helpers**, which is available on [GitHub](https://github.com/Microsoft/Windows-AppConsult-Tools-DesktopBridgeHelpers) and [NuGet](https://www.nuget.org/packages/DesktopBridge.Helpers).
+This library exposes a simple method to determine if the usage of UWP features is supported, by checking:
+
+- If the application is running on Windows 10
+- If the application is running as packaged with the Desktop Bridge
+
+Let's see how we can implement it.
+
+1. Go back to Visual Studio to the solution you have left at the end of Task 4.
+2. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Manage NuGet packages**.
+3. Look for a package with name **DesktopBridge.Helpers** and press the **Install** button.
+
+    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddDesktopBridgeHelpers.png)
+
+4. Now double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer
+5. Look for the **Windows_Loaded** event handler and focus on the code we have added in Task 4 to convert the expense address into coordinates, so that we can use them to center the map:
+
+    ```csharp
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        txtType.Text = SelectedExpense.Type;
+        txtDescription.Text = SelectedExpense.Description;
+        txtLocation.Text = SelectedExpense.Address;
+        txtAmount.Text = SelectedExpense.Cost.ToString();
+        Chart.Height = (SelectedExpense.Cost * 400) / 1000;
+    
+        var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
+        var location = result.Locations.FirstOrDefault();
+        if (location != null)
+        {
+            await ExpenseMap.TrySetViewAsync(location.Point, 13);
+        }
+    }
+    ```
+
+6. Let's wrap the usage of the **MapLocationFinder** class around the following condition:
+
+    ```csharp
+    DesktopBridge.Helpers helpers = new DesktopBridge.Helpers();
+    if (helpers.IsRunningAsUwp())
+    {
+        var result = await MapLocationFinder.FindLocationsAsync(SelectedExpense.Address, null);
+        var location = result.Locations.FirstOrDefault();
+        if (location != null)
+        {
+            await ExpenseMap.TrySetViewAsync(location.Point, 13);
+        }
+    }
+    else
+    {
+        ExpenseMap.Visibility = System.Windows.Visibility.Collapsed;
+    }
+    ```
+    
+    We are creating a new instance of the **Helpers** class, which is included in the NuGet package we have just added. It exposes one simple method, called **IsRunningAsUwp()**, which will return **true** in case all the conditions to use UWP APIs are satisfied. If that's the case, we can continue and use the **MapLocationFinder** class to center the map on the expense's location. Otherwise, we simply hide the map by setting his **Visibility** property to **Collapsed**.
+    
+7. To make sure we don't face any issue we need also to wrap the initialization of the **ServiceToken** in the constructor of the class:
+
+    ```csharp
+    public ExpenseDetail()
+    {
+        InitializeComponent();
+        Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
+    
+        DesktopBridge.Helpers helpers = new DesktopBridge.Helpers();
+        if (helpers.IsRunningAsUwp())
+        {
+            MapService.ServiceToken = "IFFAI5SFOtHV9VBKF8Ea~3FS1XamCV2NM0IqlfoQo6A~AguqcUboJvnqWU1H9E-6MVThouJoCrM4wpv_1R_KX_oQLV_e59vyoK42470JvLsU";
+        }
+    }
+    ```
+
+Now we're ready to test the code. Since we might not have easy access to a Windows 7 machine, the easiest way to test our code is to run the application as a regular Win32 app and not packaged with the Desktop Bridge. In such scenario we don't have an identity, so we don't have access to all the UWP APIs.
+
+1. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Set as StartUp Project**.
+2. Press F5 to launch the application.
+3. Click on one of the employees in the list, then on one of the available expenses.
+4. The expense detail window will appear. Notice how the map is hidden. The application is running without an identity, so we're hiding the map control.
+5. Stop the debugger in Visual Studio.
+6. Right click on the **ContosoExpenses.Package** project in Solution Explorer and choose **Set as StartUp Project**.
+7. Press F5 to launch the application.
+8. Click on one of the employees in the list, then on one of the available expenses.
+9. The expense detail window will appear but, this time, the map will be visible and centered on the exact location. This time the application is running with an identity, since it's packaged with the Desktop Bridge, so we can properly display the map and use the UWP APIs to conver the address into coordinates.
+
 ___
 ## Exercise 3 - Integrate a custom UWP XAML component
 The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
@@ -1291,6 +1380,8 @@ It is now safe to save file by pressing **CTRL+S**.
 NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supporting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
 
 ![Dot Net standard](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DotNetStandard.png)
+
+If you have completed also the optional Task 5 of Exercise 2, make sure to reinstall also the [DesktopBridge.Helpers](https://www.nuget.org/packages/DesktopBridge.Helpers/) package from NuGet. Like Bogus and LiteBD, also the DesktopBridge Helpers package supports multi-targeting and it one version for the full .NET Framework and one version for .NET Standard 2.0.
 
 > Since we don't have anymore a packages.config file, can you guess where the list of NuGet packages gets stored?
 
