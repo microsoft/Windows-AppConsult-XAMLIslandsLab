@@ -1525,7 +1525,7 @@ We are done! Test the app in debug with F7 and it should work... Everything runn
 We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
 
 ### Task 7 - Supporting the Desktop Bridge
-Before wrapping up the exercise, let's make sure that also the Desktop Bridge version of our WPF application based on .NET Core works fine, so that we can leverage all the UWP APIs and the deep Windows 10 integration.
+Before wrapping up the exercise, let's make sure that also the Desktop Bridge version of our WPF application based on .NET Core works fine, so that we can leverage all the UWP APIs and the deep Windows 10 integration also with our migrated WPF project.
 
 1. Right click on the **ContosoExpenses.Package** project and choose **Set as StartUp Project**.
 2. Right click on the **ContosoExpenses.Package** project and choose **Rebuild**.
@@ -1533,7 +1533,7 @@ Before wrapping up the exercise, let's make sure that also the Desktop Bridge ve
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DesktopBridgeNetCoreError.png)
     
-    The reason why it's happening is that, when a .NET Core application is running packaged with the Desktop Bridge, it's included as self-contained, which means that the whole .NET Core runtime is embedded with the application. Thanks to this configuration, we can deploy the package on any Windows 10 machine and run it, even if it doesn't have the .NET Core runtime installed. However, when we package the application with the Desktop Bridge, we can't use the **Any CPU** compilation architecture, but we need to specify which runtimes we support. As such, we need to add this information in the **.csproj** file of our WPF project.
+    The cause of the error is that, when a .NET Core application is running packaged with the Desktop Bridge, it's included as self-contained, which means that the whole .NET Core runtime is embedded with the application. Thanks to this configuration, we can deploy the package on any Windows 10 machine and run it, even if it doesn't have the .NET Core runtime installed. However, when we package the application with the Desktop Bridge, we can't use the **Any CPU** compilation architecture, but we need to specify which runtimes we support. As such, we need to add this information in the **.csproj** file of our WPF project.
 4. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Edit ContosoExpenses.csproj**.
 5. Add the following entry inside the **PropertyGroup** section:
 
@@ -1553,7 +1553,7 @@ Before wrapping up the exercise, let's make sure that also the Desktop Bridge ve
     </PropertyGroup>
     ```
     
-    We are explictly saying that our WPF application can be compiled both for the x86 and x64 architecture.
+    We are explictly saying that our WPF application can be compiled both for the x86 and x64 architecture for the Windows platform.
     
 6. Now press CTRL+S, then right click again on the **ContosoExpenses.Package** and choose **Rebuild**.
 7. This time the compilation should complete without errors. If you still see an error related to the **project.assets.json** file, right click on the **ContosoExpenses** project in Solution Explorer and choose **Open Folder in File Explorer**. Delete the **bin** and **obj** folders and rebuild the **ContosoExpenses.Package** project.
