@@ -1337,9 +1337,9 @@ Because we are working with Preview versions in this lab, let's continue and add
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PrereleaseNuGetPackages.png)
 
-> If you're doing this lab on your machine and you're using the latest daily .NET Core bits, you can use the latest version of **Microsoft.Toolkit.Wpf.UI.Controls** provided by this custom source.
+7. Select **Microsoft.Toolkit.Wpf.UI.Controls**. Please be sure to choose the version **6.0.0-build.15.ge5444fb4a5** before clicking **Install**. This version supports the .NET Core 3.0 runtime installed on the VM.
 
-7. Select **Microsoft.Toolkit.Wpf.UI.Controls**. You can see that the version is newer (v6.0.0...) and it supports .NET Core 3.0! Click **Install**.
+> For the users not using the VM, if you downloaded the latest daily .NET Core bits, you can use the latest version of **Microsoft.Toolkit.Wpf.UI.Controls** provided by this custom source.
 
 8.  Build the project (CTRL+SHIFT+B). We get still some errors that we will fix in the next tasks.
 
