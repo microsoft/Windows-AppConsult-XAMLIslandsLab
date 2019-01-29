@@ -1325,7 +1325,7 @@ Because we are working with Preview versions in this lab, let's continue and add
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddNewNuGetSource.png)
 
-4.  Name it `Custom` and give the url `https://www.myget.org/F/miguelrb/api/v3/index.json` ; Click **Ok**.
+4.  Name it `Custom` and give the url `https://dotnet.myget.org/F/uwpcommunitytoolkit/api/v3/index.json` ; Click **Ok**.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CustomNuGetSource.png)
 
@@ -1336,6 +1336,8 @@ Because we are working with Preview versions in this lab, let's continue and add
 6. Check also the **Include prerelease** checkbox and some NuGet packages will magically be displayed.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PrereleaseNuGetPackages.png)
+
+> If you're doing this lab on your machine and you're using the latest daily .NET Core bits, you can use the latest version of **Microsoft.Toolkit.Wpf.UI.Controls** provided by this custom source.
 
 7. Select **Microsoft.Toolkit.Wpf.UI.Controls**. You can see that the version is newer (v6.0.0...) and it supports .NET Core 3.0! Click **Install**.
 
