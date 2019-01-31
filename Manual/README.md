@@ -59,6 +59,7 @@ Contoso Expenses is a desktop application, built with WPF and the .NET Framework
 
 The goal of this project, in fact, is to help you focusing on understanding and implementing XAML Islands inside an existing WPF application. It isn't made to teach you the best practices for WPF development.
 
+___
 ===
 
 ### Key concepts that will be used during the lab
@@ -133,12 +134,16 @@ Additionally, you will be able to leverage many of the benefits of the .NET Core
 ##### Why .NET Core 3 for XAML Islands
 You should wonder where .NET Core plays a role here. Of course for performance startup and execution of the WPF application: this is the good and immediate gain. The long term advantage is really the fact that this is the migration path for modernizing .NET WPF and Windows Forms applications. All the long-term investments in .NET will be delivered to .NET Core, while the full .NET Framework will focus mainly on security updates and in supporting the latest networking protocols, security standards, and Windows features. You can learn more about the roadmap [here](https://blogs.msdn.microsoft.com/dotnet/2018/10/04/update-on-net-core-3-0-and-net-framework-4-8/).
 
+___
 ===
 
 ## Exercise 1 - Use a 1st party UWP control with XAML Islands
 
 We start with the simpliest modernization path possible: We would like to use a rich UWP control that is "*available for use in WPF*". Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
 So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
+
+___
+===
 
 ### Task 1 - Setup the Contoso Expenses solution
 Let's first be sure we can run and debug the Contoso Expenses solution locally.
@@ -157,6 +162,7 @@ Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
 5.  Verify that you can debug the Contoso Expenses WPF project by pressing the **Start** button or CTRL+F5.
 
+___
 ===
 
 ### Task 2 - Reference the "Microsoft.Toolkit.Wpf.UI.Controls" NuGet package
@@ -201,6 +207,7 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 
 9.  It is now safe to add the `Microsoft.Toolkit.Wpf.UI.Controls` NuGet package to the ContosoExpenses project as explained above.
 
+___
 ===
 
 ### Task 3 - Use the InkCanvas control in the application
@@ -332,7 +339,6 @@ The reason is that every UWP control included in a WPF app through XAML Islands 
 We have completed our task. Now we have a fully working signature pad in the expense detail page of our application.
 
 ___
-
 ===
 
 ## Exercise 2 - Integrate the Universal Windows Platform
@@ -341,7 +347,6 @@ One of the feedbacks that the developer team has received by managers who are us
 The Universal Windows Platform includes a beautiful and performant control to display maps, which can be leveraged also in a WPF applications thanks to XAML Island. In this exercise we're going to include it.
 
 ___
-
 ===
 
 ### Task 1 - Use the MapControl in the application
