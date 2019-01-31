@@ -744,9 +744,9 @@ Now we're ready to test the code. Since we might not have easy access to a Windo
 8. Click on one of the employees in the list, then on one of the available expenses.
 9. The expense detail window will appear but, this time, the map will be visible and centered on the exact location. This time the application is running with an identity, since it's packaged with the Desktop Bridge, so we can properly display the map and use the UWP APIs to conver the address into coordinates.
 
-___
 
 ===
+
 
 ## Exercise 3 - Integrate a custom UWP XAML component
 The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
