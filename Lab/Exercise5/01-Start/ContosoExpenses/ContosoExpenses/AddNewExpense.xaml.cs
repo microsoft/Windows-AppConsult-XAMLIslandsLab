@@ -42,7 +42,7 @@ namespace ContosoExpenses
             {
                 Expense expense = new Expense
                 {
-                    Address = txtAmount.Text,
+                    Address = txtLocation.Text,
                     City = txtCity.Text,
                     Cost = Convert.ToDouble(txtAmount.Text),
                     Description = txtDescription.Text,

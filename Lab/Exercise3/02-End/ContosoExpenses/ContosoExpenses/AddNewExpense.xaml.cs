@@ -42,7 +42,7 @@ namespace ContosoExpenses
             {
                 Expense expense = new Expense
                 {
-                    Address = txtAmount.Text,
+                    Address = txtLocation.Text,
                     City = txtCity.Text,
                     Cost = Convert.ToDouble(txtAmount.Text),
                     Description = txtDescription.Text,
@@ -72,9 +72,9 @@ namespace ContosoExpenses
             {
                 calendarView.SelectedDatesChanged += (obj, args) =>
                 {
-                    if (calendarView.SelectedDates.Count > 0)
-                    {
-                        SelectedDate = calendarView.SelectedDates.FirstOrDefault().DateTime;
+                    if (args.AddedDates.Count > 0)
+                {
+                        SelectedDate = args.AddedDates.FirstOrDefault().DateTime;
                         txtDate.Text = SelectedDate.ToShortDateString();
                     }
                 };

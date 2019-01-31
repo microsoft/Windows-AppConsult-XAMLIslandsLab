@@ -133,7 +133,7 @@ You should wonder where .NET Core plays a role here. Of course for performance s
 
 ___
 ## Exercise 1 - Use a 1st party UWP control with XAML Islands
-We start with the simpliest modernization path possible: We would like to use a rich UWP control that is 'available for use in WPF'. Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
+We start with the simpliest modernization path possible: We would like to use a rich UWP control that is "*available for use in WPF*". Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
 So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
 
 ### Task 1 - Setup the Contoso Expenses solution
@@ -163,7 +163,7 @@ Please note that the same package exists for Windows Forms. Its name is <a href=
 
     ![Manage NuGet Packages menu in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ManageNuGetPackages.png)
 
-3. Search for "Microsoft.Toolkit.Wpf.UI.Controls". The NuGet package from Microsoft.Toolkit will be displayed.
+3. Search for `Microsoft.Toolkit.Wpf.UI.Controls`. The NuGet package from Microsoft.Toolkit will be displayed.
 
     ![Microsoft.Toolkit.Wpf.UI.Controls NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Microsoft.Toolkit.Wpf.UI.Controls.png)
 
@@ -189,11 +189,11 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
 
     ```dos
     1>------ Build started: Project: Contoso Expenses, Configuration: Debug Any CPU ------
-    1>  ContosoExpenses -> C:\XAMLIslandsLab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ContosoExpenses.exe
+    1>  ContosoExpenses -> C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ContosoExpenses.exe
     ========== Build: 1 succeeded, 0 failed, 1 up-to-date, 0 skipped ==========
     ```
 
-9.  It is now safe to add the **Microsoft.Toolkit.Wpf.UI.Controls** NuGet package to the ContosoExpenses project as explained above.
+9.  It is now safe to add the `Microsoft.Toolkit.Wpf.UI.Controls` NuGet package to the ContosoExpenses project as explained above.
 
 ### Task 3 - Use the InkCanvas control in the application
 One of the features that the development team is looking to integrate inside the application is support to digital signature. Managers wants to be able to easily sign the expenses reports, without having to print them and digitalize them back.
@@ -238,7 +238,7 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
     </Grid.RowDefinitions>
     ```
     
-6. Now move to the bottom of the XAML file and, inside the **Grid** control, add the following code:
+6. Now move to the bottom of the XAML file and, inside the **Grid** control before the `</Grid>` and `<-- Chart -->` lines, add the following code:
 
     ```xml
     <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="5" />
@@ -415,7 +415,7 @@ Let's try to use it!
 > Can you guess why we aren't able to find the **MapLocationFinder** class?
 
 The **MapLocationFinder** class is part of the Universal Windows Platform. Our application, instead, is a WPF application built on top of the .NET Framework. Thanks to the Windows Community Toolkit we have access to wrappers for some modern controls, but still we don't have access to all the APIs and features exposed by the Universal Windows Platform.
-In the next exercise we're going to enhance our application so that we can use APIs from the Universal Windows Platform without rewriting it from scratch, thanks to a technology called Desktop Bridge.
+We're going to enhance our application so that we can use APIs from the Universal Windows Platform without rewriting it from scratch, thanks to a technology called Desktop Bridge.
 
 In the next tasks we're going to make the **MapControl** we have added more useful, by actually displaying the location where the expense happened. However, as we have discovered at the end of the previous task, we first need to integrate the Universal Windows Platform in our application since the **MapLocationFinder** class, which can convert the address we have into a coordinate, is part of it.
 
@@ -430,11 +430,11 @@ Visual Studio offers an easy way to achieve this goal thanks to a template calle
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddNewProject.png)
 
-3. Select the **Windows Universal** category under **Visual C#** and look for a template called **Windows Application Packaging Project**:
+3. Search for `packaging` and look for a template called **Windows Application Packaging Project** in C#:
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WAP.png)
     
-4. Name it **ContosoExpenses.Package** and press OK.
+4. Name it `ContosoExpenses.Package` and press OK.
 5. You will be asked which target SDK and minimum SDK you want to use:
 
     - **Target SDK** defines which APIs of the Universal Windows Platform you'll be able to use in your application. Choosing the most recent version will allow you to leverage all the latest and greates features offered by the platform.
@@ -596,7 +596,7 @@ Let's move on and see how we can request a license and integrate it into our app
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/BingDevKeyInfo.png)
     
-10. Press the **Show key** button and copy the value that will be displayed.
+10. Press the **Show key** button and copy the value that will be displayed. You can paste the key in Notepad to keep it for later.
 11. Now go back to Visual Studio and double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
 12. Look for the constructor of the class, which is the **ExpenseDetail()** method.
 13. Copy and paste the following code at the end of the method:
@@ -638,7 +638,7 @@ Let's see how we can implement it.
 
 1. Go back to Visual Studio to the solution you have left at the end of Task 4.
 2. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Manage NuGet packages**.
-3. Look for a package with name **DesktopBridge.Helpers** and press the **Install** button.
+3. Look for a package with name `DesktopBridge.Helpers` and press the **Install** button.
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddDesktopBridgeHelpers.png)
 
@@ -715,7 +715,7 @@ Now we're ready to test the code. Since we might not have easy access to a Windo
 ___
 ## Exercise 3 - Integrate a custom UWP XAML component
 The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
-Thanks to XAML Island, we can start replacing some WPF controls with the UWP counterpart, which are already optimized for multiple input experiences, like touch and pen.
+Thanks to XAML Islands, we can start replacing some WPF controls with the UWP counterpart, which are already optimized for multiple input experiences, like touch and pen.
 
 The development team has decide to start modernizing the form to add a new expense, by making easier to choose the expense date with a touch device. The Universal Windows Platform offers a control called **CalendarView**, [which is perfect for our scenario](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/calendar-view). It's the same control that it's integrated in Windows 10 when you click on the date and time in the taskbar:
 
@@ -724,7 +724,7 @@ The development team has decide to start modernizing the form to add a new expen
 However, it isn't included as a 1st party control in the Windows Community Toolkit, so we'll have to use the generic XAML Host control.
 
 ### Task 1 - Add the WindowsXamlHost control
-1. You can use the output of Exercise 2 as a starting point. In case you haven't completed it, you can open the folder *"Lab/Exercise3/01-Start/ContosoExpenses"* in the location where you have unzipped the lab (it should be *"C:\XAMLIslandLab"*) and double click on the **ContosoExpenses.sln** file.
+1. You can use the output of Exercise 2 as a starting point. In case you haven't completed it, you can open the folder `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` in the location where you have unzipped the lab and double click on the **ContosoExpenses.sln** file.
 2. Regardless of your starting point, the required NuGet package should be already installed. We can verify this by right clicking on the **ContosoExpenses** project in Solution Explorer, choosing **Manage NuGet packages** and moving to the **Installed** tab.
 
     ![Manage NuGet Packages menu in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ManageNuGetPackages.png)
@@ -781,7 +781,7 @@ However, it isn't included as a 1st party control in the Windows Community Toolk
     ```csharp
     Expense expense = new Expense
     {
-        Address = txtAmount.Text,
+        Address = txtLocation.Text,
         City = txtCity.Text,
         Cost = Convert.ToDouble(txtAmount.Text),
         Description = txtDescription.Text,
@@ -807,7 +807,7 @@ Now press F5 to build and run the application. Once it starts, choose any employ
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CalendarViewWrapper.png)
 
-However, the work isn't completed yet. We need a way to handle the selected date, so that we can display it on the screen and we can store it in the code-behind, so that we can populate the new **Expense** object that gets saved in the database.
+However, the work isn't completed yet. We need a way to handle the selected date, so that we can display it on the screen and we can store it in the code-behind ; In other words, we have populate the new **Expense** object that gets saved in the database.
 
 ### Task 2 - Interact with the WindowsXamlHost control
 Let's take a look [at the documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.CalendarView) of the **CalendarView** control. There are two things which are relevant for our scenario:
@@ -886,13 +886,22 @@ In order to implement our scenario, we need to move to the code behind and cast 
     ```
 
 10. Now let's start to work on the code behind. Identify in Solution Explorer the **AddNewExpense.xaml.cs** file and double click on it.
-11. First we need a property to hold a reference to the selected date. Copy and paste the following definition inside the class:
+
+11. First, we need to add some using on the top of the file in order to be able to manipulate the WindowsXamlHost control.
+
+```csharp
+using Microsoft.Toolkit.Wpf.UI.XamlHost;
+using System.Linq;
+```
+
+
+12. We also need a property to hold a reference to the selected date. Copy and paste the following definition inside the class:
 
     ```csharp
     private DateTime SelectedDate;
     ```
 
-11. Now copy and paste the following event handler inside the class definition:
+13. Now copy and paste the following event handler inside the class definition:
 
     ```csharp
     private void CalendarUwp_ChildChanged(object sender, EventArgs e)
@@ -904,9 +913,9 @@ In order to implement our scenario, we need to move to the code behind and cast 
     
         if (calendarView != null)
         {
-            calendarView.SelectedDatesChanged += (obj, args) =>
+            calendarView.SelectedDatesChanged += (obj, args) =\>
             {
-                if (args.AddedDates.Count > 0)
+                if (args.AddedDates.Count \> 0)
                 {
                     SelectedDate = args.AddedDates.FirstOrDefault().DateTime;
                     txtDate.Text = SelectedDate.ToShortDateString();
@@ -924,7 +933,7 @@ In order to implement our scenario, we need to move to the code behind and cast 
     - Subscribe to the **SelectedDatesChanged** event, which is triggered when the user selects a date from the calendar. Inside this handler, thanks to the event arguments, we have access to the **AddedDates** collection, which contains the selected dates. In our case we're using the **CalendarView** control in single selection mode, so the collection will contain only one element. We store it into the **SelectedDate** property we have previously created and we display it in the **txtDate** control.
     - Customize the behavior of the control. Since, for compliance reasons, an employee can report only expenses occurred in the last year, it would be confusing to display dates older than 1 year or in the future. As such, we set the **MaxDate** property with the current date, while the **MinDate** one with the same date, but 1 year in the past. This means that if, for example, today is 14th February 2019, employees will be able to choose a date between 14th February 2018 and 14th February 2019.
 
-12. As next step, we need to handle the **Closed** event of the window to dispose the **WindowsXamlHost** control. Copy and paste the following event handler before the end of the **AddNewExpense** class:
+14. As next step, we need to handle the **Closed** event of the window to dispose the **WindowsXamlHost** control. Copy and paste the following event handler before the end of the **AddNewExpense** class:
 
     ```csharp
     private void Window_Closed(object sender, EventArgs e)
@@ -932,7 +941,7 @@ In order to implement our scenario, we need to move to the code behind and cast 
         CalendarUwp.Dispose();
     }
     ```
-13. As last step we need to update the **OnSaveExpense** event handler to retrieve the selected date from the new UWP control we have added. If you remember, in the previous task we have commented the following line of code in the creation of the **Expense** object:
+15. As last step we need to update the **OnSaveExpense** event handler to retrieve the selected date from the new UWP control we have added. If you remember, in the previous task we have commented the following line of code in the creation of the **Expense** object:
 
     ```csharp
     Date = txtDate.SelectedDate.GetValueOrDefault(),
@@ -949,7 +958,7 @@ In order to implement our scenario, we need to move to the code behind and cast 
     ```csharp
     Expense expense = new Expense
     {
-        Address = txtAmount.Text,
+        Address = txtLocation.Text,
         City = txtCity.Text,
         Cost = Convert.ToDouble(txtAmount.Text),
         Description = txtDescription.Text,
