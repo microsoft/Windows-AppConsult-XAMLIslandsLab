@@ -980,7 +980,7 @@ We have replaced an existing WPF control with a newer mordern version, which ful
 
 ___
 ## Exercise 4 - Create a XAML Islands wrapper
-From a technical point of view, the outcome of the previous code works without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to the **ChildChanged** event exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **SelectedDates** property.
+From a technical point of view, the outcome of the previous code works without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to the **ChildChanged** event exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **AddedDates** property.
 
 We can solve this problem by creating our own wrapper to the UWP control we want to integrate, exactly like the **MapControl** or the **InkCanvas** controls. The purpose of this wrapper is to take the properties and events exposed by UWP control and forward them to the WPF control, so that they could be directly access like with a native .NET control. Let's start!
 
@@ -1157,7 +1157,7 @@ An event is represented by the **EventHandler<T>** class, where **T** is the obj
 We're going to recreate a similar class in our project for our custom event handler.
 
 1. Right click on the **ContosoExpenses** project in Visual Studio and choose **Add -> Class**.
-2. Name it **SelectedDatesChangedEventArgs** and press OK.
+2. Name it `SelectedDatesChangedEventArgs` and press OK.
 3. Replace the existing class definition with the following one:
 
     ```csharp
@@ -1165,7 +1165,7 @@ We're going to recreate a similar class in our project for our custom event hand
     {
         public IReadOnlyList<DateTimeOffset> SelectedDates { get; set; }
     
-        public SelectedDatesChangedEventArgs(IReadOnlyList<DateTimeOffset> selectedDates)
+        public SelectedDatesChangedEventArgs(IReadOnlyList\<DateTimeOffset\> selectedDates)
         {
             this.SelectedDates = selectedDates;
         }
@@ -1260,15 +1260,15 @@ Migrating the application to .NET Core 3 is, from far, the best and recomanded p
 
 ### Task 1 - Setup for using .NET Core 3
 At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
-- The .NET Core 3 runtime - https://github.com/dotnet/core-setup
-- The .NET Core 3 SDK - https://github.com/dotnet/core-sdk
+- The .NET Core 3 runtime - [https://github.com/dotnet/core-setup](https://github.com/dotnet/core-setup)
+- The .NET Core 3 SDK - [https://github.com/dotnet/core-sdk](https://github.com/dotnet/core-sdk)
 
 Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. On the other hand, if you are using you own computer, just navigate to the two links above and take the correct installer for your platform.
 
 ![Download .NET Core](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DownloadNETCore.png)
 
 ### Task 2 - Perform the migration - The csproj
-As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is alreday installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
+As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is already installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
 
 Let's open the solution using Visual Studio 2019 Preview:
 1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise5\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
@@ -1293,7 +1293,7 @@ Let's open the solution using Visual Studio 2019 Preview:
 
     ![csproj file content](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CSPROJFile.png)
 
-    Do not be afraid, it is not the time to understand the whole csproj structure. You will see that the migration will be done easely: Juste remove all the content of the file by doing **CTRL+A** and than  **SUPPR**!
+    Do not be afraid, it is not the time to understand the whole csproj structure. You will see that the migration will be done easily: Just remove all the content of the file by doing **CTRL+A** and than  **SUPPR**!
     
     ![Empty csproj file](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/EmptyCSPROJ.png)
     
@@ -1386,7 +1386,7 @@ It is now safe to save file by pressing **CTRL+S**.
 
 > Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
 
-NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supporting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supporting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at [https://docs.microsoft.com/en-us/dotnet/standard/net-standard](https://docs.microsoft.com/en-us/dotnet/standard/net-standard))
 
 ![Dot Net standard](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DotNetStandard.png)
 
@@ -1411,7 +1411,7 @@ With the new project format, the referenced NuGet packages are stored directly i
 
 > All these errors are caused by the same issue. What is it?
 
-Again remember that we deleted all the content of the initial csproj file. We just had the `Bogus` and `LiteDB` NuGet Packages but not the `Microsoft.Toolkit.Wpf.UI.Controls`. There is a reason: got back to the **NuGet: ContosoExpenses** tab and search for `Microsoft.Toolkit.Wpf.UI.Controls`. You will see that this package supports the .NET Framework starting at the version 4.6.2. It does not support yet the .NET Core 3 version.
+Again remember that we deleted all the content of the initial csproj file. We just had the **Bogus** and **LiteDB** NuGet Packages but not the **Microsoft.Toolkit.Wpf.UI.Controls**. There is a reason: go back to the **NuGet: ContosoExpenses** tab and search for `Microsoft.Toolkit.Wpf.UI.Controls`. You will see that this package supports the .NET Framework starting at the version 4.6.2. It does not support yet the .NET Core 3 version.
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WPFUICONTROLSNuGetPackage.png)
 
@@ -1506,7 +1506,7 @@ In order to be able to use the Universal Windows Platform APIs in a WPF applicat
 
 We are ok to finally, launch the app.
 
-1.  Use the **Debug** menu / **Start Debugging F7**
+1.  Use the **Debug** menu / **Start Debugging F5**
 
 > You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
 
@@ -1529,7 +1529,7 @@ In fact, it is simple. Again, as we hardly deleted all the content of the csproj
     ![Contoso ico in the Project's Properties](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoIco.png)
 
 
-We are done! Test the app in debug with F7 and it should work... Everything running using .NET Core 3!
+We are done! Test the app in debug with F5 and it should work... Everything running using .NET Core 3!
 
 We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
 
