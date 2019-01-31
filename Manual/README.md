@@ -59,6 +59,8 @@ Contoso Expenses is a desktop application, built with WPF and the .NET Framework
 
 The goal of this project, in fact, is to help you focusing on understanding and implementing XAML Islands inside an existing WPF application. It isn't made to teach you the best practices for WPF development.
 
+===
+
 ### Key concepts that will be used during the lab
 
 **Please note**. The following information is provided in case you're planning to follow this lab on your own or from home. If you are following this lab as part of a live training class, feel free to skip it and jump directly to the beginning of the first exercise. These concepts, in fact, should have already be explained by the trainers of the lab before starting the practical exercises.
@@ -131,8 +133,10 @@ Additionally, you will be able to leverage many of the benefits of the .NET Core
 ##### Why .NET Core 3 for XAML Islands
 You should wonder where .NET Core plays a role here. Of course for performance startup and execution of the WPF application: this is the good and immediate gain. The long term advantage is really the fact that this is the migration path for modernizing .NET WPF and Windows Forms applications. All the long-term investments in .NET will be delivered to .NET Core, while the full .NET Framework will focus mainly on security updates and in supporting the latest networking protocols, security standards, and Windows features. You can learn more about the roadmap [here](https://blogs.msdn.microsoft.com/dotnet/2018/10/04/update-on-net-core-3-0-and-net-framework-4-8/).
 
-___
+===
+
 ## Exercise 1 - Use a 1st party UWP control with XAML Islands
+
 We start with the simpliest modernization path possible: We would like to use a rich UWP control that is "*available for use in WPF*". Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
 So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
 
@@ -152,6 +156,8 @@ Let's first be sure we can run and debug the Contoso Expenses solution locally.
     ![ContosoExpenses solution in Windows Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoExpensesSolution.png)
 
 5.  Verify that you can debug the Contoso Expenses WPF project by pressing the **Start** button or CTRL+F5.
+
+===
 
 ### Task 2 - Reference the "Microsoft.Toolkit.Wpf.UI.Controls" NuGet package
 We need this WPF package because it takes care for us about all the necessary piping for XAML Islands. It provides wrapper classes for 1st party controls, such as the InkCanvas, InkToolbar, MapControl, and MediaPlayerElement, all for WPF.
@@ -194,6 +200,8 @@ This error gives us the opportunity to mention the requirement for the .NET WPF 
     ```
 
 9.  It is now safe to add the `Microsoft.Toolkit.Wpf.UI.Controls` NuGet package to the ContosoExpenses project as explained above.
+
+===
 
 ### Task 3 - Use the InkCanvas control in the application
 One of the features that the development team is looking to integrate inside the application is support to digital signature. Managers wants to be able to easily sign the expenses reports, without having to print them and digitalize them back.
@@ -324,9 +332,17 @@ The reason is that every UWP control included in a WPF app through XAML Islands 
 We have completed our task. Now we have a fully working signature pad in the expense detail page of our application.
 
 ___
+
+===
+
 ## Exercise 2 - Integrate the Universal Windows Platform
+
 One of the feedbacks that the developer team has received by managers who are using the Contoso Expenses application is to make easier to locate the place where the expense happened. The current detail page of an expense already shows the full address, but they would like something more visual and easier to understand.
 The Universal Windows Platform includes a beautiful and performant control to display maps, which can be leveraged also in a WPF applications thanks to XAML Island. In this exercise we're going to include it.
+
+___
+
+===
 
 ### Task 1 - Use the MapControl in the application
 Like the **InkCanvas** control we have previously added to handle the signature, the **MapControl** is another 1st party control included in the Windows Community Toolkit. As such, we can reuse the same library we have installed in the previous task to add this new control in the detail page of an expense.
@@ -419,6 +435,10 @@ We're going to enhance our application so that we can use APIs from the Universa
 
 In the next tasks we're going to make the **MapControl** we have added more useful, by actually displaying the location where the expense happened. However, as we have discovered at the end of the previous task, we first need to integrate the Universal Windows Platform in our application since the **MapLocationFinder** class, which can convert the address we have into a coordinate, is part of it.
 
+___
+
+===
+
 ### Task 2 - Package the application with the Desktop Bridge
 
 Before doing this, we need to introduce the Desktop Bridge. Thanks to this technology, we can package our WPF application using the same format of the Universal Windows Platform, which is MSIX (formerly known as AppX, for versions of Windows 10 prior to 1809). Once the application is packaged, it gets an identity, which we'll allow us to integrate the Universal Windows Platform and use most of the available APIs without having to rewrite our WPF application from scratch.
@@ -472,6 +492,10 @@ Out of the box, you won't notice any meaningful difference. We have simply packa
 
 Now that our application has been packaged with the Desktop Bridge, we can start integrating the Universal Windows Platform.
 
+___
+
+===
+
 ### Task 3 - Add a reference to the Universal Windows Platform
 In order to start using Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
 
@@ -500,6 +524,10 @@ In order to start using Universal Windows Platform APIs in a WPF application we 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CopyLocal.png)
 
 You're all set. Now you're ready to start using APIs from the Universal Windows Platform.
+
+___
+
+===
 
 ### Task 4 - Display the expense location on the map
 Now that we have enabled the Universal Windows Platform in our WPF project, we can start using the **MapLocationFinder** class we have mentioned before, which can help us to convert the address of the expense location to a set of coordinates we can use with the **MapControl**.
@@ -623,6 +651,10 @@ Let's move on and see how we can request a license and integrate it into our app
 
 Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
+___
+
+===
+
 ### Task 5 - Handle backward compatibility (optional task)
 It's great to be able to leverage UWP features in our WPF application without rewriting it from scratch, but by introducing these APIs we have created a potential issue. Our WPF application now doesn't run anymore on Windows 7 or when it's deployed without being packaged. It will simply crash when we try to open the expense detail page, since all the APIs we have used from the Universal Windows Platform (like the **MapLocationFinder** class) don't exist on Windows 7.
 
@@ -713,6 +745,9 @@ Now we're ready to test the code. Since we might not have easy access to a Windo
 9. The expense detail window will appear but, this time, the map will be visible and centered on the exact location. This time the application is running with an identity, since it's packaged with the Desktop Bridge, so we can properly display the map and use the UWP APIs to conver the address into coordinates.
 
 ___
+
+===
+
 ## Exercise 3 - Integrate a custom UWP XAML component
 The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
 Thanks to XAML Islands, we can start replacing some WPF controls with the UWP counterpart, which are already optimized for multiple input experiences, like touch and pen.
