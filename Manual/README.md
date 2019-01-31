@@ -744,10 +744,7 @@ Now we're ready to test the code. Since we might not have easy access to a Windo
 8. Click on one of the employees in the list, then on one of the available expenses.
 9. The expense detail window will appear but, this time, the map will be visible and centered on the exact location. This time the application is running with an identity, since it's packaged with the Desktop Bridge, so we can properly display the map and use the UWP APIs to conver the address into coordinates.
 
-
 ===
-
-
 ## Exercise 3 - Integrate a custom UWP XAML component
 The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
 Thanks to XAML Islands, we can start replacing some WPF controls with the UWP counterpart, which are already optimized for multiple input experiences, like touch and pen.
@@ -757,7 +754,7 @@ The development team has decide to start modernizing the form to add a new expen
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CalendarViewControl.png)
 
 However, it isn't included as a 1st party control in the Windows Community Toolkit, so we'll have to use the generic XAML Host control.
-
+===
 ### Task 1 - Add the WindowsXamlHost control
 1. You can use the output of Exercise 2 as a starting point. In case you haven't completed it, you can open the folder `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` in the location where you have unzipped the lab and double click on the **ContosoExpenses.sln** file.
 2. Regardless of your starting point, the required NuGet package should be already installed. We can verify this by right clicking on the **ContosoExpenses** project in Solution Explorer, choosing **Manage NuGet packages** and moving to the **Installed** tab.
