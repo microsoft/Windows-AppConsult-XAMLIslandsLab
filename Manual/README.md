@@ -122,7 +122,7 @@ else
 ```
 
 
-However, the XAML Island team is planning to enhance the backward compatibility story, by allowing the various controls included in the toolkit to handle this scenario for you and be automatically instantiated only if th app is running on a supported operating system.
+However, the XAML Island team is planning to enhance the backward compatibility story, by allowing the various controls included in the toolkit to handle this scenario for you and be automatically instantiated only if the app is running on a supported operating system.
 
 The only exception to this rule is the **WebView** control. The Windows Community Toolkit, in fact, includes a control called [WebViewCompatible](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/webviewcompatible), which offers built-in support for backward compatibility. If the application is running on Windows 10 1803 or later, it will render the web view using the new UWP control and the Edge engine. Otherwise, it will fallback to the traditional **WebBrowser** control, which uses the Internet Explorer engine.
 
