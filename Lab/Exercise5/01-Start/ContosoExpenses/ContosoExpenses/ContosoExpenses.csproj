@@ -87,11 +87,9 @@
     <Compile Include="AddNewExpense.xaml.cs">
       <DependentUpon>AddNewExpense.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CalendarViewWrapper.cs" />
     <Compile Include="ExpensesList.xaml.cs">
       <DependentUpon>ExpensesList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SelectedDatesChangedEventArgs.cs" />
     <Compile Include="Services\DatabaseService.cs" />
     <Page Include="AboutView.xaml">
       <Generator>MSBuild:Compile</Generator>
