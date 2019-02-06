@@ -663,10 +663,10 @@ Let's move on and see how we can request a license and integrate it into our app
     - After an animation, the map will be centered and zoomed on the location of the expense
     - The warning message under the **MapControl** will be gone
     
-    
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/MapControlOk.png)
 
 Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
+
 === 
 
 ## Exercise 3 - Integrate a custom UWP XAML component
