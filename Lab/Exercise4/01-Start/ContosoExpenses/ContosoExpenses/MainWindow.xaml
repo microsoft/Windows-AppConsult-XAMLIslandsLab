@@ -18,6 +18,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
         xmlns:local="clr-namespace:ContosoExpenses"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
@@ -27,6 +28,7 @@
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -53,5 +55,8 @@
                 <DataGridTextColumn Header="E-mail"         Binding="{Binding Path=Email}" />
             </DataGrid.Columns>
         </DataGrid>
+
+        <!--<xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.DataGrid" Grid.Row="2" x:Name="UwpGrid" />-->
+
     </Grid>
 </Window>
