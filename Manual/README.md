@@ -124,7 +124,7 @@ else
 
 However, the XAML Island team is planning to enhance the backward compatibility story, by allowing the various controls included in the toolkit to handle this scenario for you and be automatically instantiated only if th app is running on a supported operating system.
 
-The only exception to this rule is the **WebView** control. The Windows Community Toolkit, in fact, includes a control called [WebViewCompatible](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/webviewcompatible), which offers built-in support for backward compatibility. If the application is running on Windows 10 1803 or later, it will render the web view using the new UWP control and the Edge engine. Otherwise, it will fallback to the traditional **WebBrowser** control, which uses the Internet Explorer engine.
+c The only exception to this rule is the **WebView** control. The Windows Community Toolkit, in fact, includes a control called [WebViewCompatible](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/webviewcompatible), which offers built-in support for backward compatibility. If the application is running on Windows 10 1803 or later, it will render the web view using the new UWP control and the Edge engine. Otherwise, it will fallback to the traditional **WebBrowser** control, which uses the Internet Explorer engine.
 
 #### .NET Core 3
 .NET Core is a open-source framework built from scratch which brings all the goodies of the .NET Framework into the new modern world. Unlike the full .NET Framework, which has its roots deeply integrated into Windows, .NET Core is cross-platform, lightweight and easily extensible.
@@ -258,22 +258,7 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
             Title="Expense Detail" Height="500" Width="800"
             Background="{StaticResource HorizontalBackground}">
     ```
-4. Now we can add the **InkCanvas** control to the page. We're going to add two new rows to the **Grid** to fit it.
-5. Add two new **RowDefinition** tags at the end the **Grid.Row** collection: one with **Height** equal to **Auto**, the other one equal to *. This is how the final result should look like:
-
-    ```xml
-    <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
-    ```
-    
-6. Now move to the bottom of the XAML file and, inside the **Grid** control before the `</Grid>` and `<-- Chart -->` lines, add the following code:
+4. Now we can add the **InkCanvas** control to the page. Move to the bottom of the XAML file and, inside the **Grid** control before the `</Grid>` and `<-- Chart -->` lines, add the following code:
 
     ```xml
     <TextBlock Text="Signature:" FontSize="16" FontWeight="Bold" Grid.Row="5" />
@@ -283,15 +268,15 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
 
     The first control is a simple **TextBlock**, used as a header. The second one is real **InkCanvas** control, which is prefixed by the **toolkit** keyword we have defined as namespace, being a 3rd party control.
     
-7. That's it! Now we can test the application. Press F5 to launch the debugging experience.
-8. Choose an employee from the list, then one of the available expenses.
-9. Notice that, in the expense detail page, there's a new space for the **InkCanvas** control. 
+5. That's it! Now we can test the application. Press F5 to launch the debugging experience.
+6. Choose an employee from the list, then one of the available expenses.
+7. Notice that, in the expense detail page, there's a new space for the **InkCanvas** control. 
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/InkCanvasPenOnly.png)
 
     If you have a device which supports a digital pen, like a Surface, go on and try to use it. You will see the digital ink appearing on the screen. However, if you don't have a pen capable device and you try to sign with your mouse, nothing will happen. This is happening because, by default, the **InkCanvas** control is enabled only for digital pens. However, we can change this behavior.
-10. Stop the debugger and double click on the **ExpenseDetail.xaml.cs** file in Visual Studio.
-11. Add the following namespace declaration at the top of the class:
+8. Stop the debugger and double click on the **ExpenseDetail.xaml.cs** file in Visual Studio.
+9. Add the following namespace declaration at the top of the class:
 
     ```csharp
     using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
