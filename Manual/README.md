@@ -124,7 +124,7 @@ else
 
 However, the XAML Island team is planning to enhance the backward compatibility story, by allowing the various controls included in the toolkit to handle this scenario for you and be automatically instantiated only if the app is running on a supported operating system.
 
-c The only exception to this rule is the **WebView** control. The Windows Community Toolkit, in fact, includes a control called [WebViewCompatible](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/webviewcompatible), which offers built-in support for backward compatibility. If the application is running on Windows 10 1803 or later, it will render the web view using the new UWP control and the Edge engine. Otherwise, it will fallback to the traditional **WebBrowser** control, which uses the Internet Explorer engine.
+The only exception to this rule is the **WebView** control. The Windows Community Toolkit, in fact, includes a control called [WebViewCompatible](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/webviewcompatible), which offers built-in support for backward compatibility. If the application is running on Windows 10 1803 or later, it will render the web view using the new UWP control and the Edge engine. Otherwise, it will fallback to the traditional **WebBrowser** control, which uses the Internet Explorer engine.
 
 #### .NET Core 3
 .NET Core is a open-source framework built from scratch which brings all the goodies of the .NET Framework into the new modern world. Unlike the full .NET Framework, which has its roots deeply integrated into Windows, .NET Core is cross-platform, lightweight and easily extensible.
@@ -812,10 +812,10 @@ In order to implement our scenario, we need to move to the code behind and cast 
 
 11. First, we need to add some using on the top of the file in order to be able to manipulate the WindowsXamlHost control.
 
-```csharp
-using Microsoft.Toolkit.Wpf.UI.XamlHost;
-using System.Linq;
-```
+    ```csharp
+    using Microsoft.Toolkit.Wpf.UI.XamlHost;
+    using System.Linq;
+    ```
 
 12. We also need a property to hold a reference to the selected date. Copy and paste the following definition inside the class:
 
@@ -905,7 +905,7 @@ We have replaced an existing WPF control with a newer mordern version, which ful
 === 
 
 ## Exercise 4 - Migrate to .NET Core 3
-Migrating the application to .NET Core 3 is, from far, the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentioned, the first really nice improvment is about the startup and execution time! This is only the emerged part of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
+Migrating the application to .NET Core 3 is the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentioned, the first really nice improvment is about the startup and execution time! This is only the tip of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
 === 
 
@@ -1372,7 +1372,7 @@ Let's start by adding some properties to our wrapped control. For our scenario, 
     
 5. Now that the wrapped control is exposing the properties we need, we can start to integrate them in code behind. Double click on the **AddNewExpense.xaml.cs** file.
 6. First locate the **CalendarUwp_ChildChanged** event handler and delete it. We don't need it anymore, since the we have replaced the **WindowsXamlHost** control with the wrapped one.
-7. Now we need to initialize the **MinDate** and **MaxDate** properties. We need to do it when the window is loaded, so we need to subscribe to the **Loaded** event exposed by the **Window**. Double click on the **AddNewExpense.xaml** file, locate the **Window** tag at the top of the page and add the following attribute:
+7. It's time to initialize the **MinDate** and **MaxDate** properties. We need to do it when the window is loaded, so we need to subscribe to the **Loaded** event exposed by the **Window**. Double click on the **AddNewExpense.xaml** file, locate the **Window** tag at the top of the page and add the following attribute:
 
     ```xml
     Loaded="Window_Loaded"
@@ -1445,7 +1445,7 @@ We're going to recreate a similar class in our project for our custom event hand
     
     We're exposing a public event thanks to the **EventHandler** class. We specify, as returned parameter, the custom event arguments class we have just created, called **SelectedDatesChangedEventArgs**.
     
-5. Now we need to expose a method to invoke whenever we want to trigger our event. Copy and paste the following code inside the class:
+5. Then we need to expose a method to invoke whenever we want to trigger our event. Copy and paste the following code inside the class:
 
     ```csharp
     protected virtual void OnSelectedDatesChanged(SelectedDatesChangedEventArgs e)
@@ -1454,7 +1454,7 @@ We're going to recreate a similar class in our project for our custom event hand
     }
     ```
     
-6. Now we need to forward the original event exposed by the **CalendarView** control to the custom one we have just created. This way, we'll be able to leverage this event directly from our wrapped control. As first step, we need to subscribe to the original event inside the **OnInitialize()** method we have previously implemented. Copy and paste the following line after the **SetContent()** method:
+6. Finally we need to forward the original event exposed by the **CalendarView** control to the custom one we have just created. This way, we'll be able to leverage this event directly from our wrapped control. As first step, we need to subscribe to the original event inside the **OnInitialize()** method we have previously implemented. Copy and paste the following line after the **SetContent()** method:
 
     ```csharp
     Windows.UI.Xaml.Controls.CalendarView calendarView = this.ChildInternal as Windows.UI.Xaml.Controls.CalendarView;

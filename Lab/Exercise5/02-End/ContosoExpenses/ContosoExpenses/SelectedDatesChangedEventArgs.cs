@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ContosoExpenses
 {
-    public class SelectedDatesChangedEventArgs: EventArgs
+    public class SelectedDatesChangedEventArgs : EventArgs
     {
         public IReadOnlyList<DateTimeOffset> SelectedDates { get; set; }
 

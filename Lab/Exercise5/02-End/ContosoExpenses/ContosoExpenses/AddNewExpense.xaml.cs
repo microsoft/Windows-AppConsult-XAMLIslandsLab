@@ -14,10 +14,8 @@
 
 using ContosoExpenses.Models;
 using ContosoExpenses.Services;
-using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 
 namespace ContosoExpenses
@@ -60,6 +58,7 @@ namespace ContosoExpenses
                 MessageBox.Show("Validation error. Please check your data.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void Window_Closed(object sender, EventArgs e)
         {

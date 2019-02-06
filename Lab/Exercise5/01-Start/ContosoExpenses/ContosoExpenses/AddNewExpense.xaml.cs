@@ -17,6 +17,7 @@ using ContosoExpenses.Services;
 using Microsoft.Toolkit.Wpf.UI.XamlHost;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 
 namespace ContosoExpenses
@@ -72,7 +73,7 @@ namespace ContosoExpenses
                 calendarView.SelectedDatesChanged += (obj, args) =>
                 {
                     if (args.AddedDates.Count > 0)
-                    {
+                {
                         SelectedDate = args.AddedDates.FirstOrDefault().DateTime;
                         txtDate.Text = SelectedDate.ToShortDateString();
                     }
@@ -87,6 +88,5 @@ namespace ContosoExpenses
         {
             CalendarUwp.Dispose();
         }
-
     }
 }
