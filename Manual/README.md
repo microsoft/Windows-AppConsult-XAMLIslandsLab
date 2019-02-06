@@ -204,29 +204,7 @@ Please note that the same package exists for Windows Forms. Its name is <a href=
 
     ![Install Controls NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/InstallControlsNuGetPackage.png)
 
-5. You might get the following error.
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ErrorMinimumNETVersionForControls.png)
-
-This error gives us the opportunity to mention the requirement for the .NET WPF or Windows Forms application: **The .NET Framework version has to be > 4.6.2**. Let's retarget the Contoso Expenses project to this version.
-
-6.  Right click on the **ContosoExpenses** project and choose **Properties**.
-
-    ![Project properties](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ProjectProperties.png)
-
-7.  In the **Target framework** dropdown listbox, select the **.NET Framework 4.7.2** (as this version is installed on the box).
-
-    ![.NET Framework 4.7.2 version](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NET472Version.png)
-
-8. Rebuild the project using the **CTRL+SHIFT+B** shortcut in order to check if the retargeting action haven't caused any regression or ask us to do some manual code modifications.
-
-    ```dos
-    1>------ Build started: Project: Contoso Expenses, Configuration: Debug Any CPU ------
-    1>  ContosoExpenses -> C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses\bin\Debug\ContosoExpenses.exe
-    ========== Build: 1 succeeded, 0 failed, 1 up-to-date, 0 skipped ==========
-    ```
-
-9.  It is now safe to add the `Microsoft.Toolkit.Wpf.UI.Controls` NuGet package to the ContosoExpenses project as explained above.
+> **Note:** The .NET Framework version used by the project has to be > 4.6.2 in order to be able to install the NuGet package.
 
 === 
 
