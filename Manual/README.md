@@ -826,6 +826,7 @@ using System.Linq;
 13. Now copy and paste the following event handler inside the class definition:
 
     ```csharp
+    <code>
     private void CalendarUwp_ChildChanged(object sender, EventArgs e)
     {
         WindowsXamlHost windowsXamlHost = (WindowsXamlHost)sender;
@@ -835,9 +836,9 @@ using System.Linq;
     
         if (calendarView != null)
         {
-            calendarView.SelectedDatesChanged += (obj, args) =\>
+            calendarView.SelectedDatesChanged += (obj, args) =>
             {
-                if (args.AddedDates.Count \> 0)
+                if (args.AddedDates.Count > 0)
                 {
                     SelectedDate = args.AddedDates.FirstOrDefault().DateTime;
                     txtDate.Text = SelectedDate.ToShortDateString();
@@ -848,6 +849,7 @@ using System.Linq;
             calendarView.MaxDate = DateTimeOffset.Now;
         }
     }
+    </code>
     ```
 
     We are handling the **ChildChanged** event we have previously subscribed to. As first step, we retrieve a reference to the **WindowsXamlHost** control which triggered it. The control exposes a property called **Child**, which hosts the UWP control we have assigned with the **InitialTypeName** property. We retrieve this property and we cast it to the type of control we're hosting, which in our case is **Windows.UI.Xaml.Controls.CalendarView**. Now we have access to the full UWP control, so we can:
