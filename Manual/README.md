@@ -176,9 +176,9 @@ Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
     ![Downloaded file in Chrome](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/SourceCodeDownloaded.png)
 
-3.  The content of the Zip, the XAMLIslandsLab folder, will be displayed in the Windows Explorer. Just drap & drop it to your C:\ drive. You will then have your working folder ready to be used: `C:\XAMLIslandsLab`.
+3.  Open the zip file and extract all the content to `C:\`. It will create a folder named `C:\XAMLI
 
-4.  Open Visual Studio 2019, and double click on the `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` file to open the solution.
+4.  Launch Visual Studio 2019, and double click on the `C:\XAMLIslandsLab\Lab\Exercise1\01-Start\ContosoExpenses\ContosoExpenses.sln` file to open the solution.
 
     ![ContosoExpenses solution in Windows Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoExpensesSolution.png)
 
