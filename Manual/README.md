@@ -59,7 +59,7 @@ Contoso Expenses is a desktop application, built with WPF and the .NET Framework
 
 The goal of this project, in fact, is to help you focusing on understanding and implementing XAML Islands inside an existing WPF application. It isn't made to teach you the best practices for WPF development.
 
-=== 
+___ 
 
 ### Key concepts that will be used during the lab
 
@@ -158,14 +158,14 @@ Additionally, you will be able to leverage many of the benefits of the .NET Core
 ##### Why .NET Core 3 for XAML Islands
 You should wonder where .NET Core plays a role here. Of course for performance startup and execution of the WPF application: this is the good and immediate gain. The long term advantage is really the fact that this is the migration path for modernizing .NET WPF and Windows Forms applications. All the long-term investments in .NET will be delivered to .NET Core, while the full .NET Framework will focus mainly on security updates and in supporting the latest networking protocols, security standards, and Windows features. You can learn more about the roadmap [here](https://blogs.msdn.microsoft.com/dotnet/2018/10/04/update-on-net-core-3-0-and-net-framework-4-8/).
 
-=== 
+___ 
 
 ## Exercise 1 - Use a 1st party UWP control with XAML Islands
 
 We start with the simpliest modernization path possible: We would like to use a rich UWP control that is "*available for use in WPF*". Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
 So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
 
-=== 
+___ 
 
 ### Exercise 1 Task 1 - Setup the Contoso Expenses solution
 Let's first be sure we can run and debug the Contoso Expenses solution locally.
@@ -184,7 +184,7 @@ Let's first be sure we can run and debug the Contoso Expenses solution locally.
 
 5.  Verify that you can debug the Contoso Expenses WPF project by pressing the **Start** button or CTRL+F5.
 
-=== 
+___ 
 
 ### Exercise 1 Task 2 - Reference the "Microsoft.Toolkit.Wpf.UI.Controls" NuGet package
 We need this WPF package because it takes care for us about all the necessary piping for XAML Islands. It provides wrapper classes for 1st party controls, such as the InkCanvas, InkToolbar, MapControl, and MediaPlayerElement, all for WPF.
@@ -206,7 +206,7 @@ Please note that the same package exists for Windows Forms. Its name is <a href=
 
 > **Note:** The .NET Framework version used by the project has to be > 4.6.2 in order to be able to install the NuGet package.
 
-=== 
+___ 
 
 ### Exercise 1 Task 3 - Use the InkCanvas control in the application
 One of the features that the development team is looking to integrate inside the application is support to digital signature. Managers wants to be able to easily sign the expenses reports, without having to print them and digitalize them back.
@@ -321,14 +321,14 @@ The reason is that every UWP control included in a WPF app through XAML Islands 
 
 We have completed our task. Now we have a fully working signature pad in the expense detail page of our application.
 
-=== 
+___ 
 
 ## Exercise 2 - Integrate the Universal Windows Platform
 
 One of the feedbacks that the developer team has received by managers who are using the Contoso Expenses application is to make easier to locate the place where the expense happened. The current detail page of an expense already shows the full address, but they would like something more visual and easier to understand.
 The Universal Windows Platform includes a beautiful and performant control to display maps, which can be leveraged also in a WPF applications thanks to XAML Island. In this exercise we're going to include it.
 
-=== 
+___ 
 
 ### Exercise 2 Task 1 - Use the MapControl in the application
 Like the **InkCanvas** control we have previously added to handle the signature, the **MapControl** is another 1st party control included in the Windows Community Toolkit. As such, we can reuse the same library we have installed in the previous task to add this new control in the detail page of an expense.
@@ -421,7 +421,7 @@ We're going to enhance our application so that we can use APIs from the Universa
 
 In the next tasks we're going to make the **MapControl** we have added more useful, by actually displaying the location where the expense happened. However, as we have discovered at the end of the previous task, we first need to integrate the Universal Windows Platform in our application since the **MapLocationFinder** class, which can convert the address we have into a coordinate, is part of it.
 
-=== 
+___ 
 
 ### Exercise 2 Task 2 - Package the application with the Desktop Bridge
 
@@ -476,7 +476,7 @@ Out of the box, you won't notice any meaningful difference. We have simply packa
 
 Now that our application has been packaged with the Desktop Bridge, we can start integrating the Universal Windows Platform.
 
-=== 
+___ 
 
 ### Exercise 2 Task 3 - Add a reference to the Universal Windows Platform
 In order to start using Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
@@ -507,7 +507,7 @@ In order to start using Universal Windows Platform APIs in a WPF application we 
 
 You're all set. Now you're ready to start using APIs from the Universal Windows Platform.
 
-=== 
+___ 
 
 ### Exercise 2 Task 4 - Display the expense location on the map
 Now that we have enabled the Universal Windows Platform in our WPF project, we can start using the **MapLocationFinder** class we have mentioned before, which can help us to convert the address of the expense location to a set of coordinates we can use with the **MapControl**.
@@ -630,7 +630,7 @@ Let's move on and see how we can request a license and integrate it into our app
 
 Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
-=== 
+___ 
 
 ## Exercise 3 - Integrate a custom UWP XAML component
 The company has recently gone after a big hardware refresh and now all the managers are equipped with a Microsoft Surface or other touch equipped devices. Many managers would like to use the Contoso Expenses application on the go, without having to attach the keyboard, but the current version of the application isn't really touch friendly. The development team is looking to make the application easier to use with a touch device, without having to rewrite it from scratch with another technology.
@@ -642,7 +642,7 @@ The development team has decide to start modernizing the form to add a new expen
 
 However, it isn't included as a 1st party control in the Windows Community Toolkit, so we'll have to use the generic XAML Host control.
 
-=== 
+___ 
 
 ### Exercise 3 Task 1 - Add the WindowsXamlHost control
 1. You can use the output of Exercise 2 as a starting point. In case you haven't completed it, you can open the folder `C:\XAMLIslandsLab\Lab\Exercise3\01-Start\ContosoExpenses` in the location where you have unzipped the lab and double click on the **ContosoExpenses.sln** file.
@@ -730,7 +730,7 @@ Now press F5 to build and run the application. Once it starts, choose any employ
 
 However, the work isn't completed yet. We need a way to handle the selected date, so that we can display it on the screen and we can store it in the code-behind ; In other words, we have populate the new **Expense** object that gets saved in the database.
 
-=== 
+___ 
 
 ### Exercise 3 Task 2 - Interact with the WindowsXamlHost control
 Let's take a look [at the documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.CalendarView) of the **CalendarView** control. There are two things which are relevant for our scenario:
@@ -902,12 +902,12 @@ We're done! Let's test again the project:
 
 We have replaced an existing WPF control with a newer mordern version, which fully supports mouse, keyboard, touch and digital pens. Despite the fact that it isn't included as 1st party control in the Windows Community Toolkit, we've been able anyway to include a **CalendarView** control in our application and to interact with it.
 
-=== 
+___ 
 
 ## Exercise 4 - Migrate to .NET Core 3
 Migrating the application to .NET Core 3 is the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentioned, the first really nice improvment is about the startup and execution time! This is only the tip of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
 
-=== 
+___ 
 
 ### Exercise 4 Task 1 - Setup for using .NET Core 3
 At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
@@ -918,7 +918,7 @@ Do not worry, using the VM provided, all is already setup for you: You do not ha
 
 ![Download .NET Core](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DownloadNETCore.png)
 
-=== 
+___ 
 
 ### Exercise 4 Task 2 - Perform the migration - The csproj
 As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is already installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
@@ -991,7 +991,7 @@ Here is the full content of the new csproj. Please double check that you have ev
 By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have to specify anymore each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
 It is now safe to save file by pressing **CTRL+S**.
 
-=== 
+___ 
 
 ### Exercise 4 Task 3 - Perform the migration - NuGet packages of the project
 
@@ -1056,7 +1056,7 @@ With the new project format, the referenced NuGet packages are stored directly i
   </ItemGroup>
 ```
 
-=== 
+___ 
 
 ### Exercise 4 Task 4 - Perform the migration - A Preview NuGet package for Microsoft.Toolkit.Wpf.UI.Controls
 
@@ -1100,7 +1100,7 @@ Because we are working with Preview versions in this lab, let's continue and add
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETCore3BuilldErrors.png)
 
-=== 
+___ 
 
 ### Exercise 4 Task 5 - Perform the migration - Fixing AssemblyInfo.cs
 
@@ -1119,10 +1119,10 @@ The Preview version of .NET Core 3 and Visual Studio 2019 causes the last 6 erro
     1>CalendarViewWrapper.cs(26,81,26,93): error CS0234: The type or namespace name 'CalendarView' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
     1>CalendarViewWrapper.cs(26,127,26,168): error CS0234: The type or namespace name 'CalendarViewSelectedDatesChangedEventArgs' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
     1>Done building project "ContosoExpenses_y1viyncj_wpftmp.csproj" -- FAILED.
-    ========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+    =======___ Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
     ``` 
 
-=== 
+___ 
 
 ### Exercise 4 Task 5 - Perform the migration - Adding a reference to the Universal Windows Platform
 
@@ -1158,10 +1158,10 @@ In order to be able to use the Universal Windows Platform APIs in a WPF applicat
 13. Rebuild the project (CTRL+SHIFT+B) and... you succeed!
 
 ```dos
-========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+=======___ Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
 ```
 
-=== 
+___ 
 
 ### Exercise 4 Task 6 - Perform the migration - Debug
 
@@ -1194,7 +1194,7 @@ We are done! Test the app in debug with F5 and it should work... Everything runn
 
 We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
 
-=== 
+___ 
 
 ### Exercise 4 Task 7 - Supporting the Desktop Bridge
 Before wrapping up the exercise, let's make sure that also the Desktop Bridge version of our WPF application based on .NET Core works fine, so that we can leverage all the UWP APIs and the deep Windows 10 integration also with our migrated WPF project.
@@ -1233,7 +1233,7 @@ Before wrapping up the exercise, let's make sure that also the Desktop Bridge ve
 
 Congratulations! You're running a .NET Core 3.0 WPF application packaged with the Desktop Bridge!
 
-=== 
+___ 
 
 ## (Optional) Exercise 5 - Create a XAML Islands wrapper
 In Excercise 3 we have added a **CalendarView** control to our WPF application using the generic **WindowsXamlHost** control.
@@ -1241,7 +1241,7 @@ From a technical point of view, the outcome of the exercise worked without issue
 
 We can solve this problem by creating our own wrapper to the UWP control we want to integrate, exactly like the **MapControl** or the **InkCanvas** controls. The purpose of this wrapper is to take the properties and events exposed by UWP control and forward them to the WPF control, so that they could be directly access like with a native .NET control. Let's start!
 
-=== 
+___ 
 
 ### Exercise 5 Task 1 - Create a basic wrapper
 
@@ -1299,7 +1299,7 @@ We're ready to start performing a first test. Press F5 and launch the applicatio
 
 However, the current iteration isn't really useful. If you click on any date, nothing will happen. And the calendar isn't constrained anymore to show only the dates from the past year. We need to customize our wrapper in order to expose the properties we need.
 
-=== 
+___ 
 
 ### Exercise 5 Task 2 - Add properties to the wrapper
 Let's start by adding some properties to our wrapped control. For our scenario, we need to expose 3 properties of the original UWP control:
@@ -1412,7 +1412,7 @@ Let's test our work. Press F5 to launch the application, choose an employee from
 
 The answer is no. We have exposed the **SelectedDates** collection of the **CalendarView** control, but we don't have a way to know when the user has indeed selected a date. In Exercise 3 we have achieved this goal by subscribing to the **SelectedDateChanged** event. As such, we need to wrap also this event in our custom control. This will be the goal of our next task.
 
-=== 
+___ 
 
 ### Exercise 5 Task 3 - Add events to the wrapper
 
