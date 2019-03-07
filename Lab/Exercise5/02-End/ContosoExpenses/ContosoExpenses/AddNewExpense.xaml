@@ -20,7 +20,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
         xmlns:local="clr-namespace:ContosoExpenses"
-        Loaded="Window_Loaded"
         Closed="Window_Closed"
         mc:Ignorable="d"
         Title="Add new expense" Height="800" Width="800"
@@ -60,9 +59,10 @@
         <TextBlock Text="City:" FontSize="16" FontWeight="Bold" Grid.Row="5" Grid.Column="0" />
         <TextBox x:Name="txtCity" FontSize="16" Margin="5, 0, 0, 0" Width="400" Grid.Row="5" Grid.Column="1" />
 
-        <TextBlock Text="Choose a date:" FontSize="16" FontWeight="Bold" Grid.Row="6" Grid.Column="0" />
+        <TextBlock Text="Date:" FontSize="16" FontWeight="Bold" Grid.Row="6" Grid.Column="0" />
 
-        <local:CalendarViewWrapper Grid.Column="1" Grid.Row="6" x:Name="CalendarUwp" SelectedDatesChanged="CalendarUwp_SelectedDatesChanged" />
+        <xamlhost:WindowsXamlHost InitialTypeName="Windows.UI.Xaml.Controls.CalendarView" Grid.Column="1" Grid.Row="6" Margin="5, 0, 0, 0" x:Name="CalendarUwp"
+                                  ChildChanged="CalendarUwp_ChildChanged" />
 
         <TextBlock Text="Selected date:" FontSize="16" FontWeight="Bold" Grid.Row="7" Grid.Column="0" />
         <TextBlock x:Name="txtDate" FontSize="16" Grid.Row="7" Grid.Column="1" />

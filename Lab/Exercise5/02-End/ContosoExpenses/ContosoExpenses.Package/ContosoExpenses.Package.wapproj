@@ -40,14 +40,15 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>ContosoExpenses.Package_TemporaryKey.pfx</PackageCertificateKeyFile>
     <EntryPointProjectUniqueName>..\ContosoExpenses\ContosoExpenses.csproj</EntryPointProjectUniqueName>
+    <PackageCertificateThumbprint>5C393BC8CD0E29FA875633F682F40D00C5984CD1</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="ContosoExpenses.Package_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ContosoExpenses.Package_TemporaryKey.pfx" />
     <Content Include="Images\LockScreenLogo.scale-200.png" />
     <Content Include="Images\Square150x150Logo.scale-200.png" />
     <Content Include="Images\Square44x44Logo.scale-200.png" />
@@ -56,7 +57,12 @@
     <Content Include="Images\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ContosoExpenses\ContosoExpenses.csproj" />
+    <ProjectReference Include="..\ContosoExpenses\ContosoExpenses.csproj">
+      <DesktopBridgeSelfContained>True</DesktopBridgeSelfContained>
+      <DesktopBridgeIdentifier>$(DesktopBridgeRuntimeIdentifier)</DesktopBridgeIdentifier>
+      <Properties>SelfContained=%(DesktopBridgeSelfContained);RuntimeIdentifier=%(DesktopBridgeIdentifier)</Properties>
+      <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

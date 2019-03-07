@@ -36,15 +36,13 @@ The lab consists of five exercises:
 This lab uses a single Virtual Machine to provide you with the development environment.
 
 The virtual machine is based on Windows 10 October Update (1809) and it includes:
-- Visual Studio 2019 Preview 2
+- Visual Studio 2019
 - Windows 10 SDK version 10.0.17763.0 or later
 - .NET Core 3 Preview runtime
 - .NET Core 3 Preview SDK
 
-We're going to use Visual Studio 2019 Preview since it provides preliminary support to .NET Core 3.0, which is one of the technologies we're going to use in one of the exercises. However, despite being a preview, it provides a good level of stability and reliability and, as such, we're going to leverage it for all the exercises in the lab.
-As a backup, just in case you face any issue, the machine comes also with Visual Studio 2017 Community preinstalled.
-
 If you already have these tools on your computer, feel free to directly use it for the lab instead of the virtual machine. Be aware that the following Visual Studio workloads have to be installed: 
+
 - .NET desktop development
 - Universal Windows Platform development
 
@@ -73,21 +71,21 @@ The Universal Windows Platform has been built with security and privacy in mind.
 
 Last but not the least, all the investments of the Windows team for developers are focused on the Universal Windows Platform. All the latest features added in Windows 10, like Timeline, Project Rome, Windows Hello, etc. are exposed by the Universal Windows Platform, so that developers can integrate them in their applications.
 
-#### Desktop Bridge
-With the introduction of Windows Store apps first and Universal Windows Platform apps later, Microsoft has also introduced a new packaging modell called [MSIX](http://aka.ms/msix) (formerly known as AppX), which is very different from the existing deployment models (like MSI). It's completely controlled by the operating system; it can be used to deploy applications not only using traditional approaches, like the web, SSCM, Intune, but it opens up now opportunities like the Microsoft Store / Store for Business / Store for Education.
+#### MSIX packaging
+With the introduction of Windows Store apps first and Universal Windows Platform apps later, Microsoft has also introduced a new packaging model called [MSIX](http://aka.ms/msix) (formerly known as AppX), which is very different from the existing deployment models (like MSI). It's completely controlled by the operating system; it can be used to deploy applications not only using traditional approaches, like the web, SSCM, Intune, but it opens up now opportunities like the Microsoft Store / Store for Business / Store for Education.
 
 With the release of Windows 10 Anniversary Update, this new format has been expanded to support not only modern applications, but also the existing ones built with traditional Win32 technologies, like WPF, Windows Forms, Java, Electron, etc. [Desktop Bridge](https://developer.microsoft.com/en-us/windows/bridges/desktop) is the name of the technology that has enabled this feature, allowing developers to release their Win32 applications also on the Microsoft Store. Another key feature of Desktop Bridge is that it enables Win32 applications to have an identity, which opens up the opportunity to consume APIs from the Universal Windows Platform. 
 
-When a Win32 application runs packaged with the Desktop Bridge, it's executed inside a lightweight container which helps to improve the security and the reliability of the application. The container enables three features:
+When a Win32 application runs packaged as MSIX, it's executed inside a lightweight container which helps to improve the security and the reliability of the application. The container enables three features:
 
 - A **Virtual File System**. Each package can contain a folder, called **VFS**, which maps all the main system folders, like *C:\Windows*, *C:\Program Files*, etc. When the application looks for a file in one of these folders, Windows will look first inside the Virtual File System and, only if it can't find it, will redirect the call to the real file system. Thanks to this feature you can create self-deployable packages, which don't need the user to manually install 3rd party dependencies like frameworks, libraries, etc. Additionally, you can solve the problem known as **DLL hell**, which can happen when you have on a system multiple applications which depend by different versions of the same system framework or library. Since you can bundle the most appropriate version of the framework in each package, it won't interfere with any other application or framework already installed on the machine.
 - A **virtualized registry**. All the writing operation to the HKEY_CURRENT_USER hive of the registry are stored in a binary file which is unique for each application. This way the application doesn't have the opportunity to interfere with the real registry. And when the user uninstalls the application, the binary file is simply deleted, making sure that no orphan registry keys are left in the system.
 - A **virtualized file system**. As a best practice in Windows development, all the data generated by an application which is tightly coupled to it (a database, log files, temporary files, etc.) should be saved in the AppData folder, which lives under the user's space. In a packaged application, all the reading and writing operations against the AppData folder are automatically redirected to the local folder, which is unique for an application. This approach helps to keep the system efficient and reliable since, when the user uninstalls the application, the local folder is simply deleted, making sure there are no orphan files left in the system.
 
-Desktop Bridge plays an important role with XAML Island because, by combining these two technologies, you'll be able to leverage the same time features and user controls of the Universal Windows Platform without rewriting your application from scratch.
+MSIX packaging plays an important role with XAML Island because, by combining these two technologies, you'll be able to leverage at the same time features and user controls of the Universal Windows Platform without rewriting your application from scratch.
 
 #### XAML Islands architecture
-The Windows 10 October 2018 Update with the SDK 17763, enables the scenario of XAML Islands for Desktop applications. That means that Windows 10 now supports hosting UWP controls inside the context of a Win32 Process. The 'magic' is powered by two new system APIs called <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.windowsxamlmanager" target="_blank">WindowsXamlManager</a> and <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.desktopwindowxamlsource" target="_blank">DesktopWindowXamlSource</a>.
+The Windows 10 October 2018 Update with the SDK 17763 enables a first preview of XAML Islands for Desktop applications. That means that Windows 10 now supports hosting UWP controls inside the context of a Win32 Process. The 'magic' is powered by two new system APIs called <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.windowsxamlmanager" target="_blank">WindowsXamlManager</a> and <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.desktopwindowxamlsource" target="_blank">DesktopWindowXamlSource</a>.
 
 - The **WindowsXamlManager** handles the UWP XAML Framework. As such, the only exposed method is called **InitializeForCurrentThread()**, which takes care of initializing the UWP XAML Framework inside the current thread of a non-Win32 Desktop app, so that you can start adding UWP controls to it.
 - The **DesktopWindowXamlSource** is the actual instance of your Islands content. It has a **Content** property which you can instantiate and set with the control you want to render. 
@@ -101,7 +99,7 @@ However, when it comes to WPF and Windows Forms applications, you don’t have t
 - One called **Controls**, which includes wrappers for 1st party controls like Map or InkCanvas. Thanks to these controls, you'll be able to leverage them like if they're native WPF or Windows Forms control, including direct access to the exposed properties and binding support. Also in this case, it comes into two variants: [Microsoft.Toolkit.Wpf.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Wpf.UI.Controls/) for WPF and [Microsoft.Toolkit.Forms.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.Controls/) for Windows Forms.
 
 #### Backward compatibility
-XAML Island is supported starting from Windows 10 1809. Trying to run an application which uses XAML Island on a previous version of Windows will cause an exception.
+XAML Islands is supported starting from Windows 10 1809. Trying to run an application which uses XAML Island on a previous version of Windows will cause an exception.
 If you need to handle backward compatibility, right now the only option is to instantiate the control in code and not in XAML, using the approach described [in the following document](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/windowsxamlhost).
 Since the XAML control is initialized in code, you have the opportunity to detect the version of the OS where the application is running and choose if you want to continue or, for example, replace it with a standard WPF control.
 
@@ -122,7 +120,7 @@ else
 ```
 
 
-However, the XAML Island team is planning to enhance the backward compatibility story, by allowing the various controls included in the toolkit to handle this scenario for you and be automatically instantiated only if the app is running on a supported operating system.
+However, the XAML Islands team is planning to enhance the backward compatibility story, by allowing the various controls included in the toolkit to handle this scenario for you and be automatically instantiated only if the app is running on a supported operating system.
 
 The only exception to this rule is the **WebView** control. The Windows Community Toolkit, in fact, includes a control called [WebViewCompatible](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/webviewcompatible), which offers built-in support for backward compatibility. If the application is running on Windows 10 1803 or later, it will render the web view using the new UWP control and the Edge engine. Otherwise, it will fallback to the traditional **WebBrowser** control, which uses the Internet Explorer engine.
 
@@ -423,9 +421,9 @@ In the next tasks we're going to make the **MapControl** we have added more usef
 
 ___ 
 
-### Exercise 2 Task 2 - Package the application with the Desktop Bridge
+### Exercise 2 Task 2 - Package the application as MSIX
 
-Before doing this, we need to introduce the Desktop Bridge. Thanks to this technology, we can package our WPF application using the same format of the Universal Windows Platform, which is MSIX (formerly known as AppX, for versions of Windows 10 prior to 1809). Once the application is packaged, it gets an identity, which we'll allow us to integrate the Universal Windows Platform and use most of the available APIs without having to rewrite our WPF application from scratch.
+Before doing this, we need to introduce MSIX packaging. Thanks to this technology, we can package our WPF application using the same format of the Universal Windows Platform, which is MSIX (formerly known as AppX, for versions of Windows 10 prior to 1809). Once the application is packaged it gets an identity, which allows us to integrate the Universal Windows Platform and use most of the available APIs without having to rewrite our WPF application from scratch.
 
 Visual Studio offers an easy way to achieve this goal thanks to a template called **Windows Application Packaging Project**. Let's add it!
 
@@ -484,26 +482,12 @@ In order to start using Universal Windows Platform APIs in a WPF application we 
 - **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
 - **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this pattern.
 
+In the past this process was a bit cumbersome, because it required to manually dig into the file system and look for the folders where these files are deployed by the Windows 10 SDK. However, recently the team has released a NuGet package which makes the overall process really easy. Let's add it!
+
 1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
-2. Choose **Add reference**.
-3. Press the **Browse** button.
-4. Look for the following folder on the system: `C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\`
-5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the `Windows.md` file will become visible.
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsMd.png)
-    
-6. Select it and press **Add**.
-7. Now press again the **Browse** button.
-8. This time look for the following folder on the system: `C:\Windows\Microsoft.NET\Framework\v4.0.30319`
-9. Look for a file called `System.Runtime.WindowsRuntime.dll`, select it and press Ok.
-10. Now expand the **References** section of the **ContosoExpenses** project in Solution Explorer and look for the **Windows** reference.
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsReference.png)
-    
-11. Select it, right it click on it and choose **Properties**.
-12. Change the value of the **Copy Local** property from **True** to **False**.
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CopyLocal.png)
+2. Choose **Manage NuGet Packages**.
+3. Look for a package with the following identity: [Microsoft.Windows.SDK.Contracts](https://www.nuget.org/packages/Microsoft.Windows.SDK.Contracts)
+4. Press Install
 
 You're all set. Now you're ready to start using APIs from the Universal Windows Platform.
 
@@ -613,12 +597,6 @@ Let's move on and see how we can request a license and integrate it into our app
     MapService.ServiceToken = "<add your key here>";
     ```
 
-    Replace the string value with the key you have just copied from the Bing Dev portal. If you weren't able to retrieve a key, feel free to use the following one:
-    
-    ```csharp
-    MapService.ServiceToken = "SstdhSuxgHWMVoqmrpla~PRzuxyU3RgB7e-csBqBIfA~AizgpHwv-MER89vjeuJ7LVP01a7gacUbusArACn1x7BcalbDhY23o0pt6L7AhZe";
-    ```
-
 14. Let's test the code again! Make sure that the **ContosoExpenses.Package** project is still selected as startup and press F5.
 15. Choose one employee from the list, then one of the available expenses.
 16. If you did everhting correctly, you should notice that:
@@ -628,7 +606,7 @@ Let's move on and see how we can request a license and integrate it into our app
     
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/MapControlOk.png)
 
-Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application with the Desktop Bridge, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. The Desktop Bridge opens up also the opportunity to release our application using the new MSIX format, which supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
+Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application as MSIX, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. MSIX packaging up also the opportunity to release our application in many ways, since it supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
 ___ 
 
@@ -904,338 +882,7 @@ We have replaced an existing WPF control with a newer mordern version, which ful
 
 ___ 
 
-## Exercise 4 - Migrate to .NET Core 3
-Migrating the application to .NET Core 3 is the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentioned, the first really nice improvment is about the startup and execution time! This is only the tip of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
-
-___ 
-
-### Exercise 4 Task 1 - Setup for using .NET Core 3
-At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
-- The .NET Core 3 runtime - [https://github.com/dotnet/core-setup](https://github.com/dotnet/core-setup)
-- The .NET Core 3 SDK - [https://github.com/dotnet/core-sdk](https://github.com/dotnet/core-sdk)
-
-Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. On the other hand, if you are using you own computer, just navigate to the two links above and take the correct installer for your platform.
-
-![Download .NET Core](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DownloadNETCore.png)
-
-___ 
-
-### Exercise 4 Task 2 - Perform the migration - The csproj
-As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is already installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
-
-Let's open the solution using Visual Studio 2019 Preview:
-1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise5\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
-    
-    The project ContosoExpenses is now open in Visual Studio but nothing changed: The appllication still uses the Full .NET 4.7.2. To verify this, just right click on the project in the Solution Explorer Windows and **Properties**.
-    
-    ![Project properties in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PropertiesContosoExpenses.png)
-
-    The *Target framework* of the project is displayed in the **Application** tab.
-    
-    ![.NET Framework version 4.7.2 for the project](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETFramework472.png)
-
-2.  Right click on the project in the solution explorer and choose **Unload Project**.
-
-    ![Unload project](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/UnloadProject.png)
-
-3.  Right click again on the project in the solution explorer ; click **Edit ContosoExpenses.csproj**.
-
-    ![Edit ContosoExpenses csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/EditContosoExpensesCSPROJ.png)
-
-4.  The content of the .csproj file looks like
-
-    ![csproj file content](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CSPROJFile.png)
-
-    Do not be afraid, it is not the time to understand the whole csproj structure. You will see that the migration will be done easily: Just remove all the content of the file by doing **CTRL+A** and than  **SUPPR**!
-    
-    ![Empty csproj file](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/EmptyCSPROJ.png)
-    
-5.  Start writing the new csproj file content by typing `<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop"> </Project>` in the ContosoExpense.csproj. Microsoft.NET.Sdk.WindowsDesktop is the .NET Core 3 SDK for applications on Windows Desktop. It includes WPF and Windows Forms.
-
-    ![Windows Desktop in csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsDesktopInCSPROJ.png)
-
-7.  Let's specify now a few details. To do this, insert a `<PropertyGroup></PropertyGroup>` element in inside the `<Project></Project>` element. 
-
-    ![PropertyGroup inside Project in csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PropertyGroup.png)
-
-8.  First, we indicate that the project output is a **executable** and not a dll. This is acheived by adding `<OutputType>WinExe</OutputType>` inside `<PropertyGroup></PropertyGroup>`.
-
-> Note that, if the project output was a dll, this line has to be omitted.
-
-9.  Secondly, we specify that the project is using .NET Core 3: Just below the <OutputType> line, add ` <TargetFramework>netcoreapp3.0</TargetFramework>`
-
-10. Lastly, we point out that this is a WPF application in adding a third line: `<UseWPF>true</UseWPF>`.
-
-> If the application is Windows Forms, we do not need this third line.
-
-#### Summary, verification and last step
-
-- The project using .NET Core 3 and the **Microsoft.NET.Sdk.WindowsDesktop** SDK
-- Output is an **application** so we need the `<OutputType>` element
-- `<UseWPF>` is self-describing
-
-Here is the full content of the new csproj. Please double check that you have everything:
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
-
-</Project>
-```
-
-By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have to specify anymore each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
-It is now safe to save file by pressing **CTRL+S**.
-
-___ 
-
-### Exercise 4 Task 3 - Perform the migration - NuGet packages of the project
-
-1.  The csproj is saved. Let's reopen the project: Go to the **Solution Explorer**, right click on the project and choose **Reload project**.
-
-    ![Reload project in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ReloadProject.png)
-    
-2.  Visual Studio just asks for a confirmation ; click **yes**.
-
-    ![Confirmation for closing the csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CloseCSPROJ.png)
-    
-3.  The project should load correctly. But remember: The NuGet packages used by the project were gone by removing all the content of the csproj! 
-
-4.  You have a confirmation by expending the **Dependencies/NuGet** node in which you have only the .NET Code 3 package.
-
-    ![NuGet packages](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NuGetPackages.png)
-    
-    Also, if you click on the **Packages.config** in the **Solution Explorer**. You will find the 'old' references of the NuGet packages used the project when it was using the full .NET Framework.
-    
-    ![Dependencies and packages](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Packages.png)
-    
-    Here is the content of the **Packages.config** file. You notice that all NuGet Packages target the Full .NET Framework 4.7.2:
-    
-    ```xml
-    <?xml version="1.0" encoding="utf-8"?>
-    <packages>
-      <package id="Bogus" version="25.0.3" targetFramework="net472" />
-      <package id="LiteDB" version="4.1.4" targetFramework="net472" />
-      <package id="Microsoft.Toolkit.Wpf.UI.Controls" version="5.0.1" targetFramework="net472" />
-      <package id="Microsoft.Toolkit.Wpf.UI.XamlHost" version="5.0.1" targetFramework="net472" />
-    </packages>
-    ```
-
-5. Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**.
-
-6. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
-
-  ![Manage NuGet Packages...](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ManageNugetNETCORE3.png)
-
-7. Click on **Browse** at the top left of the opened window and search for `Bogus`. The package by Brian Chavez should be listed. Install it.
-
-    ![Bogus NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Bogus.png)
-
-8. Do the same for `LiteDB`. This package is provided by Mauricio David.
-
-    ![LiteDB NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/LiteDB.png)
-
-> Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
-
-NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supporting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at [https://docs.microsoft.com/en-us/dotnet/standard/net-standard](https://docs.microsoft.com/en-us/dotnet/standard/net-standard))
-
-![Dot Net standard](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DotNetStandard.png)
-
-> Since we don't have anymore a packages.config file, can you guess where the list of NuGet packages gets stored?
-
-With the new project format, the referenced NuGet packages are stored directly in the .csproj file. You can check this by right clicking on the **ContosoExpenses** project in Solution Explorer and choosing **Edit ContosoExpenses.csproj**. You will find the following lines added at the end of the file:
-
-```xml
-  <ItemGroup>
-    <PackageReference Include="Bogus" Version="25.0.4" />
-    <PackageReference Include="LiteDB" Version="4.1.4" />
-  </ItemGroup>
-```
-
-___ 
-
-### Exercise 4 Task 4 - Perform the migration - A Preview NuGet package for Microsoft.Toolkit.Wpf.UI.Controls
-
-1. Let's try to build it in order to 'discover' what we have to do to complete the migration. Use the **Build** menu and **Build solution**.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/BuildErrorsNETCore3.png)
-
-> All these errors are caused by the same issue. What is it?
-
-Again remember that we deleted all the content of the initial csproj file. We just had the **Bogus** and **LiteDB** NuGet Packages but not the **Microsoft.Toolkit.Wpf.UI.Controls**. There is a reason: go back to the **NuGet: ContosoExpenses** tab and search for `Microsoft.Toolkit.Wpf.UI.Controls`. You will see that this package supports the .NET Framework starting at the version 4.6.2. It does not support yet the .NET Core 3 version.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WPFUICONTROLSNuGetPackage.png)
-
-Because we are working with Preview versions in this lab, let's continue and add a custom source for NuGet Packages. 
-
-2.  In the **NuGet: ContosoExpenses** tab, click on the  **Settings** icon for NuGet.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/SettingsForNuGet.png)
-
-3. Click on the green "PLUS" sign to add a new NuGet Package source.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddNewNuGetSource.png)
-
-4.  Name it `Custom` and give the url `https://dotnet.myget.org/F/uwpcommunitytoolkit/api/v3/index.json` ; Click **Ok**.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CustomNuGetSource.png)
-
-5. Still in the **NuGet: ContosoExpenses** tab, you can now change the Packages source with the dropdown listbox; Select **Custom**.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ChangeSource.png)
-
-6. Check also the **Include prerelease** checkbox and some NuGet packages will magically be displayed.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PrereleaseNuGetPackages.png)
-
-7. Select **Microsoft.Toolkit.Wpf.UI.Controls**. Please be sure to choose the version **6.0.0-build.15.ge5444fb4a5** before clicking **Install**. This version supports the .NET Core 3.0 runtime installed on the VM.
-
-> For the users not using the VM, if you have downloaded the recently released Preview 2 of .NET Core 3.0, you can use the latest version of **Microsoft.Toolkit.Wpf.UI.Controls** provided by this custom source.
-
-8.  Build the project (CTRL+SHIFT+B). We get still some errors that we will fix in the next tasks.
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETCore3BuilldErrors.png)
-
-___ 
-
-### Exercise 4 Task 5 - Perform the migration - Fixing AssemblyInfo.cs
-
-The Preview version of .NET Core 3 and Visual Studio 2019 causes the last 6 errors. It is not interesting to give explanations here: It is only 'piping' we have to resolve by either removing the mentioned lines in the `AssemblyInfo.cs` file or just delete the file. We go for the simpliest. 
-
-1.  In the **Solution Explorer** window / Under the **ContosoExpenses** project, expand the **Properties** node and right click on the **AssemblyInfo.cs** file ; Click on **Delete**.
-    
-    ![AssemblyInfo cs file](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AssemblyInfoFile.png)
-
-2.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last three previous errors should remain listed (if nothing is displayed in the **Error List** window, look at the **Output** window).
-
-    ```dos
-    1>------ Build started: Project: ContosoExpenses, Configuration: Debug Any CPU ------
-    ...
-    1>ExpenseDetail.xaml.cs(20,15,20,23): error CS0234: The type or namespace name 'Services' does not exist in the namespace 'Windows' (are you missing an assembly reference?)
-    1>CalendarViewWrapper.cs(26,81,26,93): error CS0234: The type or namespace name 'CalendarView' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
-    1>CalendarViewWrapper.cs(26,127,26,168): error CS0234: The type or namespace name 'CalendarViewSelectedDatesChangedEventArgs' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
-    1>Done building project "ContosoExpenses_y1viyncj_wpftmp.csproj" -- FAILED.
-    =======___ Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
-    ``` 
-
-___ 
-
-### Exercise 4 Task 5 - Perform the migration - Adding a reference to the Universal Windows Platform
-
-This error is our fault because we removed everything in the csproj at the beginning of the exercise. 
-
-> This method for migrating the project to .NET Core 3 is manual because Visual Studio 2019 Preview does not handle yet the migration work for us. The Visual Studio team is working to make the migration path easier and smoother in the future.
-
-So to fix this error, we have to reference again the Universal Windows Platform again. This was done in the Exercise 2 Task 3. Here are the same steps:
-
-In order to be able to use the Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
-
-- **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
-- **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this pattern.
-
-1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
-2. Choose **Add reference**.
-3. Press the **Browse** button.
-4. Look for the following folder on the system: `C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\`
-5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the `Windows.md` file will become visible.
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsMd.png)
-    
-6. Select it and press **Add**.
-7. Now press again the **Browse** button.
-8. This time look for the following folder on the system: `C:\Windows\Microsoft.NET\Framework\v4.0.30319`
-9. Look for a file called `System.Runtime.WindowsRuntime.dll`, select it and press Ok.
-10. Now expand the **References** section of the **ContosoExpenses** project in Solution Explorer and look for the **Windows** reference.
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CopyLocalNETCore3.png)
-   
-11. Select it, right it click on it and choose **Properties**.
-12. Change the value of the **Copy Local** property to **No**.
-13. Rebuild the project (CTRL+SHIFT+B) and... you succeed!
-
-```dos
-=======___ Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
-```
-
-___ 
-
-### Exercise 4 Task 6 - Perform the migration - Debug
-
-We are ok to finally, launch the app.
-
-1.  Use the **Debug** menu / **Start Debugging F5**
-
-> You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
-
-![Exception displayed in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ExceptionNETCore3.png)
-
-Strange because the images files are in the solution and the path seems correct.
-
-![Images in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ImagesInTheSolutionExplorer.png)
-
-> Why do we get this file not found exception?
-
-In fact, it is simple. Again, as we hardly deleted all the content of the csproj file at the beginning of the migration, we removed the information about the **Build action** for the images' files. Let fix it.
-
-2.  In the **Solution Explorer**, select all the images files except the contoso.ico ; In the properties windows choose **Build action** = `Content` and **Copy to Output Directory** = `Copy if Newer`
-
-    ![Build Action Content and Copy if newer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContentCopyIfNewer.png)
-
-3.  To assign the Contoso.ico to the app, we have to right click on the project in the **Solution Explorer** / **Properties**. In the opened page, click on the dropdown listbox for Icon and select `Images\contoso.ico`
-
-    ![Contoso ico in the Project's Properties](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoIco.png)
-
-
-We are done! Test the app in debug with F5 and it should work... Everything running using .NET Core 3!
-
-We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
-
-___ 
-
-### Exercise 4 Task 7 - Supporting the Desktop Bridge
-Before wrapping up the exercise, let's make sure that also the Desktop Bridge version of our WPF application based on .NET Core works fine, so that we can leverage all the UWP APIs and the deep Windows 10 integration also with our migrated WPF project.
-
-1. Right click on the **ContosoExpenses.Package** project and choose **Set as StartUp Project**.
-2. Right click on the **ContosoExpenses.Package** project and choose **Rebuild**.
-3. The build operation will fail with the following error:
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DesktopBridgeNetCoreError.png)
-    
-    The error is happening because, when a .NET Core application is running packaged with the Desktop Bridge, it's included as self-contained, which means that the whole .NET Core runtime is embedded with the application. Thanks to this configuration, we can deploy the package on any Windows 10 machine and run it, even if it doesn't have the .NET Core runtime installed. However, when we package the application with the Desktop Bridge, we can't use the **Any CPU** compilation architecture, but we need to specify which runtimes we support. As such, we need to add this information in the **.csproj** file of our WPF project.
-4. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Edit ContosoExpenses.csproj**.
-5. Add the following entry inside the **PropertyGroup** section:
-
-    ```xml
-    <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
-    ```
-    
-    This is how the full **PropertyGroup** should look like:
-    
-    ```xml
-    <PropertyGroup>
-      <OutputType>WinExe</OutputType>
-      <TargetFramework>netcoreapp3.0</TargetFramework>
-      <UseWPF>true</UseWPF>
-      <ApplicationIcon />
-      <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
-    </PropertyGroup>
-    ```
-    
-    We are explictly saying that our WPF application can be compiled both for the x86 and x64 architectures for the Windows platform.
-    
-6. Now press CTRL+S, then right click again on the **ContosoExpenses.Package** and choose **Rebuild**.
-7. This time the compilation should complete without errors. If you still see an error related to the **project.assets.json** file, right click on the **ContosoExpenses** project in Solution Explorer and choose **Open Folder in File Explorer**. Delete the **bin** and **obj** folders and rebuild the **ContosoExpenses.Package** project.
-8. Now press F5 to launch the application.
-
-Congratulations! You're running a .NET Core 3.0 WPF application packaged with the Desktop Bridge!
-
-___ 
-
-## (Optional) Exercise 5 - Create a XAML Islands wrapper
+## Exercise 4 - Create a XAML Islands wrapper
 In Excercise 3 we have added a **CalendarView** control to our WPF application using the generic **WindowsXamlHost** control.
 From a technical point of view, the outcome of the exercise worked without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to the **ChildChanged** event exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **AddedDates** property.
 
@@ -1243,7 +890,7 @@ We can solve this problem by creating our own wrapper to the UWP control we want
 
 ___ 
 
-### Exercise 5 Task 1 - Create a basic wrapper
+### Exercise 4 Task 1 - Create a basic wrapper
 
 1. If you have completed Exercise 3, you can start from the outcome of it. Otherwise, open the folder `C:\XAMLIslandsLab\Lab\Exercise5\01-Start\ContosoExpenses` and double click on the **ContosoExpenses.sln** file.
 2. First we need to create the wrapper control. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Add -> Class**. 
@@ -1301,7 +948,7 @@ However, the current iteration isn't really useful. If you click on any date, no
 
 ___ 
 
-### Exercise 5 Task 2 - Add properties to the wrapper
+### Exercise 4 Task 2 - Add properties to the wrapper
 Let's start by adding some properties to our wrapped control. For our scenario, we need to expose 3 properties of the original UWP control:
 
 - **SelectedDates** to get the date selected by the user
@@ -1414,7 +1061,7 @@ The answer is no. We have exposed the **SelectedDates** collection of the **Cale
 
 ___ 
 
-### Exercise 5 Task 3 - Add events to the wrapper
+### Exercise 4 Task 3 - Add events to the wrapper
 
 An event is represented by the **EventHandler<T>** class, where **T** is the object which represents the event arguments. It's a special object which is returned to the event handler, where we can store relevant information about the event. [If we take a look at the documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.calendarview.selecteddateschanged) about the **SelectedDatesChanged** event of **CalendarView** control, [we can see](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.calendarviewselecteddateschangedeventargs) that it returns an object of type **CalendarViewSelectedDatesChangedEventArgs**, which contains two collections: **AddedDates** and **RemovedDates**. 
 We're going to recreate a similar class in our project for our custom event handler.
@@ -1517,4 +1164,336 @@ Now we can test the code. Press F5 to launch the application, choose an employee
 
 That's it! Our wrapper is working and it makes easier to interact with the original UWP control directly from the WPF XAML. As optional task, you can try to change the properties we have created (**SelectedDates**, **MinDate** and **MaxDate**) to [dependencies properties](https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/dependency-properties-overview), so that they can properly support binding.
     
+___ 
+
+## Exercise 5 - Migrate to .NET Core 3
+Migrating the application to .NET Core 3 is the best and recomanded path for modernizing a .NET application (WPF or Windows Forms). As previously mentioned, the first really nice improvment is about the startup and execution time! This is only the tip of the iceberg. The best advantage is that, the app will be able to use all the upcoming new features both from .NET Core and UWP! 
+
+___ 
+
+### Exercise 5 Task 1 - Setup for using .NET Core 3
+At the moment of writing .NET Core is still in Preview and it is highly experimental technologies. Nevertheless, it is enough stable to play with it. The minimum required is made of two pieces:
+- The .NET Core 3 runtime - [https://github.com/dotnet/core-setup](https://github.com/dotnet/core-setup)
+- The .NET Core 3 SDK - [https://github.com/dotnet/core-sdk](https://github.com/dotnet/core-sdk)
+
+Do not worry, using the VM provided, all is already setup for you: You do not have to download and install anything. On the other hand, if you are using you own computer, just navigate to the two links above and take the correct installer for your platform.
+
+![Download .NET Core](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DownloadNETCore.png)
+
+___ 
+
+### Exercise 5 Task 2 - Perform the migration - The csproj
+As mentioned, .NET Core is in the Preview state. We also need a preliminary version of Visual Studio. Again, the VM is setup for you and Visual Studio 2019 Preview is already installed. If you need to install it on your own box, here is the link: [https://visualstudio.microsoft.com/vs/preview/](https://visualstudio.microsoft.com/vs/preview/).
+
+Let's open the solution using Visual Studio 2019 Preview:
+1.  In Windows Explorer, navigate to `C:\XAMLIslandsLab\Lab\Exercise5\01-Start\ContosoExpenses` and double click on the `ContosoExpenses.sln` solution.
+    
+    The project ContosoExpenses is now open in Visual Studio but nothing changed: The appllication still uses the Full .NET 4.7.2. To verify this, just right click on the project in the Solution Explorer Windows and **Properties**.
+    
+    ![Project properties in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PropertiesContosoExpenses.png)
+
+    The *Target framework* of the project is displayed in the **Application** tab.
+    
+    ![.NET Framework version 4.7.2 for the project](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETFramework472.png)
+
+2.  Right click on the project in the solution explorer and choose **Unload Project**.
+
+    ![Unload project](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/UnloadProject.png)
+
+3.  Right click again on the project in the solution explorer ; click **Edit ContosoExpenses.csproj**.
+
+    ![Edit ContosoExpenses csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/EditContosoExpensesCSPROJ.png)
+
+4.  The content of the .csproj file looks like
+
+    ![csproj file content](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CSPROJFile.png)
+
+    Do not be afraid, it is not the time to understand the whole csproj structure. You will see that the migration will be done easily: Just remove all the content of the file by doing **CTRL+A** and than  **SUPPR**!
+    
+    ![Empty csproj file](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/EmptyCSPROJ.png)
+    
+5.  Start writing the new csproj file content by typing `<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop"> </Project>` in the ContosoExpense.csproj. Microsoft.NET.Sdk.WindowsDesktop is the .NET Core 3 SDK for applications on Windows Desktop. It includes WPF and Windows Forms.
+
+    ![Windows Desktop in csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsDesktopInCSPROJ.png)
+
+7.  Let's specify now a few details. To do this, insert a `<PropertyGroup></PropertyGroup>` element in inside the `<Project></Project>` element. 
+
+    ![PropertyGroup inside Project in csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PropertyGroup.png)
+
+8.  First, we indicate that the project output is a **executable** and not a dll. This is acheived by adding `<OutputType>WinExe</OutputType>` inside `<PropertyGroup></PropertyGroup>`.
+
+> Note that, if the project output was a dll, this line has to be omitted.
+
+9.  Secondly, we specify that the project is using .NET Core 3: Just below the <OutputType> line, add ` <TargetFramework>netcoreapp3.0</TargetFramework>`
+
+10. Lastly, we point out that this is a WPF application in adding a third line: `<UseWPF>true</UseWPF>`.
+
+> If the application is Windows Forms, we do not need this third line.
+
+#### Summary, verification and last step
+
+- The project using .NET Core 3 and the **Microsoft.NET.Sdk.WindowsDesktop** SDK
+- Output is an **application** so we need the `<OutputType>` element
+- `<UseWPF>` is self-describing
+
+Here is the full content of the new csproj. Please double check that you have everything:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+</Project>
+```
+
+By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have to specify anymore each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
+It is now safe to save file by pressing **CTRL+S**.
+
+___ 
+
+### Exercise 5 Task 3 - Perform the migration - NuGet packages of the project
+
+1.  The csproj is saved. Let's reopen the project: Go to the **Solution Explorer**, right click on the project and choose **Reload project**.
+
+    ![Reload project in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ReloadProject.png)
+    
+2.  Visual Studio just asks for a confirmation ; click **yes**.
+
+    ![Confirmation for closing the csproj](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CloseCSPROJ.png)
+    
+3.  The project should load correctly. But remember: The NuGet packages used by the project were gone by removing all the content of the csproj! 
+
+4.  You have a confirmation by expending the **Dependencies/NuGet** node in which you have only the .NET Code 3 package.
+
+    ![NuGet packages](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NuGetPackages.png)
+    
+    Also, if you click on the **Packages.config** in the **Solution Explorer**. You will find the 'old' references of the NuGet packages used the project when it was using the full .NET Framework.
+    
+    ![Dependencies and packages](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Packages.png)
+    
+    Here is the content of the **Packages.config** file. You notice that all NuGet Packages target the Full .NET Framework 4.7.2:
+    
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <packages>
+      <package id="Bogus" version="25.0.3" targetFramework="net472" />
+      <package id="LiteDB" version="4.1.4" targetFramework="net472" />
+      <package id="Microsoft.Toolkit.Wpf.UI.Controls" version="5.0.1" targetFramework="net472" />
+      <package id="Microsoft.Toolkit.Wpf.UI.XamlHost" version="5.0.1" targetFramework="net472" />
+    </packages>
+    ```
+
+5. Delete the file **Packages.config** by right clicking on it and **Delete** in the **Solution Explorer**.
+
+6. Right click on the **Dependencies** node in the **Solution Explorer** and **Manage NuGet Packages...**
+
+  ![Manage NuGet Packages...](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ManageNugetNETCORE3.png)
+
+7. Click on **Browse** at the top left of the opened window and search for `Bogus`. The package by Brian Chavez should be listed. Install it.
+
+    ![Bogus NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Bogus.png)
+
+8. Do the same for `LiteDB`. This package is provided by Mauricio David.
+
+    ![LiteDB NuGet package](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/LiteDB.png)
+
+> Isn't it strange that we add the same packages as the ones used by the .NET Framework 4.7.2?
+
+NuGet packages supports multi-targeting. You can include, in the same package, different versions of the library, compiled for different architectures. If you give a closer look at the packages' details, you will see that, other than supporting the full .NET Framework, it includes also a .NET Standard 2.0 version, which is perfect for .NET Core 3 (Further details on .NET Framework, .NET Core and .NET Standard at [https://docs.microsoft.com/en-us/dotnet/standard/net-standard](https://docs.microsoft.com/en-us/dotnet/standard/net-standard))
+
+![Dot Net standard](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DotNetStandard.png)
+
+> Since we don't have anymore a packages.config file, can you guess where the list of NuGet packages gets stored?
+
+With the new project format, the referenced NuGet packages are stored directly in the .csproj file. You can check this by right clicking on the **ContosoExpenses** project in Solution Explorer and choosing **Edit ContosoExpenses.csproj**. You will find the following lines added at the end of the file:
+
+```xml
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="25.0.4" />
+    <PackageReference Include="LiteDB" Version="4.1.4" />
+  </ItemGroup>
+```
+
+___ 
+
+### Exercise 5 Task 4 - Perform the migration - A Preview NuGet package for Microsoft.Toolkit.Wpf.UI.Controls
+
+1. Let's try to build it in order to 'discover' what we have to do to complete the migration. Use the **Build** menu and **Build solution**.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/BuildErrorsNETCore3.png)
+
+> All these errors are caused by the same issue. What is it?
+
+Again remember that we deleted all the content of the initial csproj file. We just had the **Bogus** and **LiteDB** NuGet Packages but not the **Microsoft.Toolkit.Wpf.UI.Controls**. There is a reason: go back to the **NuGet: ContosoExpenses** tab and search for `Microsoft.Toolkit.Wpf.UI.Controls`. You will see that this package supports the .NET Framework starting at the version 4.6.2. It does not support yet the .NET Core 3 version.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WPFUICONTROLSNuGetPackage.png)
+
+Because we are working with Preview versions in this lab, let's continue and add a custom source for NuGet Packages. 
+
+2.  In the **NuGet: ContosoExpenses** tab, click on the  **Settings** icon for NuGet.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/SettingsForNuGet.png)
+
+3. Click on the green "PLUS" sign to add a new NuGet Package source.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddNewNuGetSource.png)
+
+4.  Name it `Custom` and give the url `https://dotnet.myget.org/F/uwpcommunitytoolkit/api/v3/index.json` ; Click **Ok**.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CustomNuGetSource.png)
+
+5. Still in the **NuGet: ContosoExpenses** tab, you can now change the Packages source with the dropdown listbox; Select **Custom**.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ChangeSource.png)
+
+6. Check also the **Include prerelease** checkbox and some NuGet packages will magically be displayed.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/PrereleaseNuGetPackages.png)
+
+7. Select **Microsoft.Toolkit.Wpf.UI.Controls**. Please be sure to choose the version **6.0.0-build.15.ge5444fb4a5** before clicking **Install**. This version supports the .NET Core 3.0 runtime installed on the VM.
+
+> For the users not using the VM, if you have downloaded the recently released Preview 2 of .NET Core 3.0, you can use the latest version of **Microsoft.Toolkit.Wpf.UI.Controls** provided by this custom source.
+
+8.  Build the project (CTRL+SHIFT+B). We get still some errors that we will fix in the next tasks.
+
+![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETCore3BuilldErrors.png)
+
+___ 
+
+### Exercise 5 Task 5 - Perform the migration - Fixing AssemblyInfo.cs
+
+The Preview version of .NET Core 3 and Visual Studio 2019 causes the last 6 errors. It is not interesting to give explanations here: It is only 'piping' we have to resolve by either removing the mentioned lines in the `AssemblyInfo.cs` file or just delete the file. We go for the simpliest. 
+
+1.  In the **Solution Explorer** window / Under the **ContosoExpenses** project, expand the **Properties** node and right click on the **AssemblyInfo.cs** file ; Click on **Delete**.
+    
+    ![AssemblyInfo cs file](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AssemblyInfoFile.png)
+
+2.  Just rebuild the project (for example using CTRL+SHIFT+B): Only the last three previous errors should remain listed (if nothing is displayed in the **Error List** window, look at the **Output** window).
+
+    ```dos
+    1>------ Build started: Project: ContosoExpenses, Configuration: Debug Any CPU ------
+    ...
+    1>ExpenseDetail.xaml.cs(20,15,20,23): error CS0234: The type or namespace name 'Services' does not exist in the namespace 'Windows' (are you missing an assembly reference?)
+    1>CalendarViewWrapper.cs(26,81,26,93): error CS0234: The type or namespace name 'CalendarView' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
+    1>CalendarViewWrapper.cs(26,127,26,168): error CS0234: The type or namespace name 'CalendarViewSelectedDatesChangedEventArgs' does not exist in the namespace 'Windows.UI.Xaml.Controls' (are you missing an assembly reference?)
+    1>Done building project "ContosoExpenses_y1viyncj_wpftmp.csproj" -- FAILED.
+    =======___ Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
+    ``` 
+
+___ 
+
+### Exercise 5 Task 6 - Perform the migration - Adding a reference to the Universal Windows Platform
+
+This error is our fault because we removed everything in the csproj at the beginning of the exercise. 
+
+> This method for migrating the project to .NET Core 3 is manual because Visual Studio 2019 Preview does not handle yet the migration work for us. The Visual Studio team is working to make the migration path easier and smoother in the future.
+
+So to fix this error, we have to reference again the Universal Windows Platform again. This was done in the Exercise 2 Task 3. Here are the same steps:
+
+In order to be able to use the Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
+
+- **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
+- **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this pattern.
+
+1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
+2. Choose **Add reference**.
+3. Press the **Browse** button.
+4. Look for the following folder on the system: `C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.17763.0\`
+5. Change the dropdown to filter the file types from **Component files** to **All files**. This way, the `Windows.md` file will become visible.
+
+    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WindowsMd.png)
+    
+6. Select it and press **Add**.
+7. Now press again the **Browse** button.
+8. This time look for the following folder on the system: `C:\Windows\Microsoft.NET\Framework\v4.0.30319`
+9. Look for a file called `System.Runtime.WindowsRuntime.dll`, select it and press Ok.
+10. Now expand the **References** section of the **ContosoExpenses** project in Solution Explorer and look for the **Windows** reference.
+
+    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CopyLocalNETCore3.png)
+   
+11. Select it, right it click on it and choose **Properties**.
+12. Change the value of the **Copy Local** property to **No**.
+13. Rebuild the project (CTRL+SHIFT+B) and... you succeed!
+
+```dos
+=======___ Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+```
+
+___ 
+
+### Exercise 5 Task 7 - Perform the migration - Debug
+
+We are ok to finally, launch the app.
+
+1.  Use the **Debug** menu / **Start Debugging F5**
+
+> You had an exception. What is it that? Don't we finished the migration? Can you find the root cause of the issue reading the Exception Debug popup displayed by Visual Studio?
+
+![Exception displayed in Visual Studio](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ExceptionNETCore3.png)
+
+Strange because the images files are in the solution and the path seems correct.
+
+![Images in the Solution Explorer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ImagesInTheSolutionExplorer.png)
+
+> Why do we get this file not found exception?
+
+In fact, it is simple. Again, as we hardly deleted all the content of the csproj file at the beginning of the migration, we removed the information about the **Build action** for the images' files. Let fix it.
+
+2.  In the **Solution Explorer**, select all the images files except the contoso.ico ; In the properties windows choose **Build action** = `Content` and **Copy to Output Directory** = `Copy if Newer`
+
+    ![Build Action Content and Copy if newer](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContentCopyIfNewer.png)
+
+3.  To assign the Contoso.ico to the app, we have to right click on the project in the **Solution Explorer** / **Properties**. In the opened page, click on the dropdown listbox for Icon and select `Images\contoso.ico`
+
+    ![Contoso ico in the Project's Properties](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ContosoIco.png)
+
+
+We are done! Test the app in debug with F5 and it should work... Everything running using .NET Core 3!
+
+We are now ready to go further and use all the power of the full UWP ecosystem controls, packages, dlls.
+
+___ 
+
+### Exercise 5 Task 8 - Supporting the Desktop Bridge
+Before wrapping up the exercise, let's make sure that also the Desktop Bridge version of our WPF application based on .NET Core works fine, so that we can leverage all the UWP APIs and the deep Windows 10 integration also with our migrated WPF project.
+
+1. Right click on the **ContosoExpenses.Package** project and choose **Set as StartUp Project**.
+2. Right click on the **ContosoExpenses.Package** project and choose **Rebuild**.
+3. The build operation will fail with the following error:
+
+    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/DesktopBridgeNetCoreError.png)
+    
+    The error is happening because, when a .NET Core application is running packaged with the Desktop Bridge, it's included as self-contained, which means that the whole .NET Core runtime is embedded with the application. Thanks to this configuration, we can deploy the package on any Windows 10 machine and run it, even if it doesn't have the .NET Core runtime installed. However, when we package the application with the Desktop Bridge, we can't use the **Any CPU** compilation architecture, but we need to specify which runtimes we support. As such, we need to add this information in the **.csproj** file of our WPF project.
+4. Right click on the **ContosoExpenses** project in Solution Explorer and choose **Edit ContosoExpenses.csproj**.
+5. Add the following entry inside the **PropertyGroup** section:
+
+    ```xml
+    <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+    ```
+    
+    This is how the full **PropertyGroup** should look like:
+    
+    ```xml
+    <PropertyGroup>
+      <OutputType>WinExe</OutputType>
+      <TargetFramework>netcoreapp3.0</TargetFramework>
+      <UseWPF>true</UseWPF>
+      <ApplicationIcon />
+      <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    ```
+    
+    We are explictly saying that our WPF application can be compiled both for the x86 and x64 architectures for the Windows platform.
+    
+6. Now press CTRL+S, then right click again on the **ContosoExpenses.Package** and choose **Rebuild**.
+7. This time the compilation should complete without errors. If you still see an error related to the **project.assets.json** file, right click on the **ContosoExpenses** project in Solution Explorer and choose **Open Folder in File Explorer**. Delete the **bin** and **obj** folders and rebuild the **ContosoExpenses.Package** project.
+8. Now press F5 to launch the application.
+
+Congratulations! You're running a .NET Core 3.0 WPF application packaged with the Desktop Bridge!
+
+
 
