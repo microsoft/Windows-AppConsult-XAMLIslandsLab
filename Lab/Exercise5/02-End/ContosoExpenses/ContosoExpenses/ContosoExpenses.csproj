@@ -10,13 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\AddNewExpense.png" />
-    <None Remove="Images\ExpensesBackground.jpg" />
-    <None Remove="Images\ExpensesListBackground.png" />
-    <None Remove="Images\HorizontalBackground.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Images\AddNewExpense.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

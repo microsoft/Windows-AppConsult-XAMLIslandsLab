@@ -44,7 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.17763.144-preview" />
-    <PackageReference Include="Bogus" Version="25.0.3" />
+    <PackageReference Include="Bogus" Version="26.0.2" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls" Version="5.1.1" />
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.XamlHost" Version="5.1.1" />

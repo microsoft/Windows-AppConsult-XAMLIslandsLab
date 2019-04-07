@@ -69,7 +69,6 @@
             
             <toolkit:InkCanvas x:Name="Signature" Grid.Row="6" />
             
-            
         </Grid>
 
         <!-- Chart -->

@@ -33,7 +33,8 @@ namespace ContosoExpenses
             InitializeComponent();
             Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
 
-            MapService.ServiceToken = "IFFAI5SFOtHV9VBKF8Ea~3FS1XamCV2NM0IqlfoQo6A~AguqcUboJvnqWU1H9E-6MVThouJoCrM4wpv_1R_KX_oQLV_e59vyoK42470JvLsU";
+            /// TO-DO Add the token retrieved from https://www.bingmapsportal.com/
+            MapService.ServiceToken = "";
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
