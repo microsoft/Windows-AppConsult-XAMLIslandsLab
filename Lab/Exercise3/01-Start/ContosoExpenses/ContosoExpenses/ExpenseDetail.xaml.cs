@@ -51,11 +51,5 @@ namespace ContosoExpenses
                 await ExpenseMap.TrySetViewAsync(location.Point, 13);
             }
         }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            Signature.Dispose();
-            ExpenseMap.Dispose();
-        }
     }
 }

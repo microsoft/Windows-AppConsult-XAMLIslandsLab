@@ -59,12 +59,6 @@ namespace ContosoExpenses
             }
         }
 
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            CalendarUwp.Dispose();
-        }
-
         private void CalendarUwp_SelectedDatesChanged(object sender, SelectedDatesChangedEventArgs e)
         {
             SelectedDate = e.SelectedDates.FirstOrDefault().Date;

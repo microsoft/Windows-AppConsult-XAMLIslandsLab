@@ -20,7 +20,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:toolkit="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
         Loaded="Window_Loaded"
-        Closed="Window_Closed"
         xmlns:local="clr-namespace:ContosoExpenses"
         mc:Ignorable="d"
         Title="Expense Detail" Height="500" Width="800"

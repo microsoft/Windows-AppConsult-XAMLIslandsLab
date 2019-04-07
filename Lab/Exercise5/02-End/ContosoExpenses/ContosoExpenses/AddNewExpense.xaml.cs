@@ -83,10 +83,5 @@ namespace ContosoExpenses
                 calendarView.MaxDate = DateTimeOffset.Now;
             }
         }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            CalendarUwp.Dispose();
-        }
     }
 }

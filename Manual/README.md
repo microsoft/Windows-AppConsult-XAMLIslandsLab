@@ -13,7 +13,7 @@ With this lab, we will experiment XAML Islands and modernize an existing WPF app
 ### Objectives
 - Learn how to modernize the user experience and the features of a desktop WPF application
 - Learn how to leverage the Universal Windows Platform without having to rewrite the app from scratch
-- Use a bluit-in XAML Islands control in an existing WPF application
+- Use a built-in XAML Islands control in an existing WPF application
 - Be able to 'integrate' any custom UWP XAML component in the WPF application
 - Understand how XAML Islands can help to start a progressive modernization journey to the Universal Windows Platform and .NET Core 3.
 
@@ -25,6 +25,7 @@ With this lab, we will experiment XAML Islands and modernize an existing WPF app
 
 ### Overview of the lab
 We're going to start from an existing LOB application and we're going to enhance it by supporting modern features with the help of XAML Islands. We'll learn how to integrate Fluent controls from the Universal Windows Platform in the existing codebase.
+
 The lab consists of five exercises:
 1. In the first one you're going to start modernizing the application by adding a UWP control which enables to digitally sign a document.
 2. In the second exercise you will continue the modernization journey, by adding a touch-enabled map control to display a location.
@@ -35,11 +36,11 @@ The lab consists of five exercises:
 ### Computers in this lab
 This lab uses a single Virtual Machine to provide you with the development environment.
 
-The virtual machine is based on Windows 10 October Update (1809) and it includes:
+The virtual machine is based on Windows 10 19H1 and it includes:
+
 - Visual Studio 2019
-- Windows 10 SDK version 10.0.17763.0 or later
-- .NET Core 3 Preview runtime
-- .NET Core 3 Preview SDK
+- Windows 10 SDK version 10.0.18362
+- .NET Core 3 Preview 3 SDK
 
 If you already have these tools on your computer, feel free to directly use it for the lab instead of the virtual machine. Be aware that the following Visual Studio workloads have to be installed: 
 
@@ -61,8 +62,6 @@ ___
 
 ### Key concepts that will be used during the lab
 
-**Please note**. The following information is provided in case you're planning to follow this lab on your own or from home. If you are following this lab as part of a live training class, feel free to skip it and jump directly to the beginning of the first exercise. These concepts, in fact, should have already be explained by the trainers of the lab before starting the practical exercises.
-
 #### Universal Windows Platform
 Starting from Windows 8, Microsoft has introduced a new kind of applications: Windows Store apps, based on a new framework called Windows Runtime. Unlike the .NET Framework, the Windows Runtime is a native layer of APIs which are exposed directly by the operating system to applications which want to consume them. With the goal to make the platform viable for every developer and to not force them to learn C\+\+, the Windows Runtime has introduced language projections, which are layers added on top of the runtime to allow developers to interact with it using well-known and familiar languages. Thanks to projections, developers can build applications on top of the Windows Runtime leveraging the same C# and XAML knowledge they have acquired in building apps with the .NET Framework. The Windows Runtime libraries (called Windows Runtime Components) are described using special metadata files, which make it possible for developers to access the APIs using the specific syntax of the language they’re using. This way, projections can also respect the language conventions and types, like uppercase if you use C# or camel case if you use JavaScript. Additionally, Windows Runtime components can be used across multiple languages: for example, a Windows Runtime component written in C++ can be used by an application developed in C# and XAML.
 With the release of Windows 10, Microsoft has introduced the Universal Windows Platform, which can be considered the successor of the Windows Runtime since it’s built on top of the same technology. The most important feature of the Universal Windows Platform is that it offers a common set of APIs across every platform: no matter if the app is running on a desktop, on a Xbox One or on a HoloLens, you’re able to use the same APIs to reach the same goals. This is a major step forward compared to the Windows Runtime, which didn’t provide this kind of cross-device support. You were able to share code and UI between a PC project and a mobile project, but, in the end, developers needed anyway to create, maintain and deploy two different solutions.
@@ -72,9 +71,9 @@ The Universal Windows Platform has been built with security and privacy in mind.
 Last but not the least, all the investments of the Windows team for developers are focused on the Universal Windows Platform. All the latest features added in Windows 10, like Timeline, Project Rome, Windows Hello, etc. are exposed by the Universal Windows Platform, so that developers can integrate them in their applications.
 
 #### MSIX packaging
-With the introduction of Windows Store apps first and Universal Windows Platform apps later, Microsoft has also introduced a new packaging model called [MSIX](http://aka.ms/msix) (formerly known as AppX), which is very different from the existing deployment models (like MSI). It's completely controlled by the operating system; it can be used to deploy applications not only using traditional approaches, like the web, SSCM, Intune, but it opens up now opportunities like the Microsoft Store / Store for Business / Store for Education.
+With the introduction of Windows Store apps first and Universal Windows Platform apps later, Microsoft has also introduced a new packaging model called [MSIX](http://aka.ms/msix) (formerly known as AppX), which is very different from the existing deployment models (like MSI). It's completely controlled by the operating system; it can be used to deploy applications not only using traditional approaches, like the web, SSCM, Intune, but it opens up now opportunities like the Microsoft Store / Store for Business / Store for Education; it helps developers to focus on building great application, leaving all the installation, update and uninstallation tasks to the operating system; it helps IT Pros to be more agile and to modernize the deployment of enterprise applications.
 
-With the release of Windows 10 Anniversary Update, this new format has been expanded to support not only modern applications, but also the existing ones built with traditional Win32 technologies, like WPF, Windows Forms, Java, Electron, etc. [Desktop Bridge](https://developer.microsoft.com/en-us/windows/bridges/desktop) is the name of the technology that has enabled this feature, allowing developers to release their Win32 applications also on the Microsoft Store. Another key feature of Desktop Bridge is that it enables Win32 applications to have an identity, which opens up the opportunity to consume APIs from the Universal Windows Platform. 
+With the release of Windows 10 Anniversary Update, this new format has been expanded to support not only modern applications, but also the existing ones built with traditional Win32 technologies, like WPF, Windows Forms, Java, Electron, etc. [Desktop Bridge](https://developer.microsoft.com/en-us/windows/bridges/desktop) is the name of the technology that has enabled this feature, allowing developers to release their Win32 applications also on the Microsoft Store. Another key feature of Desktop Bridge is that it enables Win32 applications to have an identity, which opens up the opportunity to consume a broader set of APIs from the Universal Windows Platform. 
 
 When a Win32 application runs packaged as MSIX, it's executed inside a lightweight container which helps to improve the security and the reliability of the application. The container enables three features:
 
@@ -85,7 +84,7 @@ When a Win32 application runs packaged as MSIX, it's executed inside a lightweig
 MSIX packaging plays an important role with XAML Island because, by combining these two technologies, you'll be able to leverage at the same time features and user controls of the Universal Windows Platform without rewriting your application from scratch.
 
 #### XAML Islands architecture
-The Windows 10 October 2018 Update with the SDK 17763 enables a first preview of XAML Islands for Desktop applications. That means that Windows 10 now supports hosting UWP controls inside the context of a Win32 Process. The 'magic' is powered by two new system APIs called <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.windowsxamlmanager" target="_blank">WindowsXamlManager</a> and <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.desktopwindowxamlsource" target="_blank">DesktopWindowXamlSource</a>.
+The Windows 10 October 2018 Update with the SDK 17763 has enabled a first preview of XAML Islands for Desktop applications, followed by an official release included in Windows 10 19H1. This means that Windows 10 now supports hosting UWP controls inside the context of a Win32 Process. The 'magic' is powered by two new system APIs called <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.windowsxamlmanager" target="_blank">WindowsXamlManager</a> and <a href="https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.hosting.desktopwindowxamlsource" target="_blank">DesktopWindowXamlSource</a>.
 
 - The **WindowsXamlManager** handles the UWP XAML Framework. As such, the only exposed method is called **InitializeForCurrentThread()**, which takes care of initializing the UWP XAML Framework inside the current thread of a non-Win32 Desktop app, so that you can start adding UWP controls to it.
 - The **DesktopWindowXamlSource** is the actual instance of your Islands content. It has a **Content** property which you can instantiate and set with the control you want to render. 
@@ -98,38 +97,12 @@ However, when it comes to WPF and Windows Forms applications, you don’t have t
 - One called **XamlHost**. It's a generic control that can host any UWP control, either custom or native. It comes in two variants: [Microsoft.Toolkit.Wpf.UI.XamlHost](https://www.nuget.org/packages/Microsoft.Toolkit.Wpf.UI.XamlHost/) for WPF and [Microsoft.Toolkit.Forms.UI.XamlHost](https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.XamlHost/) for Windows Forms.
 - One called **Controls**, which includes wrappers for 1st party controls like Map or InkCanvas. Thanks to these controls, you'll be able to leverage them like if they're native WPF or Windows Forms control, including direct access to the exposed properties and binding support. Also in this case, it comes into two variants: [Microsoft.Toolkit.Wpf.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Wpf.UI.Controls/) for WPF and [Microsoft.Toolkit.Forms.UI.Controls](https://www.nuget.org/packages/Microsoft.Toolkit.Forms.UI.Controls/) for Windows Forms.
 
-#### Backward compatibility
-XAML Islands is supported starting from Windows 10 1809. Trying to run an application which uses XAML Island on a previous version of Windows will cause an exception.
-If you need to handle backward compatibility, right now the only option is to instantiate the control in code and not in XAML, using the approach described [in the following document](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/windowsxamlhost).
-Since the XAML control is initialized in code, you have the opportunity to detect the version of the OS where the application is running and choose if you want to continue or, for example, replace it with a standard WPF control.
-
-```csharp
-if (//it's Windows 10 1809 or higher)
-{
-    WindowsXamlHost myHostControl = new WindowsXamlHost();
-
-    Windows.UI.Xaml.Controls.Button myButton =
-        UWPTypeFactory.CreateXamlContentByType("Windows.UI.Xaml.Controls.Button")
-        as Windows.UI.Xaml.Controls.Button;
-        
-}
-else 
-{
-    //do something else    
-}
-```
-
-
-However, the XAML Islands team is planning to enhance the backward compatibility story, by allowing the various controls included in the toolkit to handle this scenario for you and be automatically instantiated only if the app is running on a supported operating system.
-
-The only exception to this rule is the **WebView** control. The Windows Community Toolkit, in fact, includes a control called [WebViewCompatible](https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/wpf-winforms/webviewcompatible), which offers built-in support for backward compatibility. If the application is running on Windows 10 1803 or later, it will render the web view using the new UWP control and the Edge engine. Otherwise, it will fallback to the traditional **WebBrowser** control, which uses the Internet Explorer engine.
-
 #### .NET Core 3
 .NET Core is a open-source framework built from scratch which brings all the goodies of the .NET Framework into the new modern world. Unlike the full .NET Framework, which has its roots deeply integrated into Windows, .NET Core is cross-platform, lightweight and easily extensible.
 
-Until today, .NET Core has always been focused on supporting these new requirements. As such, its primary workload has always been web or back-end applications. Thanks to .NET Core, you can build easily scalable web applications or APIs that can be hosted on Windows, Linux, or in micro services architectures like Docker containers.
+Until today, .NET Core has always been focused on supporting these new requirements. As such, its primary workload has always been web or back-end applications. Thanks to .NET Core, you can easily build scalable web applications or APIs that can be hosted on Windows, Linux, or in micro services architectures like Docker containers.
 
-At BUILD 2018 we have announced the next major release of .NET Core, 3.0, which is, without any doubts, the biggest and most ambitious release since the first version. On top of .NET Core 3.0, in fact, we'll be able to build new workloads.
+At BUILD 2018 we have announced the next major release of .NET Core, 3.0, which is, without any doubts, the biggest and most ambitious release since the first version. On top of .NET Core 3.0, in fact, you'll be able to build new workloads.
 
 ![.NET Core workloads](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/NETCoreWorkloads.png)
 
@@ -138,7 +111,7 @@ As you can see from the image, for the first time .NET Core will support not jus
 > **Disclaimer:** This doesn't mean that WPF and Windows Forms will become cross-platform and you'll be able to run a Windows desktop application, as it is, also on Linux and MacOS. The UI piece of the two frameworks still has a dependency on the Windows rendering system and, as such, it can't run on platforms which use instead a different visual rendering system.
 > 
 
-Let's take a look at the msot important benefits of running a desktop application on top of .NET Core.
+Let's take a look at the most important benefits of running a desktop application on top of .NET Core.
 
 ##### Performance improvements.
 Key investments in .NET Core were made around performances. Startup time is much faster and most of the APIs have been rewritten to be fully optimized. This is true for server side and client side workloads.
@@ -149,19 +122,21 @@ One of the biggest blockers for enterprises to adopt newer versions of the .NET 
 .NET Core, instead, can run truly side-by-side, with two different approaches:
 
 - You can embed the runtime inside the application. This way you'll be able to deploy the app on any machine, even without the runtime installed, and make sure it will target the specific .NET Core version you have used to build it.
-- You can install multiple .NET Core runtimes on the same machine. Unlike with the .NET Framework, you can have on the same machine .NET Core 1.0, .NET Core 2.0, .NET Core 3.0 and whatever .NET Core version will ship in the future. This means that if you deploy an application which runs on .NET Core 2.0, it will effectively leverage the .NET Core 2.0 runtime and not another runtime in backward compatibility mode.
+- You can install multiple .NET Core runtimes on the same machine. Unlike with the .NET Framework, you can have on the same machine .NET Core 1.0, .NET Core 2.0, .NET Core 3.0 and any .NET Core version will ship in the future. This means that if you deploy an application which runs on .NET Core 2.0, it will effectively leverage the .NET Core 2.0 runtime and not another runtime in backward compatibility mode.
 
 Additionally, you will be able to leverage many of the benefits of the .NET Core ecosystem, like the opportunity to use the command line tools to create and build your projects or to use the improved .csproj format. In the end, .NET Core 3.0 will bring some specific benefits for desktop development, like a better support to high DPI screens or the opportunity to leverage all the UWP APIs.
 
 ##### Why .NET Core 3 for XAML Islands
-You should wonder where .NET Core plays a role here. Of course for performance startup and execution of the WPF application: this is the good and immediate gain. The long term advantage is really the fact that this is the migration path for modernizing .NET WPF and Windows Forms applications. All the long-term investments in .NET will be delivered to .NET Core, while the full .NET Framework will focus mainly on security updates and in supporting the latest networking protocols, security standards, and Windows features. You can learn more about the roadmap [here](https://blogs.msdn.microsoft.com/dotnet/2018/10/04/update-on-net-core-3-0-and-net-framework-4-8/).
+You may be wonder which role .NET Core plays here. All the long-term investments in .NET will be delivered to .NET Core, while the full .NET Framework will focus mainly on security updates and in supporting the latest networking protocols, security standards, and Windows features. You can learn more about the roadmap [here](https://blogs.msdn.microsoft.com/dotnet/2018/10/04/update-on-net-core-3-0-and-net-framework-4-8/).
+
+As such, XAML Island is supported also on the .NET Framework, but all the long-terms investement in this technology will be focused on .NET Core.
 
 ___ 
 
 ## Exercise 1 - Use a 1st party UWP control with XAML Islands
 
 We start with the simpliest modernization path possible: We would like to use a rich UWP control that is "*available for use in WPF*". Crazy idea? No! Indeed, the most requested controls are already wrapped for you! The current XAML Islands iteration brings you the InkCanvas, the InkToolbar, the MapControl and the MediaPlayerElement.
-So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This will be possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
+So in our Contoso Expenses application we will bring a modern touch by using InkCanvas and MapControl. This is possible thanks to the Microsoft.Toolkit.Wpf.UI.Controls NuGet package.
 
 ___ 
 
@@ -246,20 +221,56 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
     
 5. That's it! Now we can test the application. Press F5 to launch the debugging experience.
 6. Choose an employee from the list, then one of the available expenses.
-7. Notice that, in the expense detail page, there's a new space for the **InkCanvas** control. 
+7. Ops, this wasn't expected. If you're running the application Windows 10 1903, the application will crash with the following exception:
+
+    ```text
+    WindowsXamlManager and DesktopWindowXamlSource are supported for apps targeting Windows version 10.0.18226.0 and later.  Please check either the application manifest or package manifest and ensure the MaxTestedVersion property is updated.
+    ```
+
+    Since XAML Islands is fully supported only starting from Windows 10 1903 we need to declare this requirement. We can do it using an application manifest.
+    
+8. Right click on the project in Solution Explorer and choose **Add -> New item**.
+9. Look for the template called **Application Manifest File**. Name it **app.manifest** and press **Add**.
+10. The file will be automatically opened inside Visual Studio. Look for the **compatibility** section and identify the commented entry prefixed by **Windows 10**:
+
+    ```xml
+    <!-- Windows 10 -->
+    <!--<supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />-->
+    ```
+11. Add the following entry below this item:
+
+    ```xml
+    <maxversiontested Id="10.0.18362.0"/>
+    ```
+    
+12. Uncomment the **supportedOS** entry for Windows 10. This is how the section should look like:
+
+    ```xml
+    <!-- Windows 10 -->
+    <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
+    <maxversiontested Id="10.0.18362.0"/>
+    ```
+
+13. Now right click on the **ContosoExpenses** project and choose **Properties**.
+14. Make sure that, in the **Resources** section, the **Manifest** dropdown is set to **app.manifest**:
+
+    ![](../Manual/Images/NetCoreAppManifest.png)
+    
+15. Now press F5 and try again to click on an employee, then one of the expenses. Now the exception should be gone.
+16. Notice that, in the expense detail page, there's a new space for the **InkCanvas** control. 
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/InkCanvasPenOnly.png)
 
-    If you have a device which supports a digital pen, like a Surface, go on and try to use it. You will see the digital ink appearing on the screen. However, if you don't have a pen capable device and you try to sign with your mouse, nothing will happen. This is happening because, by default, the **InkCanvas** control is enabled only for digital pens. However, we can change this behavior.
-8. Stop the debugger and double click on the **ExpenseDetail.xaml.cs** file in Visual Studio.
-9. Add the following namespace declaration at the top of the class:
+    If you have a device which supports a digital pen, like a Surface, and you're running this lab on a physical machine, go on and try to use it. You will see the digital ink appearing on the screen. However, if you don't have a pen capable device and you try to sign with your mouse, nothing will happen. This is happening because, by default, the **InkCanvas** control is enabled only for digital pens. However, we can change this behavior.
+17. Stop the debugger and double click on the **ExpenseDetail.xaml.cs** file in Visual Studio.
+18. Add the following namespace declaration at the top of the class:
 
     ```csharp
     using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
     ```
     
-12. Now locate the **ExpenseDetail()** method, which is the public constructor of the class.
-13. Add the following line of code right after the **InitializeComponent()** method:
+19. Now locate the **ExpenseDetail()** method, which is the public constructor of the class.
+20. Add the following line of code right after the **InitializeComponent()** method:
 
     ```csharp
     Signature.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
@@ -267,56 +278,11 @@ Adding it to a WPF application is easy, since it's one of the 1st party controls
     
     **InkPresenter** is an object exposed by the **InkCanvas** control which we can use to customize the default inking experience. Thanks to the **InputDeviceTypes** we can change which inking devices are supported. By using the values offered by the **CoreInputDeviceTypes** enumerator, we enable pen and mouse.
     
-14. Now let's test the application again. Press F5 to start the debugging, then choose one of the employees followed by one of the expenses.
-15. Try now to draw something in the signature space with the mouse. This time, you'll see the ink appearing on the screen.
+21. Now let's test the application again. Press F5 to start the debugging, then choose one of the employees followed by one of the expenses.
+22. Try now to draw something in the signature space with the mouse. This time, you'll see the ink appearing on the screen.
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/Signature.png)
     
-However, if you try to play a bit with the application you will notice that not everything is working as expected. Close the expense detail and try to open another expense from the list. You will notice that the application will crash with the following exception:
-
-![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/XamlIslandException.png)
-
-The reason is that every UWP control included in a WPF app through XAML Islands must be properly disposed before being instantiated again. As such, we need to take care of this operation when the expense detail page is closed.
-
-1. Go back to Visual Studio and double click the **ExpenseDetail.xaml** file in Solution Explorer.
-2. Locate the **Window** tag and add the following attribute:
-    
-    ```xml
-    Closed="Window_Closed"
-    ```
-    We are handling the **Closed** event, which is triggered when the window is closed. This is how the full definition of the **Window** control should look like:
-    
-    ```xml
-    <Window x:Class="ContosoExpenses.ExpenseDetail"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:toolkit="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
-            Loaded="Window_Loaded"
-            Closed="Window_Closed"
-            xmlns:local="clr-namespace:ContosoExpenses"
-            mc:Ignorable="d"
-            Title="Expense Detail" Height="500" Width="800"
-            Background="{StaticResource HorizontalBackground}">
-    ```
-
-3. Now double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
-4. Copy and paste the following code at the end of the class:
-
-    ```csharp
-    private void Window_Closed(object sender, EventArgs e)
-    {
-        Signature.Dispose();
-    }
-    ```
-
-    We're invoking the **Dispose()** method exposed by the **InkCanvas** control when the window is closed.
-    
-5. Now let's test the code. Press F5 to activate the debugger.
-6. Choose any employee from the list, then choose one of the available expenses. The expense detail page will be opened.
-7. Now close it and choose another expense of the list. This time the updated expense detail page will be opened without any issue.
-
 We have completed our task. Now we have a fully working signature pad in the expense detail page of our application.
 
 ___ 
@@ -378,16 +344,9 @@ Like the **InkCanvas** control we have previously added to handle the signature,
 
     <toolkit:InkCanvas x:Name="Signature" Grid.Row="7" />
     ```
-
-7. Like we did with the **InkCanvas** control we have added in the previous task, we need to dispose the **MapControl** when the windows gets closed, to avoid multiple instantiations that could lead to exceptions. As such, double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer.
-8. Locate the **Windows_Closed** event handler you have declared in the previous task.
-9. Add the following code before the end of the event handler:
-
-    ```csharp
-    ExpenseMap.Dispose();
-    ```
-10. Now launch the application.
-11. Choose one of the employees, then one of the expenses. This is how the updated expense detail page should look like:
+    
+7. Now launch the application.
+8. Choose one of the employees, then one of the expenses. This is how the updated expense detail page should look like:
 
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/MapControlPreview.png)
     
@@ -421,68 +380,14 @@ In the next tasks we're going to make the **MapControl** we have added more usef
 
 ___ 
 
-### Exercise 2 Task 2 - Package the application as MSIX
 
-Before doing this, we need to introduce MSIX packaging. Thanks to this technology, we can package our WPF application using the same format of the Universal Windows Platform, which is MSIX (formerly known as AppX, for versions of Windows 10 prior to 1809). Once the application is packaged it gets an identity, which allows us to integrate the Universal Windows Platform and use most of the available APIs without having to rewrite our WPF application from scratch.
-
-Visual Studio offers an easy way to achieve this goal thanks to a template called **Windows Application Packaging Project**. Let's add it!
-
-1. Go back to Visual Studio. 
-2. Right click on the **ContosoExpenses** solution in **Solution Explorer** and choose **Add -> New project**.
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/AddNewProject.png)
-
-3. Search for `packaging` and look for a template called **Windows Application Packaging Project** in C#:
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WAP.png)
-    
-4. Name it `ContosoExpenses.Package` and press OK.
-5. You will be asked which target SDK and minimum SDK you want to use:
-
-    - **Target SDK** defines which APIs of the Universal Windows Platform you'll be able to use in your application. Choosing the most recent version will allow you to leverage all the latest and greates features offered by the platform.
-    - **Minimum SDK** defines which is the minimum Windows 10 version you support. Lower versions won't be able to install this package. In case of a packaged Win32 application, the minimum supported version is Windows 10 Anniversary Update, since it was the first release to support the Desktop Bridge.
-    
-    For the purpose of our lab make sure to choose the most recent version for both options, as in the following picture:
-    
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/TargetSdk.png)
-    
-    Then press OK.
-6. You will se a new project inside your Visual Studio solution, which structure will resemble the one of a Universal Windows Platform project:
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/WAPdetails.png)
-    
-    It has a manifest, which describes the application; it has some default assets, which are used for the icon in the Programs menu, the tile in the Start screen, the Store, etc. However, unlike a Universal Windows Platform project, it doesn't contain code. Its purpose is to package an existing Win32 application.
-7. The project includes a section called **Applications**, which you can use to choose which applications included in your Visual Studio solution you want to include inside the package. Right click on it and choose **Add reference**.
-8. You will see a list of all the other projects included in the solution which, currently, is only the **ContosoExpenses** application:
-
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/ReferenceManager.png)
-    
-    Make sure to select it and press Ok.
-9. Now expand the **Applications** section. You will notice that the **ContosoExpense** project is referenced and highlighted in bold, which means that it will be used as a starting point for the package. In case of a project with multiple executables, you can set the starting point by clicking on the correct one in the **Applications** list and choosing **Set as entry point**.  However, this isn't our case, so we are ready to go on.
-10. That's it! We can now test the packaged version of the application.
-11. Right click on the **ContosoExpenses.Package** project in Solution Explore and choose **Set As Startup Project**.
-12. Press F5 to launch the debugging. 
-
-Out of the box, you won't notice any meaningful difference. We have simply packaged our WPF application, so it's behaving like the traditional one. However, we can notice some small changes that can help us to understand the application is running as packaged:
-
-- The icon in the taskbar or in the Start screen isn't anymore the icon of our application, but it's the default asset which is included in every UWP project.
-- If we right click on the **ContosoExpense.Package** application listed in the Start menu, we will notice that we many options which are typically reserved to applications downloaded from the Microsoft Store, like **App settings**, **Rate and review** or **Share**.
-    
-    ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/StartMenu.png)
-
-- If we want to remove the application from the system, we can just right click again on his icon in the Start menu and choose **Uninstall**. After pressing Ok, the application will be immediately removed, without leaving any leftover on the system.
-
-Now that our application has been packaged with the Desktop Bridge, we can start integrating the Universal Windows Platform.
-
-___ 
-
-### Exercise 2 Task 3 - Add a reference to the Universal Windows Platform
+### Exercise 2 Task 2 - Add a reference to the Universal Windows Platform
 In order to start using Universal Windows Platform APIs in a WPF application we need to add a reference to two files:
 
 - **Windows.md**, which contains the metadata that describes all the APIs of the Universal Windows Platform.
 - **System.Runtime.WindowsRuntime** which is a library that contains the infrastructure required to properly support the **IAsyncOperation** type, which is used by the Universal Windows Platform to handle asynchronous operation with the well known async / await pattern. Without this library your options to interact with the Universal Windows Platform would be very limited, since all the APIs which take more than 50 ms to return a result are implemented with this pattern.
 
-In the past this process was a bit cumbersome, because it required to manually dig into the file system and look for the folders where these files are deployed by the Windows 10 SDK. However, recently the team has released a NuGet package which makes the overall process really easy. Let's add it!
+In the past this process required a bit of manual work since you needed to dig into the file system and look for the folders where these files are deployed by the Windows 10 SDK. However, the team has recently released a NuGet package which makes the overall process really easy. Let's add it!
 
 1. Go back to Visual Studio and right click on the **ContosoExpenses** project.
 2. Choose **Manage NuGet Packages**.
@@ -493,7 +398,7 @@ You're all set. Now you're ready to start using APIs from the Universal Windows 
 
 ___ 
 
-### Exercise 2 Task 4 - Display the expense location on the map
+### Exercise 2 Task 3 - Display the expense location on the map
 Now that we have enabled the Universal Windows Platform in our WPF project, we can start using the **MapLocationFinder** class we have mentioned before, which can help us to convert the address of the expense location to a set of coordinates we can use with the **MapControl**.
 
 1. Go back to Visual Studio and double click on the **ExpenseDetail.xaml.cs** file in Solution Explorer
@@ -516,6 +421,7 @@ Now that we have enabled the Universal Windows Platform in our WPF project, we c
     
     The **MapLocationFinder** class exposes a method called **FindLocationAsync()** which is perfect for our scenario. As parameters, we need to pass the address we want to convert into coordinates and, optionally, a coordinate that can be used as a reference for the search. In our case, we pass the address of the current expense (stored in the **Address** property of the **SelectedExpense** object) and **null** as second parameter, since we don't have any coordinate to use as a reference. This method is asynchronous, so we need to invoke it with the **await** prefix.
     The method returns a list of possible locations, represented by the **MapLocation** object. We take the first result and, if it's not null, we call the **TrySetViewAsync()** method exposed by the **MapControl**. As parameter, we specify the location's coordinate (stored in the **Point** property) and the zoom level. Also this method is asynchronous, so we prefix the **await** keyword.
+    
 5. As it is, the code won't compile. We are using two asynchronous methods inside the event handler, but we haven't added the **async** prefix. Change the signature of the **Windows_Loaded** handler to include the **async** keyword. This is how the final event handler should look like:
 
     ```csharp
@@ -606,7 +512,7 @@ Let's move on and see how we can request a license and integrate it into our app
     
     ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/MapControlOk.png)
 
-Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packed our application as MSIX, we have the chance to leverage APIs from the Universal Windows Platform, to make it even more powerful. MSIX packaging up also the opportunity to release our application in many ways, since it supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
+Great job! Now you have a WPF application which perfecly integrates two UWP controls, **InkCanvas** and **MapControl**. Additionally, since we have packaged our application as MSIX, we have the chance to leverage a wider range of APIs from the Universal Windows Platform, to make it even more powerful. MSIX packaging up also the opportunity to release our application in many ways, since it supports not only traditional deployment models (like web, SSCM, Intune, etc.) but also new ones like the Microsoft Store / Store for Business / Store for Education.
 
 ___ 
 
@@ -706,7 +612,7 @@ Now press F5 to build and run the application. Once it starts, choose any employ
 
 ![](https://github.com/Microsoft/Windows-AppConsult-XAMLIslandsLab/raw/master/Manual/Images/CalendarViewWrapper.png)
 
-However, the work isn't completed yet. We need a way to handle the selected date, so that we can display it on the screen and we can store it in the code-behind ; In other words, we have populate the new **Expense** object that gets saved in the database.
+However, the work isn't completed yet. We need a way to handle the selected date, so that we can display it on the screen and we can store it in the code-behind. In other words, we need to populate the new **Expense** object that gets saved in the database with the selected date.
 
 ___ 
 
@@ -764,44 +670,21 @@ In order to implement our scenario, we need to move to the code behind and cast 
 6. There's one last small change we need to make. If you remember when we have tested the application at the end of the previous task, the look and feel of the window wasn't really good. The reason is that the **CalendarView** control takes more space than the previous **DatePicker** and, as such, the current size of the window isn't enough to fit all the content. Let's incrase the height of the window. 
 7. Locate the **Window** tag at the top of the XAML file.
 8. Locate the **Height** property and change the value from **450** to **800**.
-9. Also the **WindowsXamlHost** control must be properly disposed in order to be reused. As such, we need to subscribe to the **Closed** event also in this window, by adding the following attribute:
-
-    ```xml
-    Closed="Window_Closed"
-    ```
-    
-    This is how the final definition of the **Window** element should look like:
-    
-    ```xml
-    <Window x:Class="ContosoExpenses.AddNewExpense"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
-            xmlns:local="clr-namespace:ContosoExpenses"
-            mc:Ignorable="d"
-            Closed="Window_Closed"
-            Title="Add new expense" Height="800" Width="800"
-            Background="{StaticResource AddNewExpenseBackground}">
-    ```
-
-10. Now let's start to work on the code behind. Identify in Solution Explorer the **AddNewExpense.xaml.cs** file and double click on it.
-
-11. First, we need to add some using on the top of the file in order to be able to manipulate the WindowsXamlHost control.
+9. Now let's start to work on the code behind. Identify in Solution Explorer the **AddNewExpense.xaml.cs** file and double click on it.
+10. First, we need to add some using on the top of the file in order to be able to manipulate the WindowsXamlHost control.
 
     ```csharp
     using Microsoft.Toolkit.Wpf.UI.XamlHost;
     using System.Linq;
     ```
 
-12. We also need a property to hold a reference to the selected date. Copy and paste the following definition inside the class:
+11. We also need a property to hold a reference to the selected date. Copy and paste the following definition inside the class:
 
     ```csharp
     private DateTime SelectedDate;
     ```
 
-13. Now copy and paste the following event handler inside the class definition:
+12. Now copy and paste the following event handler inside the class definition:
 
     ```csharp
     <code>
@@ -835,15 +718,7 @@ In order to implement our scenario, we need to move to the code behind and cast 
     - Subscribe to the **SelectedDatesChanged** event, which is triggered when the user selects a date from the calendar. Inside this handler, thanks to the event arguments, we have access to the **AddedDates** collection, which contains the selected dates. In our case we're using the **CalendarView** control in single selection mode, so the collection will contain only one element. We store it into the **SelectedDate** property we have previously created and we display it in the **txtDate** control.
     - Customize the behavior of the control. Since, for compliance reasons, an employee can report only expenses occurred in the last year, it would be confusing to display dates older than 1 year or in the future. As such, we set the **MaxDate** property with the current date, while the **MinDate** one with the same date, but 1 year in the past. This means that if, for example, today is 14th February 2019, employees will be able to choose a date between 14th February 2018 and 14th February 2019.
 
-14. As next step, we need to handle the **Closed** event of the window to dispose the **WindowsXamlHost** control. Copy and paste the following event handler before the end of the **AddNewExpense** class:
-
-    ```csharp
-    private void Window_Closed(object sender, EventArgs e)
-    {
-        CalendarUwp.Dispose();
-    }
-    ```
-15. As last step we need to update the **OnSaveExpense** event handler to retrieve the selected date from the new UWP control we have added. If you remember, in the previous task we have commented the following line of code in the creation of the **Expense** object:
+13. As last step we need to update the **OnSaveExpense** event handler to retrieve the selected date from the new UWP control we have added. If you remember, in the previous task we have commented the following line of code in the creation of the **Expense** object:
 
     ```csharp
     Date = txtDate.SelectedDate.GetValueOrDefault(),
@@ -882,7 +757,7 @@ We have replaced an existing WPF control with a newer mordern version, which ful
 
 ___ 
 
-## Exercise 4 - Create a XAML Islands wrapper
+## Exercise 4 - Create a wrapper for a UWP control with XAML Islands
 In Excercise 3 we have added a **CalendarView** control to our WPF application using the generic **WindowsXamlHost** control.
 From a technical point of view, the outcome of the exercise worked without issues. However, the code we have written isn't super elegant. In order to interact with the **CalendarView** control we had to subscribe to the **ChildChanged** event exposed by the **WindowsXamlHost** control, peform a cast and manually change some properties. Additionally, if we have a more complex application built with the MVVM pattern, we would have faced a blocker: we can't use binding to handle the **AddedDates** property.
 

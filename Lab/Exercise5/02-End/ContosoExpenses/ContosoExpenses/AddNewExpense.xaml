@@ -20,7 +20,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xamlhost="clr-namespace:Microsoft.Toolkit.Wpf.UI.XamlHost;assembly=Microsoft.Toolkit.Wpf.UI.XamlHost"
         xmlns:local="clr-namespace:ContosoExpenses"
-        Closed="Window_Closed"
         mc:Ignorable="d"
         Title="Add new expense" Height="800" Width="800"
         Background="{StaticResource AddNewExpenseBackground}">

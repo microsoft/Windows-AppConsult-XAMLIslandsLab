@@ -41,10 +41,5 @@ namespace ContosoExpenses
             txtAmount.Text = SelectedExpense.Cost.ToString();
             Chart.Height = (SelectedExpense.Cost * 400) / 1000;
         }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            Signature.Dispose();
-        }
     }
 }
