@@ -1,7 +1,7 @@
 ﻿# Bring Fluent Design and modern user interaction to your WPF application
 
 ## Introduction
-Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivials and may require a tremendous work; most of the times, it imposes a full rewriting.
+Windows 10 enables you to create modern applications thanks to the Universal Windows Platform (UWP). To benefit from the UWP Platform and its ecosystem, classic desktop applications have to be migrated. The migration paths are not trivial and may require a tremendous work; most of the times, it imposes a full rewriting.
 
 Now, with XAML Islands, we can use UWP controls in non-UWP desktop applications so that we can enhance the look, feel, and functionalities of your our LOB desktop applications with the latest Windows 10 UI features that are only available via UWP controls. This means that you can use UWP features such as Windows Ink and controls that support the Fluent Design System in your existing WPF, Windows Forms, and C++ Win32 applications.
 
@@ -1026,9 +1026,15 @@ That's it! Our wrapper is working and it makes easier to interact with the origi
 ___ 
 
 ## Exercise 5 - Migrate to .NET Core 3
-Migrating the application to .NET Core 3 is the best and recomanded path for modernizing a .NET application (WPF or Windows Forms), so that it will be able to use all the upcoming new features both from .NET Core and UWP, other than supporting side-by-side runtimes, better startup times, smaller memory footprint and much more.
+Migrating the application to .NET Core 3 is the best and recommended path for modernizing a .NET application (WPF or Windows Forms), so that it will be able to use all the upcoming new features both from .NET Core and UWP, other than supporting side-by-side runtimes, better startup times, smaller memory footprint and much more.
 
 At the moment of writing .NET Core is still in Preview. Nevertheless, it is enough stable to play with it. All you need is to download the most recent Preview SDK from [https://dotnet.microsoft.com/download/dotnet-core/3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0).
+
+Please note: If you're using the stable version of Visual Studio 2019, you will need to enable a specific option to use a preview of .NET Core 3. Go to **Tools** / **Options...** and type "Core" in the search box. Select the session named **.NET Core** and check the **Use previews of the .NET Core SDK** option.
+
+![.NET Core preview allowed](Images/NETCorePreviewCheck.png)
+
+If, instead, you're using [the Preview branch of Visual Studio 2019](https://visualstudio.microsoft.com/vs/preview/), you won't need to turn this option on since .NET Core 3.0 preview versions are enabled by default.
 
 ___ 
 
@@ -1103,9 +1109,7 @@ Here is the full content of the new csproj. Please double check that you have ev
 By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have to specify anymore each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
 It is now safe to save the file by pressing **CTRL+S**.
 
-Last point: To be able to use a preview of .NET Core 3, in Visual Studio 2019, please go to **TOOLS** / **Options...** and type "Core" in the search box. Check the **Use previews of the .NET Core SDK**.
 
-![.NET Core preview allowed](Images/NETCorePreviewCheck.png)
 
 ___ 
 
