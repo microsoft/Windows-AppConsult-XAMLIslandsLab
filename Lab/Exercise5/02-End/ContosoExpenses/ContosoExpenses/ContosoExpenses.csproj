@@ -7,6 +7,7 @@
     <ApplicationIcon />
     <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>ContosoExpenses.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +28,7 @@
   <ItemGroup>
     <PackageReference Include="Bogus" Version="26.0.2" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
-    <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls" Version="6.0.0-preview1" />
+    <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls" Version="6.0.0-preview3" />
     <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.17763.144-preview" />
   </ItemGroup>
 </Project>
