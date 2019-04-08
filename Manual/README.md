@@ -1103,6 +1103,10 @@ Here is the full content of the new csproj. Please double check that you have ev
 By default, with the new project format, all the files in the folder are considered part of the solution. As such, we don't have to specify anymore each single file included in the project, like we had to do the old .csproj file. We need to specify only the ones for which we need to define a custom build action or that we want to exclude. 
 It is now safe to save the file by pressing **CTRL+S**.
 
+Last point: To be able to use a preview of .NET Core 3, in Visual Studio 2019, please go to **TOOLS** / **Options...** and type "Core" in the search box. Check the **Use previews of the .NET Core SDK**.
+
+![.NET Core preview allowed](Images/NETCorePreviewCheck.png)
+
 ___ 
 
 ### Exercise 5 Task 2 - Updade the NuGet packages of the project
