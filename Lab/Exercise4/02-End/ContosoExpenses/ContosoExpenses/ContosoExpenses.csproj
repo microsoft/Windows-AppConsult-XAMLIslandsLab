@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="25.0.4" />
-    <PackageReference Include="LiteDB" Version="4.1.4" />
+    <PackageReference Include="LiteDB" Version="5.0.13" />
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls" Version="6.0.0-build.15.ge5444fb4a5" />
   </ItemGroup>
 
